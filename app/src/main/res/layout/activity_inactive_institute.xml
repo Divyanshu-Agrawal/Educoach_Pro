@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="@drawable/background"
+    tools:context="com.aaptrix.activitys.InactiveInstitute">
+
+    <ImageView
+        android:layout_width="@dimen/_250sdp"
+        android:layout_height="@dimen/_250sdp"
+        android:id="@+id/school_logo"
+        android:layout_centerHorizontal="true"
+        android:scaleType="centerInside"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/school_logo"
+        android:text="EduCoach is not in use by your institute anymore."
+        android:textSize="24sp"
+        android:id="@+id/text"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:gravity="center"/>
+
+    <Button
+        android:text="Switch User"
+        android:textSize="@dimen/siz16"
+        android:textColor="@color/white"
+        android:fontFamily="ROBOTO-REGULAR.TTF"
+        android:textAllCaps="false"
+        android:layout_below="@+id/text"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:layout_width="@dimen/_130sdp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="@dimen/_35sdp"
+        android:background="@drawable/btn_design"
+        android:id="@+id/switch_account"
+        tools:ignore="HardcodedText" />
+
+</RelativeLayout>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context="com.aaptrix.activitys.student.GalleryActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/orange"
+        android:id="@+id/appBarLayout"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:weightSum="3">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            app:popupTheme="@style/MyDarkToolbarStyle"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:gravity="start|center"
+                android:layout_marginRight="55dp"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/tool_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="start|center"
+                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                    android:text="Gallery"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="18dp" />
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <TextView
+        android:id="@+id/no_gallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:fontFamily="ROBOTO-REGULAR.TTF"
+        android:gravity="center"
+        android:text="No Gallery"
+        android:textSize="30sp" />
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/activity_main_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        tools:ignore="MergeRootFrame"
+        android:layout_below="@id/appBarLayout"
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/gallery_list"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:layout_marginBottom="@dimen/siz10"
+            android:scrollingCache="false"
+            android:layout_width="match_parent"
+            android:scrollbars="none"
+            android:layout_height="match_parent"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <LinearLayout
+        android:layout_width="43dp"
+        android:layout_height="43dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="24dp"
+        android:layout_marginRight="24dp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:background="@drawable/img_desgin_add"
+        android:id="@+id/add_layout">
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/add"
+            android:id="@+id/add_gallery"/>
+    </LinearLayout>
+
+</RelativeLayout>

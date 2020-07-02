@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item  android:id="@+id/all"
+        android:title="All Leaves"/>
+    <item  android:id="@+id/pending"
+        android:title="Pending Leaves"/>
+    <item  android:id="@+id/approved"
+        android:title="Approved Leaves"/>
+    <item  android:id="@+id/rejected"
+        android:title="Rejected Leaves"/>
+</menu>

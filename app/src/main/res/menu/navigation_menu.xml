@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/group1">
+
+        <item android:id="@+id/institute_buzz"
+            android:title="Institute Buzz"
+            android:icon="@drawable/school"/>
+
+        <item
+            android:id="@+id/performance"
+            android:title="Performance"
+            android:icon="@drawable/see_performance"/>
+
+        <item
+            android:title="Tomorrow's Timetable"
+            android:id="@+id/time_table"
+            android:icon="@drawable/timetable"/>
+
+        <item
+            android:title="Exam Timetable"
+            android:id="@+id/exam_time_table"
+            android:icon="@drawable/timetable"/>
+
+        <item
+            android:title="Online Exam"
+            android:id="@+id/online_exam"
+            android:icon="@drawable/timetable"/>
+
+        <item
+            android:id="@+id/live_stream"
+            android:title="Live Streaming"
+            android:icon="@drawable/live_icon"/>
+
+        <item
+            android:id="@+id/pay_fee"
+            android:title="Pay Fees Online"
+            android:icon="@drawable/fee_icon"/>
+
+    </group>
+
+    <group
+        android:id="@+id/group2">
+
+        <item
+            android:id="@+id/refer"
+            android:icon="@drawable/refer_f"
+            android:title="Refer a Friend"/>
+
+        <item
+            android:id="@+id/share_ins"
+            android:icon="@drawable/share_icon"
+            android:title="Share Institute Details"/>
+
+        <item
+            android:id="@+id/feedback"
+            android:icon="@drawable/feedback_f"
+            android:title="Give Feedback"/>
+
+    </group>
+
+    <group
+        android:id="@+id/group3">
+
+        <item
+            android:id="@+id/help"
+            android:icon="@drawable/inquiry_icon"
+            android:title="Get Help" />
+
+        <item
+            android:id="@+id/rate"
+            android:title="Rate App"
+            android:icon="@drawable/rate_icon"/>
+
+        <item
+            android:icon="@drawable/share_icon"
+            android:title="Share App"
+            android:id="@+id/share_app"/>
+
+        <item
+            android:id="@+id/app_info"
+            android:title="App Info"
+            android:icon="@drawable/app_info_icon"/>
+
+    </group>
+
+</menu>

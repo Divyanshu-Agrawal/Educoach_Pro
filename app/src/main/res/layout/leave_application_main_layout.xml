@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:id="@+id/mainLayoutLeaveApplication"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/orange"
+            android:id="@+id/appBarLayout"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            android:weightSum="3">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="start|center"
+                app:popupTheme="@style/MyDarkToolbarStyle"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_marginRight="55dp"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/tool_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="start|center"
+                        android:fontFamily="ROBOTO-REGULAR.TTF"
+                        android:text="Leave Application"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="18dp" />
+                </LinearLayout>
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appBarLayout">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/activity_main_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        tools:ignore="MergeRootFrame"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="10"
+        android:background="@drawable/background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9"
+            android:clickable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:gravity="center|top">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:textSize="@dimen/siz14"
+                android:text="Leave Subject*"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/siz10"/>
+            <EditText
+                android:id="@+id/etLeaveSubject"
+                android:hint="Enter leave subject here"
+                android:paddingStart="@dimen/siz10"
+                android:backgroundTint="@color/text_gray"
+                android:layout_width="match_parent"
+                android:textColor="@color/text_gray"
+                android:textCursorDrawable="@drawable/cursor_color1"
+                android:layout_height="@dimen/_35sdp"
+                android:textSize="@dimen/siz12"
+                android:textColorHint="@color/light_gray1"
+                android:layout_marginRight="@dimen/siz16"
+                android:layout_marginLeft="@dimen/siz16"
+                android:layout_marginTop="@dimen/siz10"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:textSize="@dimen/siz14"
+                android:text="Leave Date*"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/siz10"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                android:orientation="horizontal"
+                android:layout_marginRight="@dimen/siz16"
+                android:layout_marginLeft="@dimen/siz16"
+                android:layout_marginTop="@dimen/siz10"
+                >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_height="match_parent">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_35sdp"
+                        android:textColor="@color/text_gray"
+                        android:fontFamily="ROBOTO-REGULAR.TTF"
+                        android:textSize="@dimen/siz12"
+                        android:gravity="start"
+                        android:backgroundTint="@color/text_gray"
+                        android:hint="Select Leave Start Date"
+                        android:padding="10dp"
+                        android:id="@+id/leaveStartDate"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_height="match_parent">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_35sdp"
+                        android:textColor="@color/text_gray"
+                        android:fontFamily="ROBOTO-REGULAR.TTF"
+                        android:textSize="@dimen/siz12"
+                        android:gravity="start"
+                        android:backgroundTint="@color/text_gray"
+                        android:hint="Select Leave End Date"
+                        android:layout_marginLeft="@dimen/siz5"
+                        android:padding="10dp"
+                        android:id="@+id/leaveEndDate"
+                        />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:text="Add Image"
+                android:textColor="@color/black"
+                android:textSize="@dimen/siz14"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/siz10"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_1sdp">
+
+                <ImageButton
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_100sdp"
+                    android:src="@drawable/add_image"
+                    android:id="@+id/sel_image"
+                    android:background="@android:color/transparent"/>
+
+                <GridView
+                    android:id="@+id/choose_img_grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_100sdp"
+                    android:numColumns="4"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:textSize="@dimen/siz14"
+                android:text="Description*"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/siz10"/>
+            <EditText
+                android:id="@+id/etComposeLeaveDetails"
+                android:hint="Enter leave details here"
+                android:paddingLeft="@dimen/siz10"
+                android:layout_width="match_parent"
+                android:textColor="@color/text_gray"
+                android:inputType="textMultiLine"
+                android:textCursorDrawable="@drawable/cursor_color1"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/text_gray"
+                android:gravity="top"
+                android:padding="10dp"
+                android:textSize="@dimen/siz12"
+                android:paddingRight="10dip"
+                android:textColorHint="@color/light_gray1"
+                android:layout_marginRight="@dimen/siz16"
+                android:layout_marginLeft="@dimen/siz16"
+                android:layout_marginTop="@dimen/siz10"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:weightSum="2"
+            android:gravity="center|top">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:layout_weight="2">
+                <Button
+                    android:text="Submit Application"
+                    android:textSize="@dimen/siz16"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center|bottom"
+                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                    android:textAllCaps="false"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_height="45dp"
+                    android:background="@color/orange"
+                    android:id="@+id/btn_send"/>
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#80111111">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="5dp"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/task_status"
+                    android:layout_width="@dimen/_200sdp"
+                    android:layout_height="@dimen/_150sdp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/task_done" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="5dp"
+                    android:text="Successful"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/mainLayoutChangePassword"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/orange"
+            android:id="@+id/appBarLayout"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            android:weightSum="3">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="start|center"
+                app:popupTheme="@style/MyDarkToolbarStyle">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_marginRight="55dp"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/tool_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="start|center"
+                        android:fontFamily="ROBOTO-REGULAR.TTF"
+                        android:text="Change Phone Number"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="18dp" />
+                </LinearLayout>
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="@drawable/background"
+            android:layout_height="match_parent"
+            android:id="@+id/mainLayoutLogin"
+            android:weightSum="10"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3.5"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="320dp"
+                    android:layout_height="110dp"
+                    android:src="@drawable/app_logo"
+                    android:scaleType="fitCenter"
+                    android:id="@+id/school_logo"
+                    android:layout_margin="@dimen/siz10"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/siz10"
+                    android:gravity="center"
+                    android:weightSum="1">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight=".05"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/cube"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_weight=".8"
+                        android:layout_height="@dimen/siz2"
+                        android:background="@color/orange"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight=".05"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/cube"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3.5"
+                android:clickable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical"
+                android:gravity="top">
+                <EditText
+                    android:hint="Enter OTP number here"
+                    android:paddingLeft="@dimen/siz10"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:textCursorDrawable="@drawable/cursor_color1"
+                    android:textColor="@color/text_gray"
+                    android:background="@drawable/et_background_design"
+                    android:layout_marginRight="@dimen/siz16"
+                    android:layout_marginLeft="@dimen/siz16"
+                    android:textColorHint="@color/light_gray1"
+                    android:inputType="phone"
+                    android:paddingRight="10dip"
+                    android:textSize="@dimen/siz14"
+                    android:layout_marginBottom="@dimen/siz20"
+                    android:id="@+id/otpNumber"
+                    android:maxLength="6"
+                    android:layout_marginTop="@dimen/siz20"
+                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:weightSum="2"
+                android:gravity="center|top">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_weight="2">
+                    <Button
+                        android:text="Submit OTP"
+                        android:textSize="@dimen/siz18"
+                        android:id="@+id/btn_submitOtp"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center|top"
+                        android:fontFamily="ROBOTO-REGULAR.TTF"
+                        android:textAllCaps="false"
+                        android:layout_width="150dp"
+                        android:layout_height="45dp"
+                        android:background="@drawable/btn_design"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:gravity="center"
+                        android:fontFamily="ROBOTO-REGULAR.TTF"
+                        android:id="@+id/timer"
+                        android:layout_marginTop="@dimen/siz7"
+                        android:textColor="@color/text_gray"/>
+                    <TextView
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Resend OTP"
+                        android:gravity="center"
+                        android:fontFamily="ROBOTO-REGULAR.TTF"
+                        android:id="@+id/resend"
+                        android:layout_marginTop="@dimen/siz7"
+                        android:textColor="@color/text_gray"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Having Trouble With OTP?"
+                        android:textSize="14sp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:id="@+id/trouble_otp"
+                        android:padding="5dp"
+                        android:textColor="@color/colorPrimaryDark" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

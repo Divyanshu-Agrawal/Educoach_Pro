@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:id="@+id/contact_spinner"
+            android:textSize="@dimen/siz14"
+            android:layout_margin="@dimen/_10sdp"
+            android:gravity="center_vertical"
+            android:popupBackground="@android:drawable/dialog_holo_light_frame"
+            android:fontFamily="ROBOTO-REGULAR.TTF"
+            android:background="@drawable/et_background_design"/>
+
+        <!-- TODO: Update blank fragment layout -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:fontFamily="ROBOTO-REGULAR.TTF"
+            android:id="@+id/no_contact"
+            android:visibility="visible"
+            android:textSize="30sp"
+            android:text="No Contacts"/>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/activity_main_swipe_refresh_layout"
+            android:layout_width="match_parent"
+            tools:ignore="MergeRootFrame"
+            android:layout_below="@id/contact_spinner"
+            android:layout_height="match_parent">
+            <ListView
+                android:id="@+id/contacts_list"
+                android:layout_width="match_parent"
+                android:scrollbars="none"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:layout_marginBottom="@dimen/siz10"
+                android:layout_height="match_parent"/>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

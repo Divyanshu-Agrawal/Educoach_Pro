@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="3">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/appBarLayout"
+                android:background="@color/orange"
+                android:theme="@style/AppTheme.AppBarOverlay"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    app:popupTheme="@style/MyDarkToolbarStyle"
+                    app:contentInsetLeft="0dp"
+                    app:contentInsetStart="0dp"
+                    app:contentInsetStartWithNavigation="0dp"
+                    >
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:weightSum="7"
+                        android:layout_height="match_parent">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="5.2">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:gravity="start|center"
+                                android:layout_height="match_parent">
+                                <TextView
+                                    android:id="@+id/tool_title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="start|center"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:text="Leave Request Details"
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/white"
+                                    android:textSize="18dp" />
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.AppBarLayout>
+        </LinearLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/activity_main_swipe_refresh_layout"
+            android:layout_width="match_parent"
+            tools:ignore="MergeRootFrame"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:id="@+id/mainLayoutAttendance"
+                android:weightSum="10">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@drawable/background"
+                    android:layout_margin="@dimen/siz2"
+                    android:layout_weight="3"
+                    android:weightSum="1.9">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.9">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                android:id="@+id/iv_user_img"
+                                android:layout_width="170dp"
+                                android:layout_height="170dp"
+                                android:visibility="visible"
+                                android:layout_centerHorizontal="true"
+                                android:layout_centerVertical="true"
+                                android:src="@drawable/user_place_hoder"
+                                android:scaleType="centerCrop"
+                                android:layout_marginTop="@dimen/siz10"
+                                android:layout_marginBottom="@dimen/siz10"
+                                app:civ_border_color="@color/white"
+                                app:civ_border_width="3dp" />
+
+                            <LinearLayout
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_alignParentRight="true"
+                                android:gravity="center"
+                                android:visibility="gone"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginTop="@dimen/siz10"
+                                android:background="@drawable/img_desgin_edit"
+                                android:id="@+id/iv_edit_layout"
+                                android:layout_marginRight="22dp"
+                                android:layout_marginBottom="10dp">
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="15dp"
+                                    android:src="@drawable/ic_pencil_100"
+                                    android:id="@+id/iv_edit1"/>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="@dimen/siz5"
+                        android:weightSum="4">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_weight="1.5">
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:gravity="center"
+                                android:layout_height="wrap_content">
+                                <ProgressBar
+                                    android:id="@+id/progressBar"
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp"
+                                    android:indeterminate="false"
+                                    android:layout_centerInParent="true"
+                                    android:progressDrawable="@drawable/circular_progress_bar"
+                                    android:background="@drawable/circle_shape"
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:max="100"
+                                    android:layoutDirection="rtl"
+                                    android:progress="0" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:text="%"
+                                    android:layout_centerInParent="true"
+                                    android:textStyle="bold"
+                                    android:textAllCaps="false"
+                                    android:visibility="visible"
+                                    android:id="@+id/percent1"
+                                    android:textColor="@color/black"
+                                    android:textSize="14dp" />
+
+                            </RelativeLayout>
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:gravity="center"
+                                android:layout_marginTop="10dp"
+                                android:layout_height="wrap_content">
+                                <ProgressBar
+                                    android:id="@+id/progressBar1"
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp"
+                                    android:indeterminate="false"
+                                    android:progressDrawable="@drawable/circular_progress_bar"
+                                    android:background="@drawable/circle_shape"
+                                    android:layout_centerInParent="true"
+                                    android:layoutDirection="rtl"
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:max="100"
+                                    android:progress="0" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:textStyle="bold"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:text="%"
+                                    android:id="@+id/percent2"
+                                    android:layout_centerInParent="true"
+                                    android:textAllCaps="false"
+                                    android:visibility="visible"
+                                    android:textColor="@color/black"
+                                    android:textSize="14dp" />
+
+                            </RelativeLayout>
+
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:orientation="vertical"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:layout_weight="2.5">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:gravity="center|start"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:text="Month,Year"
+                                    android:textColor="@color/orange"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:textSize="@dimen/siz12"
+                                    android:id="@+id/tv_month_year"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
+                                <TextView
+                                    android:text="Present Count"
+                                    android:textSize="16sp"
+                                    android:id="@+id/tv_present_count"
+                                    android:textColor="@color/text_gray"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
+                                <TextView
+                                    android:text="Absent Count"
+                                    android:textSize="16sp"
+                                    android:id="@+id/tv_absent_count"
+                                    android:textColor="@color/text_gray"
+                                    android:layout_marginTop="2dp"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:gravity="center|start"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:text="Year"
+                                    android:textColor="@color/orange"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:textSize="@dimen/siz12"
+                                    android:id="@+id/tv_year"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
+                                <TextView
+                                    android:text="Present Count"
+                                    android:textSize="16sp"
+                                    android:textColor="@color/text_gray"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:layout_width="wrap_content"
+                                    android:id="@+id/tv_prsnt_count"
+                                    android:layout_height="wrap_content"/>
+                                <TextView
+                                    android:text="Absent Count"
+                                    android:textSize="16sp"
+                                    android:textColor="@color/text_gray"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:layout_width="wrap_content"
+                                    android:id="@+id/tv_absnt_count"
+                                    android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:id="@+id/header"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/orange"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="10dp" >
+
+
+                        <TextView
+                            android:id="@+id/tv_month"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="January"
+                            android:fontFamily="ROBOTO-REGULAR.TTF"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:textColor="@color/white"
+                            android:textSize="18dip" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    android:background="@color/bg_gray"
+                    android:weightSum="5"
+                    android:layout_weight="5.2">
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/sc">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:gravity="center"
+                                android:weightSum="3">
+                                <TextView
+                                    android:text="Leave From"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_gray"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"/>
+                                <TextView
+                                    android:text=":"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_gray"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"/>
+
+                                <TextView
+                                    android:text="Leave From:"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_gray"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:layout_width="0dp"
+                                    android:id="@+id/leaveStartDate"
+                                    android:textStyle="bold"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.8"/>
+
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:gravity="center"
+                                android:weightSum="3">
+                                <TextView
+                                    android:text="Leave Till"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_gray"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"/>
+                                <TextView
+                                    android:text=":"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_gray"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"/>
+
+                                <TextView
+                                    android:text="Leave Till:"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_gray"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:layout_width="0dp"
+                                    android:id="@+id/leaveEndDate"
+                                    android:textStyle="bold"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.8"/>
+
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:gravity="center"
+                                android:weightSum="3">
+                                <TextView
+                                    android:text="Leave Subject"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_gray"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"/>
+                                <TextView
+                                    android:text=":"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_gray"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.2"/>
+
+                                <TextView
+                                    android:text="Leave Subject:"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_gray"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:layout_width="0dp"
+                                    android:textStyle="bold"
+                                    android:id="@+id/leaveSubject"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.8"/>
+
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:gravity="center"
+                                android:layout_marginBottom="10dp"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_marginTop="10dp"
+                                    android:text="Leave Details:"
+                                    android:id="@+id/leaveDetails"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_gray"
+                                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    />
+
+                                <ImageView
+                                    android:id="@+id/imageViewLeave"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="150dp"
+                                    android:layout_margin="@dimen/siz5"
+                                    android:adjustViewBounds="true"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/picture"
+                                    android:background="@drawable/img_desgin"
+                                    android:padding="@dimen/siz7"/>
+
+                            </LinearLayout>
+                        </LinearLayout>
+                    </ScrollView>
+
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    android:background="@color/bg_gray"
+                    android:gravity="bottom"
+                    android:layout_weight="1.8">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="@dimen/_50sdp"
+                        android:background="#4e8e52"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:id="@+id/accept_leave"
+                        android:textColor="@color/white"
+                        android:text="Accept"
+                        android:fontFamily="ROBOTO-REGULAR.TTF"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="@dimen/_50sdp"
+                        android:background="#d34d4c"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:id="@+id/reject_leave"
+                        android:textColor="@color/white"
+                        android:text="Reject"
+                        android:fontFamily="ROBOTO-REGULAR.TTF" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_50sdp"
+                        android:layout_weight="1"
+                        android:text="Pending"
+                        android:lines="1"
+                        android:gravity="center"
+                        android:background="@color/cream_yellow"
+                        android:fontFamily="ROBOTO-REGULAR.TTF"
+                        android:textSize="18sp"
+                        android:textColor="@color/white"
+                        android:id="@+id/status"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    android:background="@color/bg_gray"
+                    android:gravity="center"
+                    android:layout_weight=".2">
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </LinearLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

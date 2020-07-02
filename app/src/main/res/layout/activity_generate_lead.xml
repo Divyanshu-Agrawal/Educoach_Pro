@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@drawable/background"
+    android:layout_height="match_parent"
+    tools:context="com.aaptrix.activitys.guest.GenerateLead">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/orange"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:weightSum="3"
+        tools:ignore="InefficientWeight">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="center"
+            android:gravity="center"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:popupTheme="@style/MyDarkToolbarStyle">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:baselineAligned="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="start|center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tool_title"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:gravity="start|center"
+                            android:text="Fill Details"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ProgressBar
+        android:id="@+id/loader"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/initial_layout"
+        android:paddingBottom="@dimen/_55sdp"
+        android:visibility="visible"
+        android:layout_below="@id/appBarLayout"
+        android:layout_marginBottom="@dimen/_30sdp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusableInTouchMode="true"
+            android:layout_marginTop="@dimen/_40sdp"
+            android:id="@+id/linear">
+
+            <ImageView
+                android:layout_width="@dimen/_250sdp"
+                android:layout_height="@dimen/_90sdp"
+                android:src="@drawable/app_logo"
+                android:id="@+id/school_logo"
+                tools:ignore="ContentDescription" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:gravity="center"
+                android:weightSum="1">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight=".05"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/cube1"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_weight=".8"
+                    android:layout_height="@dimen/siz2"
+                    android:background="@color/colorPrimaryDark"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight=".05"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/cube1"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="@dimen/_280sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:text="Thanks for taking our practice test."/>
+
+
+            <TextView
+                android:layout_width="@dimen/_280sdp"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:text="If you wish to see your performance, please share the following details with us."/>
+
+            <EditText
+                android:id="@+id/user_name"
+                android:layout_width="@dimen/_280sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:background="@drawable/et_background_design_intial"
+                android:hint="Enter Name"
+                android:inputType="textCapSentences"
+                android:paddingStart="@dimen/siz10"
+                android:paddingEnd="10dip"
+                android:textColor="@color/dark_green"
+                android:textColorHint="@color/dark_green"
+                android:textCursorDrawable="@drawable/cursor_color"
+                android:textSize="@dimen/siz14"
+                tools:ignore="Autofill" />
+
+            <EditText
+                android:id="@+id/user_phone"
+                android:layout_width="@dimen/_280sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/et_background_design_intial"
+                android:hint="Enter Phone Number"
+                android:inputType="phone"
+                android:maxLength="13"
+                android:paddingStart="@dimen/siz10"
+                android:paddingEnd="10dip"
+                android:textColor="@color/dark_green"
+                android:textColorHint="@color/dark_green"
+                android:textCursorDrawable="@drawable/cursor_color"
+                android:textSize="@dimen/siz14"
+                tools:ignore="Autofill" />
+
+            <TextView
+                android:layout_width="@dimen/_280sdp"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Send OTP to this number"/>
+
+        </LinearLayout>
+
+        <Button
+            android:text="Proceed"
+            android:textSize="@dimen/siz16"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:layout_above="@id/checkbox"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:layout_width="@dimen/_130sdp"
+            android:layout_centerHorizontal="true"
+            android:layout_height="@dimen/_35sdp"
+            android:background="@drawable/btn_design"
+            android:id="@+id/btn_proceed"
+            tools:ignore="HardcodedText" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:checked="true"
+            android:focusable="false"
+            android:id="@+id/checkbox"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:clickable="false"
+            android:text=" Institute can contact me"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/otp_layout"
+        android:paddingBottom="@dimen/_55sdp"
+        android:visibility="gone"
+        android:layout_below="@id/appBarLayout"
+        android:layout_marginBottom="@dimen/_30sdp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusableInTouchMode="true"
+            android:layout_marginTop="@dimen/_40sdp">
+
+            <ImageView
+                android:layout_width="@dimen/_250sdp"
+                android:layout_height="@dimen/_90sdp"
+                android:src="@drawable/app_logo"
+                tools:ignore="ContentDescription" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:gravity="center"
+                android:weightSum="1">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight=".05"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/cube1"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_weight=".8"
+                    android:layout_height="@dimen/siz2"
+                    android:background="@color/colorPrimaryDark"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight=".05"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/cube1"/>
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/verify_otp"
+                android:layout_width="@dimen/_280sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:background="@drawable/et_background_design_intial"
+                android:hint="Enter OTP"
+                android:inputType="number"
+                android:maxLength="6"
+                android:paddingStart="@dimen/siz10"
+                android:paddingEnd="10dip"
+                android:textColor="@color/dark_green"
+                android:textColorHint="@color/dark_green"
+                android:textCursorDrawable="@drawable/cursor_color"
+                android:textSize="@dimen/siz14"
+                tools:ignore="Autofill" />
+
+        </LinearLayout>
+
+        <Button
+            android:text="Submit"
+            android:textSize="@dimen/siz16"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:layout_width="@dimen/_130sdp"
+            android:layout_centerHorizontal="true"
+            android:layout_height="@dimen/_35sdp"
+            android:background="@drawable/btn_design"
+            android:id="@+id/btn_submit"
+            tools:ignore="HardcodedText" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#80111111">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="5dp"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/task_status"
+                    android:layout_width="@dimen/_200sdp"
+                    android:layout_height="@dimen/_150sdp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/task_done" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="5dp"
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    android:text="Thank You for sharing"
+                    android:textSize="24sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+</RelativeLayout>

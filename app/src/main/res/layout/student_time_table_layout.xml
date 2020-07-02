@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/mainLayoutChangePassword"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/orange"
+            android:id="@+id/appBarLayout"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            android:weightSum="3">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                app:popupTheme="@style/MyDarkToolbarStyle"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_marginRight="55dp"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/tool_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="start|center"
+                        android:fontFamily="ROBOTO-REGULAR.TTF"
+                        android:text="Time Table"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="18dp" />
+                </LinearLayout>
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/mainLayoutLogin"
+            android:weightSum="2"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_150sdp"
+                android:background="@drawable/background"
+                android:weightSum="2">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.9">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                android:id="@+id/prof_logo"
+                                android:layout_width="130dp"
+                                android:layout_height="130dp"
+                                android:visibility="visible"
+                                android:layout_centerHorizontal="true"
+                                android:layout_centerVertical="true"
+                                android:src="@drawable/user_place_hoder"
+                                android:scaleType="centerCrop"
+                                android:layout_marginTop="@dimen/siz10"
+                                android:layout_marginBottom="@dimen/siz10"
+                                app:civ_border_color="@color/white"
+                                app:civ_border_width="3dp" />
+
+                            <LinearLayout
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentRight="true"
+                                android:gravity="center"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginTop="@dimen/siz10"
+                                android:background="@drawable/img_desgin_edit"
+                                android:id="@+id/iv_edit_layout"
+                                android:visibility="gone"
+                                android:layout_marginRight="45dp"
+                                android:layout_marginBottom="10dp">
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="15dp"
+                                    android:src="@drawable/ic_pencil_100"
+                                    android:id="@+id/iv_edit"/>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1.1"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="@dimen/siz5"
+                        android:layout_marginTop="2dp"
+                        android:weightSum="1">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:orientation="vertical"
+                            android:gravity="center|start"
+                            android:layout_weight="1">
+                            <TextView
+                                android:text="Student Name "
+                                android:textColor="@color/orange"
+                                android:fontFamily="ROBOTO-REGULAR.TTF"
+                                android:textSize="@dimen/siz12"
+                                android:visibility="visible"
+                                android:id="@+id/tvID"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:text="Student Name: "
+                                android:textColor="@color/text_gray"
+                                android:fontFamily="ROBOTO-REGULAR.TTF"
+                                android:id="@+id/nameTV"
+                                android:layout_width="wrap_content"
+                                android:textSize="16sp"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:text="Batch"
+                                android:textColor="@color/orange"
+                                android:fontFamily="ROBOTO-REGULAR.TTF"
+                                android:layout_width="wrap_content"
+                                android:id="@+id/tvCLASS"
+                                android:visibility="visible"
+                                android:textSize="@dimen/siz12"
+                                android:layout_marginTop="5dp"
+                                android:layout_height="wrap_content"/>
+
+
+                            <TextView
+                                android:text="Class Name : "
+                                android:textSize="16sp"
+                                android:textColor="@color/text_gray"
+                                android:id="@+id/tv_std_name"
+                                android:fontFamily="ROBOTO-REGULAR.TTF"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/sliding_tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    app:tabMode="fixed"
+                    app:tabBackground="@drawable/tab_layout"
+                    app:tabSelectedTextColor="@color/orange"
+                    app:tabTextColor="@color/white"
+                    android:paddingEnd="0dp"
+                    app:tabTextAppearance="@style/MineCustomTabText"
+                    android:paddingStart="0dp"
+                    app:tabIndicatorColor="@color/orange"
+                    app:tabIndicatorHeight="@dimen/siz3"/>
+
+
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,21 @@
+<!--
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/dark_gray"/>
+</LinearLayout>
+
+-->
+<TextView android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textColor="@color/dark_green"
+    android:text="Hii"
+    android:textSize="@dimen/siz14"
+    android:fontFamily="ROBOTO-REGULAR.TTF"
+    android:layout_margin="@dimen/siz10"
+    android:padding="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

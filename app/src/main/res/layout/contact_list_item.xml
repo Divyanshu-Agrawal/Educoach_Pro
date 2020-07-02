@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/siz5"
+        android:layout_marginRight="@dimen/siz5"
+        android:layout_marginLeft="@dimen/siz5"
+        android:layout_marginBottom="@dimen/siz5"
+        android:background="@color/white"
+        android:layout_height="wrap_content"
+        android:elevation="8dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0.0px"
+        android:clipToPadding="false"
+        app:cardCornerRadius="5dp"
+        android:clipChildren="false"
+        app:cardElevation="3dp"
+        app:cardPreventCornerOverlap="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="70dp"
+                    android:id="@+id/iv_contact_img"
+                    android:layout_height="70dp"
+                    android:src="@drawable/user_place_hoder"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"/>
+
+<!--
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/iv_contact_img"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_weight=".3"
+                    android:visibility="visible"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/prof_logo"
+                    android:layout_marginTop="@dimen/siz10"
+                    app:border_color="@color/white"
+                    app:border_width="3dp" />
+-->
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight=".7"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/clgname"
+                        android:text="Contact Name"
+                        android:textSize="@dimen/siz16"
+                        android:textColor="@color/text_gray"
+                        android:fontFamily="ROBOTO-REGULAR.TTF"
+                        android:layout_marginTop="@dimen/siz7"
+                        android:layout_marginLeft="@dimen/siz7"
+                        android:layout_width="match_parent"
+                        android:layout_marginBottom="@dimen/siz5"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/tv_number"
+                        android:text="Phone Number"
+                        android:textSize="14sp"
+                        android:fontFamily="ROBOTO-REGULAR.TTF"
+                        android:textColor="@color/light_gray1"
+                        android:layout_marginBottom="@dimen/siz10"
+                        android:layout_marginLeft="@dimen/siz7"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/siz1"
+                android:background="@color/light_gray1"
+                android:alpha="0.5"
+                android:layout_marginTop="@dimen/siz1"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <ImageView
+                    android:id="@+id/iv_call"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.7"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/call"
+                    android:padding="@dimen/siz7"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_weight=".3"
+                    android:layout_height="1dp"/>
+                <View
+                    android:layout_width="1dp"
+                    android:alpha="0.5"
+                    android:layout_weight="0"
+                    android:layout_height="match_parent"
+                    android:background="@color/light_gray1"/>
+
+                <ImageView
+                    android:id="@+id/iv_msg"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.7"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/email"
+                    android:padding="@dimen/siz7"/>
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

@@ -1,0 +1,135 @@
+{
+  "project_info": {
+    "project_number": "746799730419",
+    "firebase_url": "https://educoach-e2e6b.firebaseio.com",
+    "project_id": "educoach-e2e6b",
+    "storage_bucket": "educoach-e2e6b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:746799730419:android:22896af2a57567ed7ff186",
+        "android_client_info": {
+          "package_name": "com.aaptrix.demoeducoach"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "746799730419-dusmi526ovtvkr7avip66fitun3o38mk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcwc1ZqocQMHcoTOxWCw9uH1G-Pe9tjWs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "746799730419-dusmi526ovtvkr7avip66fitun3o38mk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:746799730419:android:5c914f822dfe756e7ff186",
+        "android_client_info": {
+          "package_name": "com.aaptrix.demoinstitute"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "746799730419-dusmi526ovtvkr7avip66fitun3o38mk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcwc1ZqocQMHcoTOxWCw9uH1G-Pe9tjWs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "746799730419-dusmi526ovtvkr7avip66fitun3o38mk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:746799730419:android:41940e5e22d35539",
+        "android_client_info": {
+          "package_name": "com.aaptrix.educoach"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "746799730419-6psjbeph69sl1mp68shs0tg4l08hdg1i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aaptrix.educoach",
+            "certificate_hash": "644bffac7a7a8443d90df793182c0e66c6fe662d"
+          }
+        },
+        {
+          "client_id": "746799730419-dusmi526ovtvkr7avip66fitun3o38mk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcwc1ZqocQMHcoTOxWCw9uH1G-Pe9tjWs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "746799730419-dusmi526ovtvkr7avip66fitun3o38mk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:746799730419:android:9529e2c607ee620e7ff186",
+        "android_client_info": {
+          "package_name": "com.aaptrix.npc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "746799730419-dusmi526ovtvkr7avip66fitun3o38mk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcwc1ZqocQMHcoTOxWCw9uH1G-Pe9tjWs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "746799730419-dusmi526ovtvkr7avip66fitun3o38mk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

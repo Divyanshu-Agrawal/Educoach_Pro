@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:gravity="center_horizontal"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:src="@drawable/thumbs_up"
+        android:padding="10dp"
+        android:layout_margin="@dimen/_10sdp"
+        android:id="@+id/image"
+        android:tint="@color/colorPrimary"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="All the best!"
+        android:textSize="24sp"
+        android:padding="10dp"
+        android:id="@+id/title"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="You are about to start exam."
+        android:id="@+id/start_time"
+        android:textStyle="bold"/>
+
+</LinearLayout>

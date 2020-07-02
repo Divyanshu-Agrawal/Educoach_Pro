@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="siz1">1sp</dimen>
+    <dimen name="siz2">2sp</dimen>
+    <dimen name="siz3">3sp</dimen>
+    <dimen name="siz5">5sp</dimen>
+    <dimen name="siz7">7sp</dimen>
+    <dimen name="siz10">10sp</dimen>
+    <dimen name="siz12">12sp</dimen>
+    <dimen name="siz14">14sp</dimen>
+    <dimen name="siz16">16sp</dimen>
+    <dimen name="siz18">18sp</dimen>
+    <dimen name="siz20">20sp</dimen>
+    <dimen name="siz23">23sp</dimen>
+    <dimen name="siz25">25sp</dimen>
+    <dimen name="siz30">30sp</dimen>
+    <dimen name="ayp_8dp">8dp</dimen>
+    <dimen name="ayp_12sp">12sp</dimen>
+    <dimen name="ayp_menu_dialog_container_margin">8dp</dimen>
+    <dimen name="ayp_menu_item_padding">12dp</dimen>
+    <dimen name="ayp_menu_item_text_size">16sp</dimen>
+</resources>

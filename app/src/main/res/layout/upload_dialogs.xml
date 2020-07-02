@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/uploadLayout"
+        android:background="@color/dark_green"
+        android:gravity="center">
+        <TextView
+            android:text="Upload Photo"
+            android:textSize="17dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:fontFamily="ROBOTO-REGULAR.TTF"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:background="@color/light_gray1"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/upload_camera"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/ic_camera_24"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:id="@+id/tv_cam"
+            android:layout_marginTop="2dp"
+            android:fontFamily="ROBOTO-REGULAR.TTF"
+            android:layout_height="match_parent"
+            android:text="Camera"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/upload_images"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/ic_gallery_24" />
+        <TextView
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:id="@+id/tv_gal"
+            android:fontFamily="ROBOTO-REGULAR.TTF"
+            android:layout_marginTop="2dp"
+            android:layout_height="match_parent"
+            android:text="Gallery"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_margin="10dp"
+        android:id="@+id/remove_img"
+        android:layout_weight="1"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/upload_remove"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/remove_img" />
+        <TextView
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:id="@+id/tv_remove"
+            android:layout_marginTop="2dp"
+            android:fontFamily="ROBOTO-REGULAR.TTF"
+            android:layout_height="match_parent"
+            android:text="Remove Photo"/>
+
+    </LinearLayout>
+
+</LinearLayout>
+
+
+
+</LinearLayout>

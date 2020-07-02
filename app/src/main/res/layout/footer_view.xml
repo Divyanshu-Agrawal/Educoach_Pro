@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/loadmorelayout"
+    android:gravity="center|top"
+    android:layout_height="wrap_content">
+<Button
+    android:layout_width="140dp"
+    android:layout_height="30dp"
+    android:text="@string/loadmore"
+    android:background="@drawable/btn_design"
+    android:textSize="@dimen/siz12"
+    android:layout_margin="10dp"
+    android:textStyle="bold"
+    android:textColor="@color/white"
+    android:id="@+id/header_footer_title"/>
+</LinearLayout>

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.aaptrix.activitys.admin.AddNewHomework">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/orange"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="center"
+            android:gravity="center"
+            app:popupTheme="@style/MyDarkToolbarStyle"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appBarLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Assignment Image (Upto 4 Images)"
+                android:textColor="@color/black"
+                android:textSize="@dimen/siz12" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_1sdp"
+                android:paddingBottom="@dimen/_5sdp">
+
+                <ImageButton
+                    android:id="@+id/sel_image"
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_100sdp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/add_image" />
+
+                <GridView
+                    android:id="@+id/choose_img_grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_100sdp"
+                    android:numColumns="4"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Assignment Title*"
+                android:textColor="@color/black"
+                android:textSize="@dimen/siz12" />
+
+            <EditText
+                android:id="@+id/hw_title"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_1sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:backgroundTint="@color/text_gray"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:hint="Enter Assignment Name Here"
+                android:textColor="@color/text_gray"
+                android:textColorHint="@color/light_gray1"
+                android:textCursorDrawable="@drawable/cursor_color1"
+                android:textSize="@dimen/siz16" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Assignment Subject*"
+                android:textColor="@color/black"
+                android:textSize="@dimen/siz12" />
+
+            <Spinner
+                android:id="@+id/hw_subject"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_1sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:backgroundTint="@color/text_gray"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:hint="Enter Assignment Subject Here"
+                android:popupBackground="@android:drawable/dialog_holo_light_frame"
+                android:textColor="@color/text_gray"
+                android:textSize="@dimen/siz16" />
+
+            <ProgressBar
+                android:id="@+id/loader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_vertical"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Assignment Due Date*"
+                android:textColor="@color/black"
+                android:textSize="@dimen/siz12" />
+
+            <EditText
+                android:id="@+id/hw_date"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_1sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:backgroundTint="@color/text_gray"
+                android:focusable="false"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:hint="Select Due Date"
+                android:inputType="datetime"
+                android:textColor="@color/text_gray"
+                android:textSize="@dimen/siz16" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="Assignment Details*"
+                android:textColor="@color/black"
+                android:textSize="@dimen/siz12" />
+
+            <EditText
+                android:id="@+id/hw_desc"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_1sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_weight="4"
+                android:backgroundTint="@color/text_gray"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:gravity="start"
+                android:hint="Enter Assignment Details Here"
+                android:inputType="textMultiLine"
+                android:textColor="@color/text_gray"
+                android:textColorHint="@color/light_gray1"
+                android:textCursorDrawable="@drawable/cursor_color1"
+                android:textSize="@dimen/siz16" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/save_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:text="Save" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#80111111">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="5dp"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/task_status"
+                    android:layout_width="@dimen/_200sdp"
+                    android:layout_height="@dimen/_150sdp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/task_done" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="5dp"
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    android:text="Successful"
+                    android:textSize="24sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+</RelativeLayout>

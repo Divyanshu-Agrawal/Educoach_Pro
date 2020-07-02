@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.aaptrix.activitys.AddUserForm">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/orange"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="center"
+            android:gravity="center"
+            app:popupTheme="@style/MyDarkToolbarStyle" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appBarLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:layout_above="@id/save_btn"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/user_name"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:backgroundTint="@color/text_gray"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:hint="Enter Name Here*"
+                android:inputType="textCapWords"
+                android:textColor="@color/text_gray"
+                android:textColorHint="@color/light_gray1"
+                android:textCursorDrawable="@drawable/cursor_color1"
+                android:textSize="@dimen/siz16" />
+
+            <EditText
+                android:id="@+id/primary_phone"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:backgroundTint="@color/text_gray"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:hint="Enter Phone Number Here*"
+                android:inputType="phone"
+                android:maxLength="10"
+                android:textColor="@color/text_gray"
+                android:textColorHint="@color/light_gray1"
+                android:textCursorDrawable="@drawable/cursor_color1"
+                android:textSize="@dimen/siz16" />
+
+            <EditText
+                android:id="@+id/user_email"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:backgroundTint="@color/text_gray"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:hint="Enter Email Here"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/text_gray"
+                android:textColorHint="@color/light_gray1"
+                android:textCursorDrawable="@drawable/cursor_color1"
+                android:textSize="@dimen/siz16" />
+
+            <EditText
+                android:id="@+id/followup_date"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:backgroundTint="@color/text_gray"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:hint="Enter Follow Up Date"
+                android:focusable="false"
+                android:inputType="date"
+                android:textColor="@color/text_gray"
+                android:textColorHint="@color/light_gray1"
+                android:textCursorDrawable="@drawable/cursor_color1"
+                android:textSize="@dimen/siz16" />
+
+            <Spinner
+                android:id="@+id/spin_section"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:inputType="textCapWords"
+                android:textColor="@color/text_gray"
+                android:textColorHint="@color/light_gray1"
+                android:textCursorDrawable="@drawable/cursor_color1"
+                android:textSize="@dimen/siz16" />
+
+            <Spinner
+                android:id="@+id/user_course"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:backgroundTint="@color/text_gray"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:hint="Enter Course Here*"
+                android:inputType="textCapWords"
+                android:textColor="@color/text_gray"
+                android:textColorHint="@color/light_gray1"
+                android:textCursorDrawable="@drawable/cursor_color1"
+                android:textSize="@dimen/siz16" />
+
+            <Spinner
+                android:id="@+id/info_from"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:backgroundTint="@color/text_gray"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:hint="How you come to know about us?"
+                android:inputType="textCapWords"
+                android:textColor="@color/text_gray"
+                android:textColorHint="@color/light_gray1"
+                android:textCursorDrawable="@drawable/cursor_color1"
+                android:textSize="@dimen/siz16" />
+
+            <EditText
+                android:id="@+id/info_from_other"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:backgroundTint="@color/text_gray"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:hint="How you come to know about us?"
+                android:inputType="textCapWords"
+                android:textColor="@color/text_gray"
+                android:visibility="gone"
+                android:textColorHint="@color/light_gray1"
+                android:textCursorDrawable="@drawable/cursor_color1"
+                android:textSize="@dimen/siz16" />
+
+            <EditText
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_weight="4"
+                android:backgroundTint="@color/text_gray"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:gravity="start"
+                android:hint="Enter Description Here"
+                android:inputType="textMultiLine|textCapSentences"
+                android:textColor="@color/text_gray"
+                android:textCursorDrawable="@drawable/cursor_color1"
+                android:textSize="@dimen/siz16" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/save_btn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:text="Save"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80111111"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="5dp"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/task_status"
+                    android:layout_width="@dimen/_200sdp"
+                    android:layout_height="@dimen/_150sdp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/task_done" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    android:padding="5dp"
+                    android:text="Successful"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+</RelativeLayout>

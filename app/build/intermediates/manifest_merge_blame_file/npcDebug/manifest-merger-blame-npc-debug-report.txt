@@ -1,0 +1,1112 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.aaptrix.npc"
+4    android:versionCode="29"
+5    android:versionName="v2.0.9" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+8-->E:\Educoach Demo\app\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="29" />
+9-->E:\Educoach Demo\app\src\main\AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:6:5-67
+11-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:6:22-64
+12    <uses-permission android:name="android.permission.CALL_PHONE" />
+12-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:7:5-69
+12-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:7:22-66
+13    <uses-permission android:name="android.permission.CAMERA" />
+13-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:8:5-65
+13-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:8:22-62
+14    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+14-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:9:5-81
+14-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:9:22-78
+15    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+15-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:10:5-80
+15-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:10:22-77
+16    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+16-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:11:5-79
+16-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:11:22-76
+17    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+17-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:12:5-79
+17-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:12:22-76
+18    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+18-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:13:5-81
+18-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:13:22-78
+19    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+19-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:14:5-78
+19-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:14:22-75
+20    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+20-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:15:5-88
+20-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:15:22-85
+21    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Required by older versions of Google Play services to create IID tokens -->
+21-->[com.google.android.gms:play-services-measurement-api:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\17f6514feb14da3d534211dd7eb6d8e4\jetified-play-services-measurement-api-17.4.3\AndroidManifest.xml:24:5-68
+21-->[com.google.android.gms:play-services-measurement-api:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\17f6514feb14da3d534211dd7eb6d8e4\jetified-play-services-measurement-api-17.4.3\AndroidManifest.xml:24:22-65
+22    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+22-->[com.google.firebase:firebase-iid:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\303e379e20459354e401b31da5d25a9e\jetified-firebase-iid-20.2.1\AndroidManifest.xml:26:5-82
+22-->[com.google.firebase:firebase-iid:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\303e379e20459354e401b31da5d25a9e\jetified-firebase-iid-20.2.1\AndroidManifest.xml:26:22-79
+23
+24    <uses-feature
+24-->[com.google.android.gms:play-services-maps:17.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ba4188fe65f0db92352da1f50f02dba9\jetified-play-services-maps-17.0.0\AndroidManifest.xml:26:5-28:35
+25        android:glEsVersion="0x00020000"
+25-->[com.google.android.gms:play-services-maps:17.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ba4188fe65f0db92352da1f50f02dba9\jetified-play-services-maps-17.0.0\AndroidManifest.xml:27:9-41
+26        android:required="true" />
+26-->[com.google.android.gms:play-services-maps:17.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ba4188fe65f0db92352da1f50f02dba9\jetified-play-services-maps-17.0.0\AndroidManifest.xml:28:9-32
+27
+28    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" />
+28-->[com.google.android.gms:play-services-measurement:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9e82f385933e2bcf0009235aea715c50\jetified-play-services-measurement-17.4.3\AndroidManifest.xml:26:5-110
+28-->[com.google.android.gms:play-services-measurement:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9e82f385933e2bcf0009235aea715c50\jetified-play-services-measurement-17.4.3\AndroidManifest.xml:26:22-107
+29
+30    <application
+31        android:name="androidx.multidex.MultiDexApplication"
+31-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:18:9-61
+32        android:allowBackup="false"
+32-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:19:9-36
+33        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+33-->[androidx.core:core:1.3.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9126f3cbac18e2828377ff55cc1d97c9\core-1.3.0\AndroidManifest.xml:24:18-86
+34        android:debuggable="true"
+35        android:fullBackupContent="true"
+35-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:20:9-41
+36        android:hardwareAccelerated="true"
+36-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:21:9-43
+37        android:icon="@mipmap/ic_launcher"
+37-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:22:9-34
+38        android:label="@string/app_name"
+38-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:23:9-41
+39        android:largeHeap="true"
+39-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:24:9-33
+40        android:requestLegacyExternalStorage="true"
+40-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:25:9-52
+41        android:roundIcon="@mipmap/ic_launcher_round"
+41-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:26:9-44
+42        android:screenOrientation="portrait"
+42-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:27:9-45
+43        android:supportsRtl="true"
+43-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:28:9-35
+44        android:theme="@style/AppTheme.NoActionBar"
+44-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:29:9-52
+45        android:usesCleartextTraffic="true" >
+45-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:30:9-44
+46        <activity android:name="com.aaptrix.activitys.guest.GuestAnswerSheet" />
+46-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:33:9-80
+46-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:33:19-78
+47        <activity android:name="com.aaptrix.activitys.guest.GuestExamReport" />
+47-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:34:9-80
+47-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:34:19-77
+48        <activity android:name="com.aaptrix.activitys.guest.GenerateLead" />
+48-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:35:9-77
+48-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:35:19-74
+49        <activity android:name="com.aaptrix.activitys.guest.StartGuestExam" />
+49-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:36:9-79
+49-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:36:19-76
+50        <activity android:name="com.aaptrix.activitys.guest.GuestExam" />
+50-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:37:9-74
+50-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:37:19-71
+51        <activity android:name="com.aaptrix.activitys.guest.GuestMaterial" />
+51-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:38:9-78
+51-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:38:19-75
+52        <activity android:name="com.aaptrix.activitys.guest.GuestVideo" />
+52-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:39:9-75
+52-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:39:19-72
+53        <activity
+53-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:40:9-44:71
+54            android:name="com.aaptrix.activitys.student.PlayLiveStream"
+54-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:41:13-72
+55            android:configChanges="orientation|screenSize|layoutDirection"
+55-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:42:13-75
+56            android:screenOrientation="portrait"
+56-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:43:13-49
+57            android:windowSoftInputMode="stateVisible|adjustResize" />
+57-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:44:13-68
+58        <activity
+58-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:45:9-49:55
+59            android:name="com.aaptrix.activitys.admin.AddLiveStream"
+59-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:46:13-69
+60            android:configChanges="orientation|screenSize"
+60-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:47:13-59
+61            android:screenOrientation="portrait"
+61-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:48:13-49
+62            android:windowSoftInputMode="adjustPan" />
+62-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:49:13-52
+63        <activity
+63-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:50:9-53:55
+64            android:name="com.aaptrix.activitys.student.LiveStreaming"
+64-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:51:13-71
+65            android:screenOrientation="portrait"
+65-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:52:13-49
+66            android:windowSoftInputMode="adjustPan" />
+66-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:53:13-52
+67        <activity
+67-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:54:9-57:55
+68            android:name="com.aaptrix.activitys.GetHelp"
+68-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:55:13-57
+69            android:screenOrientation="portrait"
+69-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:56:13-49
+70            android:windowSoftInputMode="adjustPan" />
+70-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:57:13-52
+71        <activity
+71-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:58:9-62:56
+72            android:name="com.aaptrix.activitys.TroubleLoggingIn"
+72-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:59:13-66
+73            android:screenOrientation="portrait"
+73-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:60:13-49
+74            android:windowSoftInputMode="adjustPan" />
+74-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:61:13-52
+75        <activity
+75-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:63:9-67:56
+76            android:name="com.aaptrix.activitys.student.PaymentSuccess"
+76-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:64:13-72
+77            android:screenOrientation="portrait"
+77-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:65:13-49
+78            android:windowSoftInputMode="adjustPan" />
+78-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:66:13-52
+79        <activity
+79-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:68:9-72:56
+80            android:name="com.aaptrix.activitys.student.UpiPayment"
+80-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:69:13-68
+81            android:screenOrientation="portrait"
+81-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:70:13-49
+82            android:windowSoftInputMode="adjustPan" />
+82-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:71:13-52
+83        <activity
+83-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:73:9-77:56
+84            android:name="com.aaptrix.activitys.UserSelfRegistration"
+84-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:74:13-70
+85            android:screenOrientation="portrait"
+85-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:75:13-49
+86            android:windowSoftInputMode="adjustPan" />
+86-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:76:13-52
+87        <activity
+87-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:78:9-82:56
+88            android:name="com.aaptrix.activitys.student.FeePayment"
+88-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:79:13-68
+89            android:screenOrientation="portrait"
+89-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:80:13-49
+90            android:windowSoftInputMode="adjustPan" />
+90-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:81:13-52
+91        <activity
+91-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:83:9-87:56
+92            android:name="com.aaptrix.activitys.CoursesActivity"
+92-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:84:13-65
+93            android:screenOrientation="portrait"
+93-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:85:13-49
+94            android:windowSoftInputMode="adjustPan" />
+94-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:86:13-52
+95        <activity
+95-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:88:9-92:56
+96            android:name="com.aaptrix.activitys.InactiveInstitute"
+96-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:89:13-67
+97            android:screenOrientation="portrait"
+97-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:90:13-49
+98            android:windowSoftInputMode="adjustPan" />
+98-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:91:13-52
+99        <activity
+99-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:93:9-97:56
+100            android:name="com.aaptrix.activitys.admin.EnquiryDetails"
+100-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:94:13-70
+101            android:screenOrientation="portrait"
+101-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:95:13-49
+102            android:windowSoftInputMode="adjustPan" />
+102-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:96:13-52
+103        <activity
+103-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:98:9-102:56
+104            android:name="com.aaptrix.activitys.admin.Enquiries"
+104-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:99:13-65
+105            android:screenOrientation="portrait"
+105-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:100:13-49
+106            android:windowSoftInputMode="adjustPan" />
+106-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:101:13-52
+107        <activity
+107-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:103:9-107:56
+108            android:name="com.aaptrix.activitys.admin.UpdateClassTimeTable"
+108-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:104:13-76
+109            android:screenOrientation="portrait"
+109-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:105:13-49
+110            android:windowSoftInputMode="adjustPan" />
+110-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:106:13-52
+111
+112        <service android:name="com.uxcam.service.HttpPostService" />
+112-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:109:9-69
+112-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:109:18-66
+113
+114        <activity
+114-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:111:9-115:56
+115            android:name="com.aaptrix.activitys.AddUserForm"
+115-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:112:13-61
+116            android:screenOrientation="portrait"
+116-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:113:13-49
+117            android:windowSoftInputMode="adjustPan" />
+117-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:114:13-52
+118        <activity
+118-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:116:9-120:56
+119            android:name="com.aaptrix.activitys.admin.AddExamTimeTable"
+119-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:117:13-72
+120            android:screenOrientation="portrait"
+120-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:118:13-49
+121            android:windowSoftInputMode="adjustPan" />
+121-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:119:13-52
+122        <activity
+122-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:121:9-125:56
+123            android:name="com.aaptrix.activitys.student.FeedbackActivity"
+123-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:122:13-74
+124            android:screenOrientation="portrait"
+124-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:123:13-49
+125            android:windowSoftInputMode="adjustPan" />
+125-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:124:13-52
+126        <activity
+126-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:126:9-130:56
+127            android:name="com.aaptrix.activitys.student.StaffDetails"
+127-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:127:13-70
+128            android:screenOrientation="portrait"
+128-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:128:13-49
+129            android:windowSoftInputMode="adjustPan" />
+129-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:129:13-52
+130        <activity
+130-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:131:9-135:56
+131            android:name="com.aaptrix.activitys.student.StaffActivity"
+131-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:132:13-71
+132            android:screenOrientation="portrait"
+132-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:133:13-49
+133            android:windowSoftInputMode="adjustPan" />
+133-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:134:13-52
+134        <activity
+134-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:136:9-140:56
+135            android:name="com.aaptrix.activitys.teacher.StudentAttenInter"
+135-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:137:13-75
+136            android:screenOrientation="portrait"
+136-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:138:13-49
+137            android:windowSoftInputMode="adjustPan" />
+137-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:139:13-52
+138        <activity
+138-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:141:9-145:56
+139            android:name="com.aaptrix.activitys.ReferralActivity"
+139-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:142:13-66
+140            android:screenOrientation="portrait"
+140-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:143:13-49
+141            android:windowSoftInputMode="adjustPan" />
+141-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:144:13-52
+142        <activity
+142-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:146:9-150:56
+143            android:name="com.aaptrix.activitys.student.SubjectwiseReport"
+143-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:147:13-75
+144            android:screenOrientation="portrait"
+144-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:148:13-49
+145            android:windowSoftInputMode="adjustPan" />
+145-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:149:13-52
+146        <activity
+146-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:151:9-155:56
+147            android:name="com.aaptrix.activitys.UserProfile"
+147-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:152:13-61
+148            android:screenOrientation="portrait"
+148-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:153:13-49
+149            android:windowSoftInputMode="adjustPan" />
+149-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:154:13-52
+150        <activity
+150-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:156:9-159:55
+151            android:name="com.aaptrix.activitys.AppInfo"
+151-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:157:13-57
+152            android:screenOrientation="portrait"
+152-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:158:13-49
+153            android:windowSoftInputMode="adjustPan" />
+153-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:159:13-52
+154        <activity
+154-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:160:9-162:55
+155            android:name="com.aaptrix.activitys.FullScrView"
+155-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:161:13-61
+156            android:windowSoftInputMode="adjustPan" />
+156-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:162:13-52
+157        <activity
+157-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:163:9-166:55
+158            android:name="com.aaptrix.activitys.teacher.StudentPerformance"
+158-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:164:13-76
+159            android:screenOrientation="portrait"
+159-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:165:13-49
+160            android:windowSoftInputMode="adjustPan" />
+160-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:166:13-52
+161        <activity
+161-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:167:9-170:55
+162            android:name="com.aaptrix.activitys.student.StudentResult"
+162-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:168:13-71
+163            android:screenOrientation="portrait"
+163-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:169:13-49
+164            android:windowSoftInputMode="adjustPan" />
+164-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:170:13-52
+165        <activity
+165-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:171:9-174:55
+166            android:name="com.aaptrix.activitys.student.ViewReports"
+166-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:172:13-69
+167            android:screenOrientation="portrait"
+167-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:173:13-49
+168            android:windowSoftInputMode="adjustPan" />
+168-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:174:13-52
+169        <activity
+169-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:175:9-178:55
+170            android:name="com.aaptrix.activitys.admin.AdminStaffLeaveIntermediate"
+170-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:176:13-83
+171            android:screenOrientation="portrait"
+171-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:177:13-49
+172            android:windowSoftInputMode="adjustPan" />
+172-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:178:13-52
+173        <activity
+173-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:179:9-182:55
+174            android:name="com.aaptrix.activitys.admin.AdminStaffLeave"
+174-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:180:13-71
+175            android:screenOrientation="portrait"
+175-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:181:13-49
+176            android:windowSoftInputMode="adjustPan" />
+176-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:182:13-52
+177        <activity
+177-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:183:9-186:55
+178            android:name="com.aaptrix.activitys.admin.AdminLeaveRequest"
+178-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:184:13-73
+179            android:screenOrientation="portrait"
+179-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:185:13-49
+180            android:windowSoftInputMode="adjustPan" />
+180-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:186:13-52
+181        <activity
+181-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:187:9-190:55
+182            android:name="com.aaptrix.activitys.teacher.StaffLeaveApplication"
+182-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:188:13-79
+183            android:screenOrientation="portrait"
+183-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:189:13-49
+184            android:windowSoftInputMode="adjustPan" />
+184-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:190:13-52
+185        <activity
+185-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:191:9-194:55
+186            android:name="com.aaptrix.activitys.teacher.StaffLeaveList"
+186-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:192:13-72
+187            android:screenOrientation="portrait"
+187-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:193:13-49
+188            android:windowSoftInputMode="adjustPan" />
+188-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:194:13-52
+189        <activity
+189-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:195:9-198:55
+190            android:name="com.aaptrix.activitys.teacher.StaffMyAttendance"
+190-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:196:13-75
+191            android:screenOrientation="portrait"
+191-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:197:13-49
+192            android:windowSoftInputMode="adjustPan" />
+192-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:198:13-52
+193        <activity
+193-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:199:9-202:55
+194            android:name="com.aaptrix.activitys.admin.AdminContacts"
+194-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:200:13-69
+195            android:screenOrientation="portrait"
+195-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:201:13-49
+196            android:windowSoftInputMode="adjustPan" />
+196-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:202:13-52
+197        <activity
+197-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:203:9-206:55
+198            android:name="com.aaptrix.activitys.admin.TeacherAttendance"
+198-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:204:13-73
+199            android:screenOrientation="portrait"
+199-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:205:13-49
+200            android:windowSoftInputMode="adjustPan" />
+200-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:206:13-52
+201        <activity
+201-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:207:9-210:55
+202            android:name="com.aaptrix.activitys.teacher.StaffAttendance"
+202-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:208:13-73
+203            android:screenOrientation="portrait"
+203-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:209:13-49
+204            android:windowSoftInputMode="adjustPan" />
+204-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:210:13-52
+205        <activity
+205-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:211:9-214:55
+206            android:name="com.aaptrix.activitys.admin.AddNewVideo"
+206-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:212:13-67
+207            android:screenOrientation="portrait"
+207-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:213:13-49
+208            android:windowSoftInputMode="adjustPan" />
+208-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:214:13-52
+209        <activity
+209-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:215:9-219:55
+210            android:name="com.aaptrix.activitys.student.VideoDetails"
+210-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:216:13-70
+211            android:configChanges="orientation|screenSize|keyboardHidden"
+211-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:217:13-74
+212            android:screenOrientation="portrait"
+212-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:218:13-49
+213            android:windowSoftInputMode="adjustPan" />
+213-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:219:13-52
+214        <activity
+214-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:220:9-223:55
+215            android:name="com.aaptrix.activitys.student.StudyMaterialDetail"
+215-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:221:13-77
+216            android:screenOrientation="portrait"
+216-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:222:13-49
+217            android:windowSoftInputMode="adjustPan" />
+217-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:223:13-52
+218        <activity
+218-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:224:9-227:55
+219            android:name="com.aaptrix.activitys.admin.AddNewMaterial"
+219-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:225:13-70
+220            android:screenOrientation="portrait"
+220-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:226:13-49
+221            android:windowSoftInputMode="adjustPan" />
+221-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:227:13-52
+222        <activity
+222-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:228:9-231:55
+223            android:name="com.aaptrix.activitys.student.StudyMaterial"
+223-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:229:13-71
+224            android:screenOrientation="portrait"
+224-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:230:13-49
+225            android:windowSoftInputMode="adjustPan" />
+225-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:231:13-52
+226        <activity
+226-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:232:9-235:55
+227            android:name="com.aaptrix.activitys.admin.AddNewGallery"
+227-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:233:13-69
+228            android:screenOrientation="portrait"
+228-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:234:13-49
+229            android:windowSoftInputMode="adjustPan" />
+229-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:235:13-52
+230        <activity
+230-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:236:9-239:55
+231            android:name="com.aaptrix.activitys.student.GalleryDetail"
+231-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:237:13-71
+232            android:screenOrientation="portrait"
+232-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:238:13-49
+233            android:windowSoftInputMode="adjustPan" />
+233-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:239:13-52
+234        <activity
+234-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:240:9-243:55
+235            android:name="com.aaptrix.activitys.student.GalleryActivity"
+235-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:241:13-73
+236            android:screenOrientation="portrait"
+236-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:242:13-49
+237            android:windowSoftInputMode="adjustPan" />
+237-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:243:13-52
+238        <activity
+238-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:244:9-247:55
+239            android:name="com.aaptrix.activitys.admin.AddNewHomework"
+239-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:245:13-70
+240            android:screenOrientation="portrait"
+240-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:246:13-49
+241            android:windowSoftInputMode="adjustPan" />
+241-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:247:13-52
+242        <activity
+242-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:248:9-251:55
+243            android:name="com.aaptrix.activitys.admin.AddNewDiary"
+243-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:249:13-67
+244            android:screenOrientation="portrait"
+244-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:250:13-49
+245            android:windowSoftInputMode="adjustPan" />
+245-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:251:13-52
+246        <activity
+246-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:252:9-254:55
+247            android:name="com.aaptrix.activitys.admin.AddNewEvent"
+247-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:253:13-67
+248            android:windowSoftInputMode="adjustPan" />
+248-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:254:13-52
+249        <activity
+249-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:255:9-258:55
+250            android:name="com.aaptrix.activitys.admin.AddNewActivity"
+250-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:256:13-70
+251            android:screenOrientation="portrait"
+251-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:257:13-49
+252            android:windowSoftInputMode="adjustPan" />
+252-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:258:13-52
+253        <activity
+253-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:259:9-262:55
+254            android:name="com.aaptrix.activitys.admin.AddNewPublication"
+254-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:260:13-73
+255            android:screenOrientation="portrait"
+255-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:261:13-49
+256            android:windowSoftInputMode="adjustPan" />
+256-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:262:13-52
+257
+258        <meta-data
+258-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:264:9-266:55
+259            android:name="com.google.android.geo.API_KEY"
+259-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:265:13-58
+260            android:value="@string/google_maps_key" />
+260-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:266:13-52
+261
+262        <activity
+262-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:268:9-278:20
+263            android:name="com.aaptrix.activitys.SplashScreen"
+263-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:269:13-62
+264            android:screenOrientation="portrait"
+264-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:270:13-49
+265            android:theme="@android:style/Theme.Light.NoTitleBar"
+265-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:271:13-66
+266            android:windowSoftInputMode="adjustPan" >
+266-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:272:13-52
+267            <intent-filter>
+267-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:273:13-277:29
+268                <action android:name="android.intent.action.MAIN" />
+268-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:274:17-69
+268-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:274:25-66
+269
+270                <category android:name="android.intent.category.LAUNCHER" />
+270-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:276:17-77
+270-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:276:27-74
+271            </intent-filter>
+272        </activity>
+273        <activity
+273-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:279:9-281:59
+274            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+274-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:280:13-76
+275            android:theme="@style/Base.Theme.AppCompat" />
+275-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:281:13-56
+276
+277        <receiver android:name="com.aaptrix.notifications.NotificationPublisher" />
+277-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:283:9-84
+277-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:283:19-81
+278
+279        <service
+279-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:285:9-291:19
+280            android:name="com.aaptrix.notifications.MyFirebaseInstanceIdService"
+280-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:286:13-81
+281            android:exported="false" >
+281-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:287:13-37
+282            <intent-filter>
+282-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:288:13-290:29
+283                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+283-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:289:17-80
+283-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:289:25-77
+284            </intent-filter>
+285        </service>
+286        <service
+286-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:292:9-298:19
+287            android:name="com.aaptrix.notifications.MyFirebaseMessagingService"
+287-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:293:13-80
+288            android:exported="false" >
+288-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:294:13-37
+289            <intent-filter>
+289-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:295:13-297:29
+290                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+290-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:296:17-78
+290-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:296:25-75
+291            </intent-filter>
+292        </service>
+293
+294        <activity
+294-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:300:9-302:52
+295            android:name="com.aaptrix.activitys.TermsConditionsActivity"
+295-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:301:13-73
+296            android:screenOrientation="portrait" />
+296-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:302:13-49
+297        <activity
+297-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:303:9-305:52
+298            android:name="com.aaptrix.activitys.SelectRoleActivity"
+298-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:304:13-68
+299            android:screenOrientation="portrait" />
+299-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:305:13-49
+300        <activity
+300-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:306:9-308:52
+301            android:name="com.aaptrix.activitys.student.InstituteBuzzActivity"
+301-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:307:13-79
+302            android:screenOrientation="portrait" />
+302-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:308:13-49
+303        <activity
+303-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:309:9-311:52
+304            android:name="com.aaptrix.activitys.MobileNumberActivity"
+304-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:310:13-70
+305            android:screenOrientation="portrait" />
+305-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:311:13-49
+306        <activity
+306-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:312:9-314:52
+307            android:name="com.aaptrix.activitys.OtpScreenActivity"
+307-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:313:13-67
+308            android:screenOrientation="portrait" />
+308-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:314:13-49
+309        <activity
+309-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:315:9-317:52
+310            android:name="com.aaptrix.activitys.ChangePasswordActivity"
+310-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:316:13-72
+311            android:screenOrientation="portrait" />
+311-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:317:13-49
+312        <activity
+312-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:318:9-320:52
+313            android:name="com.aaptrix.activitys.student.AchievmentDetailsActivity"
+313-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:319:13-83
+314            android:screenOrientation="portrait" />
+314-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:320:13-49
+315        <activity
+315-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:321:9-323:52
+316            android:name="com.aaptrix.activitys.UpdatePhoneNumberActivity"
+316-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:322:13-75
+317            android:screenOrientation="portrait" />
+317-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:323:13-49
+318        <activity
+318-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:324:9-326:52
+319            android:name="com.aaptrix.activitys.UpdateNumberOtpScreenActivity"
+319-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:325:13-79
+320            android:screenOrientation="portrait" />
+320-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:326:13-49
+321        <activity
+321-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:327:9-329:52
+322            android:name="com.aaptrix.activitys.ForgotPasswordActivity"
+322-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:328:13-72
+323            android:screenOrientation="portrait" />
+323-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:329:13-49
+324        <activity
+324-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:330:9-332:52
+325            android:name="com.aaptrix.activitys.ChangePasswordInitialActivity"
+325-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:331:13-79
+326            android:screenOrientation="portrait" />
+326-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:332:13-49
+327        <activity
+327-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:333:9-335:52
+328            android:name="com.aaptrix.activitys.admin.InstituteBuzzActivityDiff"
+328-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:334:13-81
+329            android:screenOrientation="portrait" />
+329-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:335:13-49
+330        <activity
+330-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:336:9-338:52
+331            android:name="com.aaptrix.activitys.student.AboutUsActivity"
+331-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:337:13-73
+332            android:screenOrientation="portrait" />
+332-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:338:13-49
+333        <activity
+333-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:339:9-341:52
+334            android:name="com.aaptrix.activitys.teacher.SchoolCalenderActivity"
+334-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:340:13-80
+335            android:screenOrientation="portrait" />
+335-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:341:13-49
+336        <activity
+336-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:342:9-344:52
+337            android:name="com.aaptrix.activitys.student.ActivitiesActivity"
+337-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:343:13-76
+338            android:screenOrientation="portrait" />
+338-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:344:13-49
+339        <activity
+339-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:345:9-347:52
+340            android:name="com.aaptrix.activitys.student.PublicationActivity"
+340-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:346:13-77
+341            android:screenOrientation="portrait" />
+341-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:347:13-49
+342        <activity
+342-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:348:9-350:52
+343            android:name="com.aaptrix.activitys.teacher.StudentAttendanceActivity"
+343-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:349:13-83
+344            android:screenOrientation="portrait" />
+344-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:350:13-49
+345        <activity
+345-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:351:9-353:52
+346            android:name="com.aaptrix.activitys.teacher.TeacherAttendanceActivity"
+346-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:352:13-83
+347            android:screenOrientation="portrait" />
+347-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:353:13-49
+348        <activity
+348-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:354:9-356:52
+349            android:name="com.aaptrix.activitys.teacher.StudentListActivity"
+349-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:355:13-77
+350            android:screenOrientation="portrait" />
+350-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:356:13-49
+351        <activity
+351-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:357:9-359:52
+352            android:name="com.aaptrix.activitys.student.StudentTimeTableActivity"
+352-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:358:13-82
+353            android:screenOrientation="portrait" />
+353-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:359:13-49
+354        <activity
+354-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:360:9-362:52
+355            android:name="com.aaptrix.activitys.student.DairyActivity"
+355-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:361:13-71
+356            android:screenOrientation="portrait" />
+356-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:362:13-49
+357        <activity
+357-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:363:9-365:52
+358            android:name="com.aaptrix.activitys.student.HomeworkActivity"
+358-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:364:13-74
+359            android:screenOrientation="portrait" />
+359-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:365:13-49
+360        <activity
+360-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:366:9-368:52
+361            android:name="com.aaptrix.activitys.teacher.TeacherDairyActivity"
+361-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:367:13-78
+362            android:screenOrientation="portrait" />
+362-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:368:13-49
+363        <activity
+363-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:369:9-371:52
+364            android:name="com.aaptrix.activitys.teacher.TeacherHomeWorkActivity"
+364-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:370:13-81
+365            android:screenOrientation="portrait" />
+365-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:371:13-49
+366        <activity
+366-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:372:9-374:52
+367            android:name="com.aaptrix.activitys.student.ResultActivity"
+367-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:373:13-72
+368            android:screenOrientation="portrait" />
+368-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:374:13-49
+369        <activity
+369-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:375:9-377:52
+370            android:name="com.aaptrix.activitys.WelcomeActivity"
+370-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:376:13-65
+371            android:screenOrientation="portrait" />
+371-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:377:13-49
+372        <activity
+372-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:378:9-380:52
+373            android:name="com.aaptrix.activitys.admin.IntermidiateScreenActivity"
+373-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:379:13-82
+374            android:screenOrientation="portrait" />
+374-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:380:13-49
+375        <activity
+375-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:381:9-383:52
+376            android:name="com.aaptrix.activitys.admin.AdminTimeTableActivity"
+376-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:382:13-78
+377            android:screenOrientation="portrait" />
+377-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:383:13-49
+378        <activity
+378-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:384:9-386:52
+379            android:name="com.aaptrix.activitys.admin.IntermidiateScreenActivityPublication"
+379-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:385:13-93
+380            android:screenOrientation="portrait" />
+380-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:386:13-49
+381        <activity
+381-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:387:9-389:52
+382            android:name="com.aaptrix.activitys.admin.ResultIntermidiateScreenActivity"
+382-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:388:13-88
+383            android:screenOrientation="portrait" />
+383-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:389:13-49
+384        <activity
+384-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:390:9-393:55
+385            android:name="com.aaptrix.activitys.admin.AddResultForStudentListActivity"
+385-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:391:13-87
+386            android:screenOrientation="portrait"
+386-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:392:13-49
+387            android:windowSoftInputMode="adjustPan" />
+387-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:393:13-52
+388        <activity
+388-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:394:9-397:55
+389            android:name="com.aaptrix.activitys.AllUsersChatActivity"
+389-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:395:13-70
+390            android:screenOrientation="portrait"
+390-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:396:13-49
+391            android:windowSoftInputMode="adjustPan" />
+391-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:397:13-52
+392        <activity
+392-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:398:9-401:76
+393            android:name="com.aaptrix.activitys.Chatctivity"
+393-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:399:13-61
+394            android:screenOrientation="portrait"
+394-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:400:13-49
+395            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+395-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:401:13-73
+396        <activity
+396-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:402:9-405:55
+397            android:name="com.aaptrix.activitys.student.LeaveApplicationActivity"
+397-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:403:13-82
+398            android:screenOrientation="portrait"
+398-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:404:13-49
+399            android:windowSoftInputMode="adjustPan" />
+399-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:405:13-52
+400        <activity
+400-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:406:9-409:55
+401            android:name="com.aaptrix.activitys.teacher.LeaveListActivity"
+401-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:407:13-75
+402            android:screenOrientation="portrait"
+402-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:408:13-49
+403            android:windowSoftInputMode="adjustPan" />
+403-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:409:13-52
+404        <activity
+404-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:410:9-413:55
+405            android:name="com.aaptrix.activitys.teacher.TeacherRequestLeaveActivity"
+405-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:411:13-85
+406            android:screenOrientation="portrait"
+406-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:412:13-49
+407            android:windowSoftInputMode="adjustPan" />
+407-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:413:13-52
+408        <activity
+408-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:414:9-416:52
+409            android:name="com.aaptrix.activitys.FullScreenImageActivity"
+409-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:415:13-73
+410            android:screenOrientation="portrait" />
+410-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:416:13-49
+411        <activity
+411-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:417:9-420:55
+412            android:name="com.aaptrix.activitys.student.VideoLibrary"
+412-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:418:13-70
+413            android:screenOrientation="portrait"
+413-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:419:13-49
+414            android:windowSoftInputMode="adjustPan" />
+414-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:420:13-52
+415        <activity
+415-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:421:9-424:55
+416            android:name="com.aaptrix.activitys.AppLogin"
+416-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:422:13-58
+417            android:screenOrientation="portrait"
+417-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:423:13-49
+418            android:windowSoftInputMode="adjustPan" />
+418-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:424:13-52
+419        <activity
+419-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:425:9-427:52
+420            android:name="com.aaptrix.activitys.student.OnlineExam"
+420-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:426:13-68
+421            android:screenOrientation="portrait" />
+421-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:427:13-49
+422        <activity
+422-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:428:9-430:52
+423            android:name="com.aaptrix.activitys.student.OnlineExamResult"
+423-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:429:13-74
+424            android:screenOrientation="portrait" />
+424-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:430:13-49
+425        <activity
+425-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:431:9-433:52
+426            android:name="com.aaptrix.activitys.student.OnlineReport"
+426-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:432:13-70
+427            android:screenOrientation="portrait" />
+427-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:433:13-49
+428        <activity
+428-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:434:9-436:52
+429            android:name="com.aaptrix.activitys.student.StartOnlineExam"
+429-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:435:13-73
+430            android:screenOrientation="portrait" />
+430-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:436:13-49
+431        <activity
+431-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:437:9-439:52
+432            android:name="com.aaptrix.activitys.student.StartExam"
+432-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:438:13-67
+433            android:screenOrientation="portrait" />
+433-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:439:13-49
+434        <!--
+435             FirebaseMessagingService performs security checks at runtime,
+436             but set to not exported to explicitly avoid allowing another app to call it.
+437        -->
+438        <service
+438-->[com.google.firebase:firebase-messaging:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\4fbc9c28e4a9e59690e15fad48313a1d\jetified-firebase-messaging-20.2.1\AndroidManifest.xml:28:9-35:19
+439            android:name="com.google.firebase.messaging.FirebaseMessagingService"
+439-->[com.google.firebase:firebase-messaging:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\4fbc9c28e4a9e59690e15fad48313a1d\jetified-firebase-messaging-20.2.1\AndroidManifest.xml:29:13-82
+440            android:directBootAware="true"
+440-->[com.google.firebase:firebase-messaging:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\4fbc9c28e4a9e59690e15fad48313a1d\jetified-firebase-messaging-20.2.1\AndroidManifest.xml:30:13-43
+441            android:exported="false" >
+441-->[com.google.firebase:firebase-messaging:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\4fbc9c28e4a9e59690e15fad48313a1d\jetified-firebase-messaging-20.2.1\AndroidManifest.xml:31:13-37
+442            <intent-filter android:priority="-500" >
+442-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:295:13-297:29
+443                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+443-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:296:17-78
+443-->E:\Educoach Demo\app\src\main\AndroidManifest.xml:296:25-75
+444            </intent-filter>
+445        </service>
+446        <service
+446-->[com.google.firebase:firebase-messaging:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\4fbc9c28e4a9e59690e15fad48313a1d\jetified-firebase-messaging-20.2.1\AndroidManifest.xml:36:9-42:19
+447            android:name="com.google.firebase.components.ComponentDiscoveryService"
+447-->[com.google.firebase:firebase-messaging:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\4fbc9c28e4a9e59690e15fad48313a1d\jetified-firebase-messaging-20.2.1\AndroidManifest.xml:37:13-84
+448            android:directBootAware="true"
+448-->[com.google.firebase:firebase-common:19.3.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\8cf22250370fce81991250fa8a355adc\jetified-firebase-common-19.3.0\AndroidManifest.xml:34:13-43
+449            android:exported="false" >
+449-->[com.google.firebase:firebase-messaging:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\4fbc9c28e4a9e59690e15fad48313a1d\jetified-firebase-messaging-20.2.1\AndroidManifest.xml:38:13-37
+450            <meta-data
+450-->[com.google.firebase:firebase-messaging:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\4fbc9c28e4a9e59690e15fad48313a1d\jetified-firebase-messaging-20.2.1\AndroidManifest.xml:39:13-41:85
+451                android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingRegistrar"
+451-->[com.google.firebase:firebase-messaging:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\4fbc9c28e4a9e59690e15fad48313a1d\jetified-firebase-messaging-20.2.1\AndroidManifest.xml:40:17-119
+452                android:value="com.google.firebase.components.ComponentRegistrar" />
+452-->[com.google.firebase:firebase-messaging:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\4fbc9c28e4a9e59690e15fad48313a1d\jetified-firebase-messaging-20.2.1\AndroidManifest.xml:41:17-82
+453            <meta-data
+453-->[com.google.android.gms:play-services-measurement-api:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\17f6514feb14da3d534211dd7eb6d8e4\jetified-play-services-measurement-api-17.4.3\AndroidManifest.xml:30:13-32:85
+454                android:name="com.google.firebase.components:com.google.firebase.analytics.connector.internal.AnalyticsConnectorRegistrar"
+454-->[com.google.android.gms:play-services-measurement-api:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\17f6514feb14da3d534211dd7eb6d8e4\jetified-play-services-measurement-api-17.4.3\AndroidManifest.xml:31:17-139
+455                android:value="com.google.firebase.components.ComponentRegistrar" />
+455-->[com.google.android.gms:play-services-measurement-api:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\17f6514feb14da3d534211dd7eb6d8e4\jetified-play-services-measurement-api-17.4.3\AndroidManifest.xml:32:17-82
+456            <meta-data
+456-->[com.google.firebase:firebase-iid:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\303e379e20459354e401b31da5d25a9e\jetified-firebase-iid-20.2.1\AndroidManifest.xml:32:13-34:85
+457                android:name="com.google.firebase.components:com.google.firebase.iid.Registrar"
+457-->[com.google.firebase:firebase-iid:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\303e379e20459354e401b31da5d25a9e\jetified-firebase-iid-20.2.1\AndroidManifest.xml:33:17-96
+458                android:value="com.google.firebase.components.ComponentRegistrar" />
+458-->[com.google.firebase:firebase-iid:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\303e379e20459354e401b31da5d25a9e\jetified-firebase-iid-20.2.1\AndroidManifest.xml:34:17-82
+459            <meta-data
+459-->[com.google.firebase:firebase-auth:19.3.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\1f7296b75d423203b48744e2c59d2840\jetified-firebase-auth-19.3.1\AndroidManifest.xml:36:13-38:85
+460                android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
+460-->[com.google.firebase:firebase-auth:19.3.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\1f7296b75d423203b48744e2c59d2840\jetified-firebase-auth-19.3.1\AndroidManifest.xml:37:17-109
+461                android:value="com.google.firebase.components.ComponentRegistrar" />
+461-->[com.google.firebase:firebase-auth:19.3.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\1f7296b75d423203b48744e2c59d2840\jetified-firebase-auth-19.3.1\AndroidManifest.xml:38:17-82
+462            <meta-data
+462-->[com.google.firebase:firebase-database:19.3.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\f5058b54d9445ac0ff1642553fab069e\jetified-firebase-database-19.3.1\AndroidManifest.xml:32:13-34:85
+463                android:name="com.google.firebase.components:com.google.firebase.database.DatabaseRegistrar"
+463-->[com.google.firebase:firebase-database:19.3.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\f5058b54d9445ac0ff1642553fab069e\jetified-firebase-database-19.3.1\AndroidManifest.xml:33:17-109
+464                android:value="com.google.firebase.components.ComponentRegistrar" />
+464-->[com.google.firebase:firebase-database:19.3.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\f5058b54d9445ac0ff1642553fab069e\jetified-firebase-database-19.3.1\AndroidManifest.xml:34:17-82
+465            <meta-data
+465-->[com.google.firebase:firebase-storage:19.1.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\4107bbc0db74f9693a5e2aa5686a4ab5\jetified-firebase-storage-19.1.1\AndroidManifest.xml:33:13-35:85
+466                android:name="com.google.firebase.components:com.google.firebase.storage.StorageRegistrar"
+466-->[com.google.firebase:firebase-storage:19.1.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\4107bbc0db74f9693a5e2aa5686a4ab5\jetified-firebase-storage-19.1.1\AndroidManifest.xml:34:17-107
+467                android:value="com.google.firebase.components.ComponentRegistrar" />
+467-->[com.google.firebase:firebase-storage:19.1.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\4107bbc0db74f9693a5e2aa5686a4ab5\jetified-firebase-storage-19.1.1\AndroidManifest.xml:35:17-82
+468            <meta-data
+468-->[com.google.firebase:firebase-datatransport:17.0.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\513bae683879c043d715a6170b0466ea\jetified-firebase-datatransport-17.0.3\AndroidManifest.xml:28:13-30:85
+469                android:name="com.google.firebase.components:com.google.firebase.datatransport.TransportRegistrar"
+469-->[com.google.firebase:firebase-datatransport:17.0.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\513bae683879c043d715a6170b0466ea\jetified-firebase-datatransport-17.0.3\AndroidManifest.xml:29:17-115
+470                android:value="com.google.firebase.components.ComponentRegistrar" />
+470-->[com.google.firebase:firebase-datatransport:17.0.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\513bae683879c043d715a6170b0466ea\jetified-firebase-datatransport-17.0.3\AndroidManifest.xml:30:17-82
+471            <meta-data
+471-->[com.google.firebase:firebase-installations:16.3.2] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\f2142d1db1a81d68e464843c4f901453\jetified-firebase-installations-16.3.2\AndroidManifest.xml:17:13-19:85
+472                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsRegistrar"
+472-->[com.google.firebase:firebase-installations:16.3.2] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\f2142d1db1a81d68e464843c4f901453\jetified-firebase-installations-16.3.2\AndroidManifest.xml:18:17-127
+473                android:value="com.google.firebase.components.ComponentRegistrar" />
+473-->[com.google.firebase:firebase-installations:16.3.2] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\f2142d1db1a81d68e464843c4f901453\jetified-firebase-installations-16.3.2\AndroidManifest.xml:19:17-82
+474        </service>
+475
+476        <receiver
+476-->[com.google.firebase:firebase-iid:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\303e379e20459354e401b31da5d25a9e\jetified-firebase-iid-20.2.1\AndroidManifest.xml:37:9-44:20
+477            android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
+477-->[com.google.firebase:firebase-iid:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\303e379e20459354e401b31da5d25a9e\jetified-firebase-iid-20.2.1\AndroidManifest.xml:38:13-78
+478            android:exported="true"
+478-->[com.google.firebase:firebase-iid:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\303e379e20459354e401b31da5d25a9e\jetified-firebase-iid-20.2.1\AndroidManifest.xml:39:13-36
+479            android:permission="com.google.android.c2dm.permission.SEND" >
+479-->[com.google.firebase:firebase-iid:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\303e379e20459354e401b31da5d25a9e\jetified-firebase-iid-20.2.1\AndroidManifest.xml:40:13-73
+480            <intent-filter>
+480-->[com.google.firebase:firebase-iid:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\303e379e20459354e401b31da5d25a9e\jetified-firebase-iid-20.2.1\AndroidManifest.xml:41:13-43:29
+481                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+481-->[com.google.firebase:firebase-iid:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\303e379e20459354e401b31da5d25a9e\jetified-firebase-iid-20.2.1\AndroidManifest.xml:42:17-81
+481-->[com.google.firebase:firebase-iid:20.2.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\303e379e20459354e401b31da5d25a9e\jetified-firebase-iid-20.2.1\AndroidManifest.xml:42:25-78
+482            </intent-filter>
+483        </receiver>
+484
+485        <activity
+485-->[com.google.firebase:firebase-auth:19.3.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\1f7296b75d423203b48744e2c59d2840\jetified-firebase-auth-19.3.1\AndroidManifest.xml:24:9-31:50
+486            android:name="com.google.firebase.auth.internal.FederatedSignInActivity"
+486-->[com.google.firebase:firebase-auth:19.3.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\1f7296b75d423203b48744e2c59d2840\jetified-firebase-auth-19.3.1\AndroidManifest.xml:25:13-85
+487            android:excludeFromRecents="true"
+487-->[com.google.firebase:firebase-auth:19.3.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\1f7296b75d423203b48744e2c59d2840\jetified-firebase-auth-19.3.1\AndroidManifest.xml:26:13-46
+488            android:exported="true"
+488-->[com.google.firebase:firebase-auth:19.3.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\1f7296b75d423203b48744e2c59d2840\jetified-firebase-auth-19.3.1\AndroidManifest.xml:27:13-36
+489            android:launchMode="singleTask"
+489-->[com.google.firebase:firebase-auth:19.3.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\1f7296b75d423203b48744e2c59d2840\jetified-firebase-auth-19.3.1\AndroidManifest.xml:28:13-44
+490            android:permission="com.google.firebase.auth.api.gms.permission.LAUNCH_FEDERATED_SIGN_IN"
+490-->[com.google.firebase:firebase-auth:19.3.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\1f7296b75d423203b48744e2c59d2840\jetified-firebase-auth-19.3.1\AndroidManifest.xml:29:13-102
+491            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+491-->[com.google.firebase:firebase-auth:19.3.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\1f7296b75d423203b48744e2c59d2840\jetified-firebase-auth-19.3.1\AndroidManifest.xml:30:13-72
+492
+493        <meta-data
+493-->[com.firebaseui:firebase-ui-database:2.3.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\96f8571f75490061b10e03f944fece1d\jetified-firebase-ui-database-2.3.0\AndroidManifest.xml:14:9-16:69
+494            android:name="com.google.android.gms.version"
+494-->[com.firebaseui:firebase-ui-database:2.3.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\96f8571f75490061b10e03f944fece1d\jetified-firebase-ui-database-2.3.0\AndroidManifest.xml:15:13-58
+495            android:value="@integer/google_play_services_version" /> <!-- Needs to be explicitly declared on P+ -->
+495-->[com.firebaseui:firebase-ui-database:2.3.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\96f8571f75490061b10e03f944fece1d\jetified-firebase-ui-database-2.3.0\AndroidManifest.xml:16:13-66
+496        <uses-library
+496-->[com.google.android.gms:play-services-maps:17.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ba4188fe65f0db92352da1f50f02dba9\jetified-play-services-maps-17.0.0\AndroidManifest.xml:33:9-35:40
+497            android:name="org.apache.http.legacy"
+497-->[com.google.android.gms:play-services-maps:17.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ba4188fe65f0db92352da1f50f02dba9\jetified-play-services-maps-17.0.0\AndroidManifest.xml:34:13-50
+498            android:required="false" />
+498-->[com.google.android.gms:play-services-maps:17.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ba4188fe65f0db92352da1f50f02dba9\jetified-play-services-maps-17.0.0\AndroidManifest.xml:35:13-37
+499
+500        <provider
+500-->[com.crashlytics.sdk.android:crashlytics:2.10.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\02c375c35b56a5e42e5d29192ebcb052\jetified-crashlytics-2.10.1\AndroidManifest.xml:19:9-23:38
+501            android:name="com.crashlytics.android.CrashlyticsInitProvider"
+501-->[com.crashlytics.sdk.android:crashlytics:2.10.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\02c375c35b56a5e42e5d29192ebcb052\jetified-crashlytics-2.10.1\AndroidManifest.xml:20:13-75
+502            android:authorities="com.aaptrix.npc.crashlyticsinitprovider"
+502-->[com.crashlytics.sdk.android:crashlytics:2.10.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\02c375c35b56a5e42e5d29192ebcb052\jetified-crashlytics-2.10.1\AndroidManifest.xml:21:13-75
+503            android:exported="false"
+503-->[com.crashlytics.sdk.android:crashlytics:2.10.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\02c375c35b56a5e42e5d29192ebcb052\jetified-crashlytics-2.10.1\AndroidManifest.xml:22:13-37
+504            android:initOrder="90" />
+504-->[com.crashlytics.sdk.android:crashlytics:2.10.1] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\02c375c35b56a5e42e5d29192ebcb052\jetified-crashlytics-2.10.1\AndroidManifest.xml:23:13-35
+505
+506        <activity
+506-->[com.google.android.gms:play-services-auth:18.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\2b8ea0972adc48ecb71d18925f2a6f85\jetified-play-services-auth-18.0.0\AndroidManifest.xml:23:9-27:75
+507            android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"
+507-->[com.google.android.gms:play-services-auth:18.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\2b8ea0972adc48ecb71d18925f2a6f85\jetified-play-services-auth-18.0.0\AndroidManifest.xml:24:13-93
+508            android:excludeFromRecents="true"
+508-->[com.google.android.gms:play-services-auth:18.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\2b8ea0972adc48ecb71d18925f2a6f85\jetified-play-services-auth-18.0.0\AndroidManifest.xml:25:13-46
+509            android:exported="false"
+509-->[com.google.android.gms:play-services-auth:18.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\2b8ea0972adc48ecb71d18925f2a6f85\jetified-play-services-auth-18.0.0\AndroidManifest.xml:26:13-37
+510            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+510-->[com.google.android.gms:play-services-auth:18.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\2b8ea0972adc48ecb71d18925f2a6f85\jetified-play-services-auth-18.0.0\AndroidManifest.xml:27:13-72
+511        <!--
+512            Service handling Google Sign-In user revocation. For apps that do not integrate with
+513            Google Sign-In, this service will never be started.
+514        -->
+515        <service
+515-->[com.google.android.gms:play-services-auth:18.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\2b8ea0972adc48ecb71d18925f2a6f85\jetified-play-services-auth-18.0.0\AndroidManifest.xml:33:9-36:110
+516            android:name="com.google.android.gms.auth.api.signin.RevocationBoundService"
+516-->[com.google.android.gms:play-services-auth:18.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\2b8ea0972adc48ecb71d18925f2a6f85\jetified-play-services-auth-18.0.0\AndroidManifest.xml:34:13-89
+517            android:exported="true"
+517-->[com.google.android.gms:play-services-auth:18.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\2b8ea0972adc48ecb71d18925f2a6f85\jetified-play-services-auth-18.0.0\AndroidManifest.xml:35:13-36
+518            android:permission="com.google.android.gms.auth.api.signin.permission.REVOCATION_NOTIFICATION" />
+518-->[com.google.android.gms:play-services-auth:18.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\2b8ea0972adc48ecb71d18925f2a6f85\jetified-play-services-auth-18.0.0\AndroidManifest.xml:36:13-107
+519
+520        <activity
+520-->[com.google.android.gms:play-services-base:17.1.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ae5534a57d95e6f603929beb0295d0f6\jetified-play-services-base-17.1.0\AndroidManifest.xml:23:9-26:75
+521            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+521-->[com.google.android.gms:play-services-base:17.1.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ae5534a57d95e6f603929beb0295d0f6\jetified-play-services-base-17.1.0\AndroidManifest.xml:24:13-79
+522            android:exported="false"
+522-->[com.google.android.gms:play-services-base:17.1.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ae5534a57d95e6f603929beb0295d0f6\jetified-play-services-base-17.1.0\AndroidManifest.xml:25:13-37
+523            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+523-->[com.google.android.gms:play-services-base:17.1.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ae5534a57d95e6f603929beb0295d0f6\jetified-play-services-base-17.1.0\AndroidManifest.xml:26:13-72
+524
+525        <receiver
+525-->[com.google.android.gms:play-services-measurement:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9e82f385933e2bcf0009235aea715c50\jetified-play-services-measurement-17.4.3\AndroidManifest.xml:29:9-33:20
+526            android:name="com.google.android.gms.measurement.AppMeasurementReceiver"
+526-->[com.google.android.gms:play-services-measurement:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9e82f385933e2bcf0009235aea715c50\jetified-play-services-measurement-17.4.3\AndroidManifest.xml:30:13-85
+527            android:enabled="true"
+527-->[com.google.android.gms:play-services-measurement:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9e82f385933e2bcf0009235aea715c50\jetified-play-services-measurement-17.4.3\AndroidManifest.xml:31:13-35
+528            android:exported="false" >
+528-->[com.google.android.gms:play-services-measurement:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9e82f385933e2bcf0009235aea715c50\jetified-play-services-measurement-17.4.3\AndroidManifest.xml:32:13-37
+529        </receiver>
+530
+531        <service
+531-->[com.google.android.gms:play-services-measurement:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9e82f385933e2bcf0009235aea715c50\jetified-play-services-measurement-17.4.3\AndroidManifest.xml:35:9-38:40
+532            android:name="com.google.android.gms.measurement.AppMeasurementService"
+532-->[com.google.android.gms:play-services-measurement:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9e82f385933e2bcf0009235aea715c50\jetified-play-services-measurement-17.4.3\AndroidManifest.xml:36:13-84
+533            android:enabled="true"
+533-->[com.google.android.gms:play-services-measurement:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9e82f385933e2bcf0009235aea715c50\jetified-play-services-measurement-17.4.3\AndroidManifest.xml:37:13-35
+534            android:exported="false" />
+534-->[com.google.android.gms:play-services-measurement:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9e82f385933e2bcf0009235aea715c50\jetified-play-services-measurement-17.4.3\AndroidManifest.xml:38:13-37
+535        <service
+535-->[com.google.android.gms:play-services-measurement:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9e82f385933e2bcf0009235aea715c50\jetified-play-services-measurement-17.4.3\AndroidManifest.xml:39:9-43:72
+536            android:name="com.google.android.gms.measurement.AppMeasurementJobService"
+536-->[com.google.android.gms:play-services-measurement:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9e82f385933e2bcf0009235aea715c50\jetified-play-services-measurement-17.4.3\AndroidManifest.xml:40:13-87
+537            android:enabled="true"
+537-->[com.google.android.gms:play-services-measurement:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9e82f385933e2bcf0009235aea715c50\jetified-play-services-measurement-17.4.3\AndroidManifest.xml:41:13-35
+538            android:exported="false"
+538-->[com.google.android.gms:play-services-measurement:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9e82f385933e2bcf0009235aea715c50\jetified-play-services-measurement-17.4.3\AndroidManifest.xml:42:13-37
+539            android:permission="android.permission.BIND_JOB_SERVICE" />
+539-->[com.google.android.gms:play-services-measurement:17.4.3] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\9e82f385933e2bcf0009235aea715c50\jetified-play-services-measurement-17.4.3\AndroidManifest.xml:43:13-69
+540
+541        <provider
+541-->[com.google.firebase:firebase-common:19.3.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\8cf22250370fce81991250fa8a355adc\jetified-firebase-common-19.3.0\AndroidManifest.xml:26:9-30:39
+542            android:name="com.google.firebase.provider.FirebaseInitProvider"
+542-->[com.google.firebase:firebase-common:19.3.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\8cf22250370fce81991250fa8a355adc\jetified-firebase-common-19.3.0\AndroidManifest.xml:27:13-77
+543            android:authorities="com.aaptrix.npc.firebaseinitprovider"
+543-->[com.google.firebase:firebase-common:19.3.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\8cf22250370fce81991250fa8a355adc\jetified-firebase-common-19.3.0\AndroidManifest.xml:28:13-72
+544            android:exported="false"
+544-->[com.google.firebase:firebase-common:19.3.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\8cf22250370fce81991250fa8a355adc\jetified-firebase-common-19.3.0\AndroidManifest.xml:29:13-37
+545            android:initOrder="100" />
+545-->[com.google.firebase:firebase-common:19.3.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\8cf22250370fce81991250fa8a355adc\jetified-firebase-common-19.3.0\AndroidManifest.xml:30:13-36
+546
+547        <service
+547-->[com.google.android.datatransport:transport-backend-cct:2.2.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\a292b4adb15748cfe4f40d03b4639c8f\jetified-transport-backend-cct-2.2.0\AndroidManifest.xml:29:9-35:19
+548            android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
+548-->[com.google.android.datatransport:transport-backend-cct:2.2.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\a292b4adb15748cfe4f40d03b4639c8f\jetified-transport-backend-cct-2.2.0\AndroidManifest.xml:30:13-103
+549            android:exported="false" >
+549-->[com.google.android.datatransport:transport-backend-cct:2.2.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\a292b4adb15748cfe4f40d03b4639c8f\jetified-transport-backend-cct-2.2.0\AndroidManifest.xml:31:13-37
+550            <meta-data
+550-->[com.google.android.datatransport:transport-backend-cct:2.2.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\a292b4adb15748cfe4f40d03b4639c8f\jetified-transport-backend-cct-2.2.0\AndroidManifest.xml:32:13-34:39
+551                android:name="backend:com.google.android.datatransport.cct.CctBackendFactory"
+551-->[com.google.android.datatransport:transport-backend-cct:2.2.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\a292b4adb15748cfe4f40d03b4639c8f\jetified-transport-backend-cct-2.2.0\AndroidManifest.xml:33:17-94
+552                android:value="cct" />
+552-->[com.google.android.datatransport:transport-backend-cct:2.2.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\a292b4adb15748cfe4f40d03b4639c8f\jetified-transport-backend-cct-2.2.0\AndroidManifest.xml:34:17-36
+553        </service>
+554        <service
+554-->[com.google.android.datatransport:transport-runtime:2.2.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ead8bb14d7f5d2ec34b873769ad5524e\jetified-transport-runtime-2.2.0\AndroidManifest.xml:26:9-30:19
+555            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
+555-->[com.google.android.datatransport:transport-runtime:2.2.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ead8bb14d7f5d2ec34b873769ad5524e\jetified-transport-runtime-2.2.0\AndroidManifest.xml:27:13-117
+556            android:exported="false"
+556-->[com.google.android.datatransport:transport-runtime:2.2.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ead8bb14d7f5d2ec34b873769ad5524e\jetified-transport-runtime-2.2.0\AndroidManifest.xml:28:13-37
+557            android:permission="android.permission.BIND_JOB_SERVICE" >
+557-->[com.google.android.datatransport:transport-runtime:2.2.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ead8bb14d7f5d2ec34b873769ad5524e\jetified-transport-runtime-2.2.0\AndroidManifest.xml:29:13-69
+558        </service>
+559
+560        <receiver
+560-->[com.google.android.datatransport:transport-runtime:2.2.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ead8bb14d7f5d2ec34b873769ad5524e\jetified-transport-runtime-2.2.0\AndroidManifest.xml:32:9-34:40
+561            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
+561-->[com.google.android.datatransport:transport-runtime:2.2.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ead8bb14d7f5d2ec34b873769ad5524e\jetified-transport-runtime-2.2.0\AndroidManifest.xml:33:13-132
+562            android:exported="false" />
+562-->[com.google.android.datatransport:transport-runtime:2.2.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\ead8bb14d7f5d2ec34b873769ad5524e\jetified-transport-runtime-2.2.0\AndroidManifest.xml:34:13-37
+563
+564        <provider
+564-->[androidx.lifecycle:lifecycle-process:2.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\d0a14f5a8147c3c92e6c844373d4e5b0\jetified-lifecycle-process-2.0.0\AndroidManifest.xml:23:9-27:43
+565            android:name="androidx.lifecycle.ProcessLifecycleOwnerInitializer"
+565-->[androidx.lifecycle:lifecycle-process:2.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\d0a14f5a8147c3c92e6c844373d4e5b0\jetified-lifecycle-process-2.0.0\AndroidManifest.xml:24:13-79
+566            android:authorities="com.aaptrix.npc.lifecycle-process"
+566-->[androidx.lifecycle:lifecycle-process:2.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\d0a14f5a8147c3c92e6c844373d4e5b0\jetified-lifecycle-process-2.0.0\AndroidManifest.xml:25:13-69
+567            android:exported="false"
+567-->[androidx.lifecycle:lifecycle-process:2.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\d0a14f5a8147c3c92e6c844373d4e5b0\jetified-lifecycle-process-2.0.0\AndroidManifest.xml:26:13-37
+568            android:multiprocess="true" />
+568-->[androidx.lifecycle:lifecycle-process:2.0.0] C:\Users\ASUS\.gradle\caches\transforms-2\files-2.1\d0a14f5a8147c3c92e6c844373d4e5b0\jetified-lifecycle-process-2.0.0\AndroidManifest.xml:27:13-40
+569    </application>
+570
+571</manifest>

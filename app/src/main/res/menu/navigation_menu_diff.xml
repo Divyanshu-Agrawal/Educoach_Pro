@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/group1">
+        <item
+            android:id="@+id/institute_buzz"
+            android:icon="@drawable/school"
+            android:title="Institute Buzz" />
+
+        <item
+            android:id="@+id/see_performance"
+            android:icon="@drawable/see_performance"
+            android:title="Student Performance" />
+
+        <item
+            android:id="@+id/student_attendance"
+            android:icon="@drawable/calendar"
+            android:title="Student Attendance" />
+
+    </group>
+
+    <group android:id="@+id/group2">
+
+        <item
+            android:title="Online Exam"
+            android:id="@+id/online_exam"
+            android:icon="@drawable/timetable"/>
+
+        <item
+            android:id="@+id/live_stream"
+            android:title="Live Streaming"
+            android:icon="@drawable/live_icon"/>
+
+        <item
+            android:id="@+id/message"
+            android:icon="@drawable/message_icon"
+            android:title="Staff Chat" />
+
+        <item
+            android:id="@+id/attendance"
+            android:icon="@drawable/calendar"
+            android:title="Staff Attendance" />
+
+        <item
+            android:id="@+id/staff_leave"
+            android:icon="@drawable/leave_icon_64"
+            android:title="Leave Requests" />
+
+        <item
+            android:id="@+id/my_attendance"
+            android:icon="@drawable/calendar"
+            android:title="My Attendance" />
+
+        <item
+            android:id="@+id/contacts"
+            android:icon="@drawable/contact_image"
+            android:title="Contacts Book" />
+
+    </group>
+
+    <group android:id="@+id/group4">
+
+        <item
+            android:id="@+id/add_exam"
+            android:icon="@drawable/results_f"
+            android:title="Add Exam" />
+
+        <item
+            android:id="@+id/enquiry"
+            android:icon="@drawable/inquiry_icon"
+            android:title="Add Enquiry" />
+
+    </group>
+
+    <group android:id="@+id/group3">
+
+        <item
+            android:id="@+id/help"
+            android:icon="@drawable/inquiry_icon"
+            android:title="Get Help" />
+
+        <item
+            android:id="@+id/login"
+            android:icon="@android:drawable/ic_lock_power_off"
+            android:title="Login"/>
+
+        <item
+            android:id="@+id/rate"
+            android:icon="@drawable/rate_icon"
+            android:title="Rate App" />
+
+        <item
+            android:id="@+id/share_app"
+            android:icon="@drawable/share_icon"
+            android:title="Share App" />
+
+        <item
+            android:id="@+id/app_info"
+            android:icon="@drawable/app_info_icon"
+            android:title="App Info" />
+
+    </group>
+</menu>

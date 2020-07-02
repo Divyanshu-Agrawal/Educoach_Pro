@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@drawable/background"
+    android:layout_height="match_parent"
+    tools:context="com.aaptrix.activitys.AppLogin"
+    android:weightSum="10"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3.5"
+        android:orientation="vertical"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="320dp"
+            android:layout_height="110dp"
+            android:src="@drawable/app_logo"
+            android:id="@+id/school_logo"
+            android:layout_margin="@dimen/siz10"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/siz10"
+            android:gravity="center"
+            android:weightSum="1">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight=".05"
+                android:layout_height="wrap_content"
+                android:background="@drawable/cube"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_weight=".8"
+                android:layout_height="@dimen/siz2"
+                android:background="@color/orange"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight=".05"
+                android:layout_height="wrap_content"
+                android:background="@drawable/cube"/>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4.5"
+        android:orientation="vertical"
+        android:gravity="center">
+
+
+        <RelativeLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="45dp">
+            <Spinner
+                android:text="@string/select_state"
+                android:textSize="@dimen/siz14"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/siz10"
+                android:layout_width="match_parent"
+                android:popupBackground="@android:drawable/dialog_holo_light_frame"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:layout_height="45dp"
+                android:background="@drawable/et_background_design"
+                android:layout_marginRight="@dimen/siz16"
+                android:layout_marginLeft="@dimen/siz16"
+                android:textColor="@color/dark_green"
+                android:id="@+id/tv_state"/>
+            <ProgressBar
+                android:id="@+id/loader"
+                android:layout_width="45dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/siz16"
+                android:visibility="gone"
+                android:layout_height="45dp"/>
+
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/siz10"
+            android:layout_height="45dp">
+            <Spinner
+                android:text="@string/select_state"
+                android:textSize="@dimen/siz14"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/siz10"
+                android:layout_width="match_parent"
+                android:popupBackground="@android:drawable/dialog_holo_light_frame"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+
+                android:layout_height="45dp"
+                android:background="@drawable/et_background_design"
+                android:layout_marginRight="@dimen/siz16"
+                android:layout_marginLeft="@dimen/siz16"
+                android:textColor="@color/dark_green"
+                android:id="@+id/select_city"/>
+            <ProgressBar
+                android:id="@+id/loader1"
+                android:layout_width="45dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/siz16"
+                android:visibility="gone"
+                android:layout_height="45dp"/>
+
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/siz10"
+            android:layout_height="45dp">
+            <Spinner
+                android:text="@string/select_school"
+                android:textSize="@dimen/siz14"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/siz10"
+                android:layout_width="match_parent"
+                android:popupBackground="@android:drawable/dialog_holo_light_frame"
+                android:textColor="@color/dark_green"
+                android:layout_height="45dp"
+                android:background="@drawable/et_background_design"
+                android:layout_marginRight="@dimen/siz16"
+                android:layout_marginLeft="@dimen/siz16"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:id="@+id/tv_school"/>
+            <ProgressBar
+                android:id="@+id/loader2"
+                android:layout_width="45dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/siz16"
+                android:visibility="gone"
+                android:layout_height="45dp"/>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/siz10"
+            android:layout_height="45dp">
+            <Spinner
+                android:text="@string/select_role"
+                android:textSize="@dimen/siz14"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/siz10"
+                android:textColor="@color/dark_green"
+                android:popupBackground="@android:drawable/dialog_holo_light_frame"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/et_background_design"
+                android:layout_marginRight="@dimen/siz16"
+                android:layout_marginLeft="@dimen/siz16"
+                android:fontFamily="ROBOTO-REGULAR.TTF"
+                android:id="@+id/tv_role"/>
+            <ProgressBar
+                android:id="@+id/loader3"
+                android:layout_width="45dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/siz16"
+                android:visibility="gone"
+                android:layout_height="45dp"/>
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:gravity="center|top">
+        <Button
+            android:text="Submit"
+            android:textSize="@dimen/siz16"
+            android:textColor="@color/white"
+            android:layout_gravity="center|top"
+            android:fontFamily="ROBOTO-REGULAR.TTF"
+            android:textAllCaps="false"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_design"
+            android:id="@+id/btn_login"/>
+    </LinearLayout>
+</LinearLayout>

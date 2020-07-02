@@ -1,0 +1,73 @@
+<resources>
+    <string name="app_name">Nahta Professional Classes</string>
+
+    <string name="powered"><!--Powered by EduGauge--></string>
+
+    <string name="login_et_user">  Student ID/Teacher ID/Admin ID</string>
+    <string name="login_phone">Registered Phone Number</string>
+    <string name="password">Password</string>
+    <string name="conpassword">Confirm Password</string>
+
+    <string name="status">#172E4B</string>
+    <string name="drawer">#172E4B</string>
+    <string name="tool">#E56A3B</string>
+    <string name="text1">#FFFFFF</string>
+    <string name="text2">#FFFFFF</string>
+
+    <string name="phone_address">+91 6260 9696 47</string>
+    <string name="contact_details">Contact Details</string>
+    <string name="web_address">www.aaptrix.com</string>
+    <string name="website">Website</string>
+    <string name="developed_by">Developed By</string>
+    <string name="mail_address">hello@aaptrix.com</string>
+    <string name="privacy_policy"><u>Privacy Policy</u></string>
+    <string name="terms"><u>Terms &amp; Conditions</u></string>
+
+    <string name="forget_password"><u>Forgot Password?</u></string>
+    <string name="sms_Auth_key">219686AZ9mThrlZ5E5b1bb53a</string>
+    <string name="uxcam_key">s51rsj2yvf06qnc</string>
+    <!--
+    <string name="passwordText">* Password should have min 6 letter and it must contain letters a-zA-Z and at least one digit 0-9 and one special character. </string>
+-->
+    <string name="passwordText">*Password should be more than 6 characters long. Include lowercase, uppercase letters, numbers and symbols for more secure password.</string>
+    <string name="dont_account">Don\'t have an account?<u>Register</u></string>
+    <string name="tc">By registering you are agreeing to our <u>Terms and Service</u> and <u>Privacy Policy</u>.</string>
+
+    <string name="select_state">Select State</string>
+    <string name="select_school">Select School</string>
+    <string name="select_city">Select City</string>
+    <string name="select_role">Select Role</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="date_card_formate">dd-MMMM-yyyy</string>
+    <string name="date_card_formate_dairy">yyyy-MMM-dd</string>
+    <string name="date_card_formate_dairy1">yyyy-MM-dd</string>
+    <string name="date_card_formate_dairy5">dd-MM-yyyy</string>
+    <string name="date_card_formate_chat">dd-MM-yy</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDcwc1ZqocQMHcoTOxWCw9uH1G-Pe9tjWs</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="FCM_PREF">edugauge.edugauge.fcm_pref</string>
+    <string name="FCM_TOKEN">edugauge.edugauge.fcm_token</string>
+
+    <string name="loadmore"><u>Load More</u></string>
+    <string name="pv"><u>Privacy Policy</u></string>
+    <string name="tcc"><u>Terms of Services</u></string>
+    <string name="title_activity_new_chat_acctivity">Staff Chat</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="notice">Warning! This content is property of Institute. Any attempts to unauthorised usage/sharing can be legally challenged. For privacy protection content is watermarked with your unique ID.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="ayp_play_button">Play button</string>
+    <string name="ayp_null_time">0:00</string>
+    <string name="ayp_open_video_in_youtube">Open video in YouTube</string>
+    <string name="ayp_full_screen_button">Full screen button</string>
+    <string name="ayp_live">LIVE</string>
+    <string name="ayp_custom_action_left">YouTube player Custom action left</string>
+    <string name="ayp_custom_action_right">YouTube player custom action right</string>
+    <string name="ayp_fast_rewind">Fast rewind</string>
+    <string name="ayp_fast_forward">Fast forward</string>
+</resources>

@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayoutChangePassword"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="3">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/orange"
+                android:theme="@style/AppTheme.AppBarOverlay"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    app:contentInsetLeft="0dp"
+                    app:contentInsetStart="0dp"
+                    app:contentInsetStartWithNavigation="0dp"
+                    app:popupTheme="@style/MyDarkToolbarStyle">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="55dp"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/tool_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+
+                            android:gravity="start|center"
+                            android:text="About Institute"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            android:textSize="18dp" />
+                    </LinearLayout>
+                </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.AppBarLayout>
+        </LinearLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/activity_main_swipe_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:ignore="MergeRootFrame">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ScrollView
+                    android:id="@+id/ddd"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true">
+
+                    <LinearLayout
+                        android:id="@+id/mainLayoutLogin"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        android:orientation="vertical"
+                        android:weightSum="10">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:id="@+id/iv_left"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerInParent="true"
+                                android:src="@drawable/ic_left_arrow_24"
+                                android:visibility="gone" />
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_170sdp"
+                                android:layout_margin="7dp"
+                                app:cardCornerRadius="10dp">
+
+                                <com.daimajia.slider.library.SliderLayout
+                                    android:id="@+id/slider"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/slider_image"
+                                    android:scaleType="centerCrop">
+
+                                    <ImageView
+                                        android:id="@+id/iv_right"
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_centerInParent="true"
+                                        android:src="@drawable/ic_right_arrow_24"
+                                        android:visibility="gone" />
+
+                                </com.daimajia.slider.library.SliderLayout>
+
+                            </androidx.cardview.widget.CardView>
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/school_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/siz5"
+
+                            android:gravity="center"
+                            android:text="Institute name"
+                            android:textAllCaps="false"
+                            android:textColor="@color/text_gray"
+                            android:textSize="16dp" />
+
+                        <TextView
+                            android:id="@+id/seperater"
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:background="@color/navi_black" />
+
+                        <TextView
+                            android:id="@+id/school_area"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/siz5"
+
+                            android:gravity="center"
+                            android:text="Institute area"
+                            android:textAllCaps="false"
+                            android:textColor="@color/light_gray1"
+                            android:textSize="12dp" />
+
+                        <TextView
+                            android:id="@+id/school_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/siz10"
+
+                            android:gravity="center|start"
+                            android:text="Institute area"
+                            android:textAllCaps="false"
+                            android:textColor="@color/text_gray"
+                            android:textSize="14sp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp"
+                            android:layout_marginTop="@dimen/siz5"
+                            android:layout_marginBottom="@dimen/siz10"
+                            android:background="@color/bg_gray" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/siz10"
+                            android:background="@color/white">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2.5"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+
+                                    android:gravity="center|start"
+                                    android:text="Call"
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/light_gray1"
+                                    android:textSize="12dp" />
+
+                                <TextView
+                                    android:id="@+id/school_contact_number"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="@dimen/siz5"
+
+                                    android:gravity="center|start"
+                                    android:text=""
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/text_gray"
+                                    android:textSize="12dp" />
+
+                                <TextView
+                                    android:id="@+id/cuisine_title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="@dimen/siz10"
+                                    android:gravity="center|start"
+                                    android:text="Education"
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/light_gray1"
+                                    android:textSize="12dp"
+                                    android:visibility="gone" />
+
+                                <TextView
+                                    android:id="@+id/school_cuisines"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="@dimen/siz5"
+
+                                    android:gravity="center|start"
+                                    android:text=""
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/text_gray"
+                                    android:textSize="12dp"
+                                    android:visibility="gone" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="@dimen/siz10"
+
+                                    android:gravity="center|start"
+                                    android:text="Type"
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/light_gray1"
+                                    android:textSize="12dp"
+                                    android:visibility="gone" />
+
+                                <TextView
+                                    android:id="@+id/school_type"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="@dimen/siz5"
+
+                                    android:gravity="center|start"
+                                    android:text=""
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/text_gray"
+                                    android:textSize="12dp"
+                                    android:visibility="gone" />
+
+                                <LinearLayout
+                                    android:id="@+id/webLayout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_marginTop="@dimen/siz10"
+
+                                        android:gravity="center|start"
+                                        android:text="Website"
+                                        android:textAllCaps="false"
+                                        android:textColor="@color/light_gray1"
+                                        android:textSize="12dp" />
+
+                                    <TextView
+                                        android:id="@+id/school_website"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_marginTop="@dimen/siz5"
+
+                                        android:gravity="center|start"
+                                        android:text=""
+                                        android:textAllCaps="false"
+                                        android:textColor="@color/text_gray"
+                                        android:textSize="12dp" />
+                                </LinearLayout>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/siz10"
+
+                                    android:gravity="center|start"
+                                    android:text="Address"
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/light_gray1"
+                                    android:textSize="12dp" />
+
+                                <TextView
+                                    android:id="@+id/school_adress"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/siz10"
+
+                                    android:gravity="center|start"
+                                    android:text=""
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/text_gray"
+                                    android:textSize="12dp" />
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:layout_weight="1.5"
+                                android:gravity="center|start"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/facilities"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center|start"
+                                    android:text="Facilities"
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/light_gray1"
+                                    android:textSize="12sp" />
+
+                                <ListView
+                                    android:id="@+id/lv_more_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:divider="@null"
+                                    android:dividerHeight="0dp"
+                                    android:nestedScrollingEnabled="true">
+
+                                </ListView>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp"
+                            android:background="@color/bg_gray" />
+
+                        <LinearLayout
+                            android:id="@+id/mapLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/siz10"
+                            android:background="@color/white"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_gtm"
+                                android:layout_width="@dimen/_100sdp"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="start"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:gravity="start|center_vertical"
+                                android:text="Get Directions >"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_100sdp"
+                                android:clickable="false"
+                                android:orientation="vertical">
+
+                                <fragment
+                                    android:id="@+id/map"
+                                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_margin="10dp"
+                                    android:layout_weight="1"
+                                    android:clickable="false"
+                                    tools:context="sjainventures.map.MapsActivity" />
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </ScrollView>
+            </LinearLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/share_layout"
+        android:layout_width="43dp"
+        android:layout_height="43dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/img_desgin_add"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/iv_add_more_activities"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/share_icon"
+            android:tint="@android:color/white" />
+
+    </LinearLayout>
+</RelativeLayout>
