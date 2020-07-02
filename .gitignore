@@ -15,3 +15,11 @@
 *.json
 *.jks
 build.gradle
+*.apk
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+output.json
+.navigation
