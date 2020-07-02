@@ -10,66 +10,6 @@ android {
         targetSdkVersion 29
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        android.applicationVariants.all { variant ->
-            if (variant.productFlavors[0].name == "demo") {
-                variant.outputs.each { output ->
-                    output.outputFileName = "Demo Institute " + versionName + ".apk"
-                }
-            } else if (variant.productFlavors[0].name == "npc") {
-                variant.outputs.each { output ->
-                    output.outputFileName = "NPC " + versionName + ".apk"
-                }
-            }
-        }
-    }
-
-    signingConfigs {
-        demo {
-            storeFile file("demoinstitute.jks")
-            storePassword "eduprodemo"
-            keyAlias "demoinstitute"
-            keyPassword "eduprodemo"
-        }
-
-        npc {
-            storeFile file("npc.jks")
-            storePassword "edupronpc"
-            keyAlias "npc"
-            keyPassword "edupronpc"
-        }
-    }
-
-    flavorDimensions "default"
-    productFlavors {
-        demo {
-            dimension "default"
-            applicationId "com.aaptrix.demoinstitute"
-            buildConfigField "String", "SCHOOL_ID", "\"30\""
-            buildConfigField "String", "SCHOOL_NAME", "\"Demo Institute\""
-            buildConfigField "String", "SENDER_ID", "\"EDCACH\""
-            manifestPlaceholders = [
-                    appIcon: "@mipmap/ic_launcher",
-                    appIconRound: "@mipmap/ic_launcher_round"
-            ]
-            versionCode 4
-            versionName "v1.0.2"
-            signingConfig signingConfigs.demo
-        }
-
-        npc {
-            dimension "default"
-            applicationId "com.aaptrix.npc"
-            buildConfigField "String", "SCHOOL_ID", "\"32\""
-            buildConfigField "String", "SCHOOL_NAME", "\"Nahta Professional Classes\""
-            buildConfigField "String", "SENDER_ID", "\"NAHATA\""
-            manifestPlaceholders = [
-                    appIcon: "@mipmap/ic_launcher",
-                    appIconRound: "@mipmap/ic_launcher_round"
-            ]
-            versionCode 29
-            versionName "v2.0.9"
-            signingConfig signingConfigs.npc
-        }
     }
 
     buildTypes {
