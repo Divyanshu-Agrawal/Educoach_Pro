@@ -19,6 +19,14 @@ android {
                 variant.outputs.each { output ->
                     output.outputFileName = "NPC " + versionName + ".apk"
                 }
+            } else if (variant.productFlavors[0].name == "excel") {
+                variant.outputs.each { output ->
+                    output.outputFileName = "Excel " + versionName + ".apk"
+                }
+            } else if (variant.productFlavors[0].name == "scoremax") {
+                variant.outputs.each { output ->
+                    output.outputFileName = "ScoreMax " + versionName + ".apk"
+                }
             }
         }
     }
@@ -36,6 +44,20 @@ android {
             storePassword "edupronpc"
             keyAlias "npc"
             keyPassword "edupronpc"
+        }
+
+        excel {
+            storeFile file("excel.jks")
+            storePassword "eduproexcel"
+            keyAlias "excel"
+            keyPassword "eduproexcel"
+        }
+
+        scoremax {
+            storeFile file("scoremax.jks")
+            storePassword "eduproscoremax"
+            keyAlias "scoremax"
+            keyPassword "eduproscoremax"
         }
     }
 
@@ -68,6 +90,36 @@ android {
             ]
             versionCode 29
             versionName "v2.0.9"
+            signingConfig signingConfigs.npc
+        }
+
+        excel {
+            dimension "default"
+            applicationId "com.aaptrix.exceleducationalinstitute"
+            buildConfigField "String", "SCHOOL_ID", "\"43\""
+            buildConfigField "String", "SCHOOL_NAME", "\"Excel Educational Institute\""
+            buildConfigField "String", "SENDER_ID", "\"EXLEDU\""
+            manifestPlaceholders = [
+                    appIcon: "@mipmap/ic_launcher",
+                    appIconRound: "@mipmap/ic_launcher_round"
+            ]
+            versionCode 4
+            versionName "1.0.2"
+            signingConfig signingConfigs.npc
+        }
+
+        scoremax {
+            dimension "default"
+            applicationId "com.aaptrix.scoremax"
+            buildConfigField "String", "SCHOOL_ID", "\"42\""
+            buildConfigField "String", "SCHOOL_NAME", "\"ScoreMax\""
+            buildConfigField "String", "SENDER_ID", "\"SCOMAX\""
+            manifestPlaceholders = [
+                    appIcon: "@mipmap/ic_launcher",
+                    appIconRound: "@mipmap/ic_launcher_round"
+            ]
+            versionCode 10
+            versionName "1.0.8"
             signingConfig signingConfigs.npc
         }
     }
