@@ -22,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Html;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ import com.aaptrix.youtubeview.core.player.YouTubePlayer;
 import com.aaptrix.youtubeview.core.player.listeners.AbstractYouTubePlayerListener;
 import com.aaptrix.youtubeview.core.player.listeners.YouTubePlayerFullScreenListener;
 import com.aaptrix.youtubeview.core.player.views.YouTubePlayerView;
+import com.aaptrix.youtubeview.core.ui.menu.YouTubePlayerMenu;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
@@ -256,28 +258,38 @@ public class VideoDetails extends AppCompatActivity {
                 }
             });
 
-            youTubeView.getPlayerUiController()
-                    .showMenuButton(true)
-                    .getMenu()
-                    .addItem(new com.aaptrix.youtubeview.core.ui.menu.MenuItem("0.5x", R.drawable.playback_speed, v -> {
+            YouTubePlayerMenu menu = youTubeView.getPlayerUiController().showMenuButton(true).getMenu();
+            assert menu != null;
+
+            menu.addItem(new com.aaptrix.youtubeview.core.ui.menu.MenuItem("0.5x", R.drawable.playback_speed, v -> {
                         ytPlayer.setPlaybackRate(0.5f);
                         Toast.makeText(this, "Playback speed set to 0.5x", Toast.LENGTH_SHORT).show();
-                        youTubeView.getPlayerUiController().getMenu().dismiss();
+                        menu.dismiss();
                     }))
                     .addItem(new com.aaptrix.youtubeview.core.ui.menu.MenuItem("1.0x", R.drawable.playback_speed, v -> {
                         ytPlayer.setPlaybackRate(1.0f);
                         Toast.makeText(this, "Playback speed set to 1.0x", Toast.LENGTH_SHORT).show();
-                        youTubeView.getPlayerUiController().getMenu().dismiss();
+                        menu.dismiss();
+                    }))
+                    .addItem(new com.aaptrix.youtubeview.core.ui.menu.MenuItem("1.25x", R.drawable.playback_speed, v -> {
+                        ytPlayer.setPlaybackRate(1.25f);
+                        Toast.makeText(this, "Playback speed set to 1.25x", Toast.LENGTH_SHORT).show();
+                        menu.dismiss();
                     }))
                     .addItem(new com.aaptrix.youtubeview.core.ui.menu.MenuItem("1.5x", R.drawable.playback_speed, v -> {
                         ytPlayer.setPlaybackRate(1.5f);
                         Toast.makeText(this, "Playback speed set to 1.5x", Toast.LENGTH_SHORT).show();
-                        youTubeView.getPlayerUiController().getMenu().dismiss();
+                        menu.dismiss();
+                    }))
+                    .addItem(new com.aaptrix.youtubeview.core.ui.menu.MenuItem("1.75x", R.drawable.playback_speed, v -> {
+                        ytPlayer.setPlaybackRate(1.75f);
+                        Toast.makeText(this, "Playback speed set to 1.75x", Toast.LENGTH_SHORT).show();
+                        menu.dismiss();
                     }))
                     .addItem(new com.aaptrix.youtubeview.core.ui.menu.MenuItem("2.0x", R.drawable.playback_speed, v -> {
                         ytPlayer.setPlaybackRate(2.0f);
                         Toast.makeText(this, "Playback speed set to 2.0x", Toast.LENGTH_SHORT).show();
-                        youTubeView.getPlayerUiController().getMenu().dismiss();
+                        menu.dismiss();
                     }));
 
             mainframe.setVisibility(View.GONE);

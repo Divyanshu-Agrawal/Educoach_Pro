@@ -5,10 +5,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import com.aaptrix.R
 import com.aaptrix.youtubeview.core.player.PlayerConstants
@@ -35,6 +32,7 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
 
     private val controlsContainer: View
     private val extraViewsContainer: LinearLayout
+    private val mainLayout : FrameLayout
 
     private val videoTitle: TextView
     private val liveVideoIndicator: TextView
@@ -76,6 +74,7 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
         fastForward = controlsView.findViewById(R.id.fast_forward_layout)
 
         panel = controlsView.findViewById(R.id.panel)
+        mainLayout = controlsView.findViewById(R.id.main_layout);
         controlsContainer = controlsView.findViewById(R.id.controls_container)
         extraViewsContainer = controlsView.findViewById(R.id.extra_views_container)
 
@@ -276,6 +275,7 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
 
         if (state === PlayerConstants.PlayerState.PLAYING || state === PlayerConstants.PlayerState.PAUSED || state === PlayerConstants.PlayerState.VIDEO_CUED) {
             panel.setBackgroundColor(ContextCompat.getColor(panel.context, android.R.color.transparent))
+            mainLayout.setBackgroundColor(ContextCompat.getColor(mainLayout.context, android.R.color.transparent))
             progressBar.visibility = View.GONE
 
             if (isPlayPauseButtonEnabled) playPauseButton.visibility = View.VISIBLE
@@ -290,6 +290,7 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
             if (state === PlayerConstants.PlayerState.BUFFERING) {
                 progressBar.visibility = View.VISIBLE
                 panel.setBackgroundColor(ContextCompat.getColor(panel.context, android.R.color.transparent))
+                mainLayout.setBackgroundColor(ContextCompat.getColor(mainLayout.context, android.R.color.transparent))
                 if (isPlayPauseButtonEnabled) playPauseButton.visibility = View.INVISIBLE
 
                 customActionLeft.visibility = View.GONE

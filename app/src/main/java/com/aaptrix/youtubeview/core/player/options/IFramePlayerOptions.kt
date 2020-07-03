@@ -34,6 +34,7 @@ class IFramePlayerOptions private constructor(private val playerOptions: JSONObj
             private const val MODEST_BRANDING = "modestbranding"
             private const val CC_LOAD_POLICY = "cc_load_policy"
             private const val CC_LANG_PREF = "cc_lang_pref"
+            private const val YTP_OVERLAY = "\"ytp-pause-overlay\""
         }
 
         private val builderOptions = JSONObject()
@@ -49,6 +50,7 @@ class IFramePlayerOptions private constructor(private val playerOptions: JSONObj
             addInt(IV_LOAD_POLICY, 3)
             addInt(MODEST_BRANDING, 1)
             addInt(CC_LOAD_POLICY, 0)
+            addInt(YTP_OVERLAY, 0)
         }
 
         fun build(): IFramePlayerOptions {
