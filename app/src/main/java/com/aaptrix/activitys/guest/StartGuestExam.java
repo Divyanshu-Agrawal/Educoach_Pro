@@ -60,8 +60,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import com.aaptrix.databeans.QuestionData;
 
@@ -537,11 +540,16 @@ public class StartGuestExam extends AppCompatActivity {
                                     .setMessage("Are you sure you want to submit. Once submitted no changes can be made.")
                                     .setPositiveButton("Submit", (dialog, which) -> {
                                         Gson gson = new GsonBuilder().create();
+                                        long millis = SystemClock.elapsedRealtime() - timer.getBase();
+                                        String hms = String.format(Locale.getDefault(), "%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+                                                TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+                                                TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
                                         JsonArray myCustomArray = gson.toJsonTree(quesarray).getAsJsonArray();
                                         Intent intent = new Intent(context, GenerateLead.class);
                                         intent.putExtra("exam_name", examName);
                                         intent.putExtra("exam_id", examId);
                                         intent.putExtra("course", course);
+                                        intent.putExtra("time", hms);
                                         intent.putExtra("total_ques", quesarray.size() + "");
                                         intent.putExtra("array", preferences.getString("onlineExamArray", ""));
                                         intent.putExtra("ques_array", myCustomArray.toString());

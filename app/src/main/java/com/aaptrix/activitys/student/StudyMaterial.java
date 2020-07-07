@@ -408,6 +408,9 @@ public class StudyMaterial extends AppCompatActivity {
             skip = params[3];
             String data;
 
+            Log.e("userid", userId);
+            Log.e("section", userSection);
+
             try {
                 URL url = new URL(ALL_STUDY_MATERIAL);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -455,25 +458,24 @@ public class StudyMaterial extends AppCompatActivity {
             listView.setEnabled(true);
             try {
                 JSONObject jsonRootObject = new JSONObject(result);
-                if (userrType.equals("Guest")) {
-                    if (!result.contains("\"guestMaterials\":null")) {
-                        JSONArray jsonArray = jsonRootObject.getJSONArray("guestMaterials");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            data = new StudyMaterialData();
-                            JSONObject jObject = jsonArray.getJSONObject(i);
-                            data.setTitle(jObject.getString("tbl_school_studymaterial_title"));
-                            data.setId(jObject.getString("tbl_school_studymaterial_id"));
-                            data.setDescription(jObject.getString("tbl_school_studymaterial_desc"));
-                            data.setUrl(jObject.getString("tbl_school_studymaterial_docfile").split(","));
-                            data.setSubject(jObject.getString("subject_name"));
-                            data.setBatch(jObject.getString("tbl_course_name"));
-                            data.setPermission(jObject.getString("download_permission"));
-                            studyMaterialArray.add(data);
-                        }
+                if (!result.contains("\"result\":null")) {
+                    JSONArray jsonArray = jsonRootObject.getJSONArray("result");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        data = new StudyMaterialData();
+                        JSONObject jObject = jsonArray.getJSONObject(i);
+                        data.setTitle(jObject.getString("tbl_school_studymaterial_title"));
+                        data.setId(jObject.getString("tbl_school_studymaterial_id"));
+                        data.setDescription(jObject.getString("tbl_school_studymaterial_desc"));
+                        data.setUrl(jObject.getString("tbl_school_studymaterial_docfile").split(","));
+                        data.setSubject(jObject.getString("subject_name"));
+                        data.setBatch(jObject.getString("tbl_stnt_prsnl_data_section"));
+                        data.setPermission(jObject.getString("download_permission"));
+                        array.add(data);
                     }
-                } else {
-                    if (!result.contains("\"result\":null")) {
-                        JSONArray jsonArray = jsonRootObject.getJSONArray("result");
+                }
+                if (userrType.equals("Student")) {
+                    if (!result.contains("\"studyMaterialsStudent\":null")) {
+                        JSONArray jsonArray = jsonRootObject.getJSONArray("studyMaterialsStudent");
                         for (int i = 0; i < jsonArray.length(); i++) {
                             data = new StudyMaterialData();
                             JSONObject jObject = jsonArray.getJSONObject(i);
@@ -487,31 +489,14 @@ public class StudyMaterial extends AppCompatActivity {
                             array.add(data);
                         }
                     }
-                    if (userrType.equals("Student")) {
-                        String disable = jsonRootObject.getString("DisableSubject");
-                        for (int i = 0; i < array.size(); i++) {
-                            if (!disable.contains(array.get(i).getSubject())) {
-                                studyMaterialArray.add(array.get(i));
-                            }
+                    String disable = jsonRootObject.getString("DisableSubject");
+                    for (int i = 0; i < array.size(); i++) {
+                        if (!disable.contains(array.get(i).getSubject())) {
+                            studyMaterialArray.add(array.get(i));
                         }
-                        if (!result.contains("\"studyMaterialsStudent\":null")) {
-                            JSONArray jsonArray = jsonRootObject.getJSONArray("studyMaterialsStudent");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                data = new StudyMaterialData();
-                                JSONObject jObject = jsonArray.getJSONObject(i);
-                                data.setTitle(jObject.getString("tbl_school_studymaterial_title"));
-                                data.setId(jObject.getString("tbl_school_studymaterial_id"));
-                                data.setDescription(jObject.getString("tbl_school_studymaterial_desc"));
-                                data.setUrl(jObject.getString("tbl_school_studymaterial_docfile").split(","));
-                                data.setSubject(jObject.getString("subject_name"));
-                                data.setBatch(jObject.getString("tbl_stnt_prsnl_data_section"));
-                                data.setPermission(jObject.getString("download_permission"));
-                                array.add(data);
-                            }
-                        }
-                    } else {
-                        studyMaterialArray.addAll(array);
                     }
+                } else {
+                    studyMaterialArray.addAll(array);
                 }
                 if (studyMaterialArray.size() > 0) {
                     no_material.setVisibility(View.GONE);

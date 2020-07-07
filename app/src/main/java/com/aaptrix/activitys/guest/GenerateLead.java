@@ -81,7 +81,7 @@ public class GenerateLead extends AppCompatActivity {
     RelativeLayout layout;
     AppBarLayout appBarLayout;
     TextView tool_title;
-    String examId, examName, course, totalQues, ansArray, quesArray;
+    String examId, examName, course, totalQues, ansArray, quesArray, time;
     int correct = 0, wrong = 0, notAttempt;
     ArrayList<QuestionData> arrayList = new ArrayList<>();
 
@@ -138,6 +138,7 @@ public class GenerateLead extends AppCompatActivity {
         totalQues = getIntent().getStringExtra("total_ques");
         ansArray = getIntent().getStringExtra("array");
         quesArray = getIntent().getStringExtra("ques_array");
+        time = getIntent().getStringExtra("time");
 
         try {
             JSONArray jsonArray = new JSONArray(ansArray);
@@ -362,6 +363,7 @@ public class GenerateLead extends AppCompatActivity {
                 entityBuilder.addTextBody("attempt_questions", correct + "");
                 entityBuilder.addTextBody("wrong_questions", wrong + "");
                 entityBuilder.addTextBody("notattempt_questions", notAttempt + "");
+                entityBuilder.addTextBody("total_timing", time);
                 HttpEntity entity = entityBuilder.build();
                 httppost.setEntity(entity);
                 HttpResponse response = httpclient.execute(httppost);
