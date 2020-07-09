@@ -60,16 +60,20 @@ public class StaffAdapter extends ArrayAdapter<StaffRateData> {
             name.setText(data.getName());
             String[] subs;
 
-            try {
-                JSONArray jsonArray = new JSONArray(data.getSubjects());
-                subs = new String[jsonArray.length()];
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    subs[i] = jsonObject.getString("tbl_batch_subjct_name");
+            if (data.getShortBio().equals("") || data.getShortBio().equals("null")) {
+                try {
+                    JSONArray jsonArray = new JSONArray(data.getSubjects());
+                    subs = new String[jsonArray.length()];
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        subs[i] = jsonObject.getString("tbl_batch_subjct_name");
+                    }
+                    subjects.setText(Arrays.toString(subs).replace("[", "").replace("]", ""));
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                subjects.setText(Arrays.toString(subs).replace("[", "").replace("]", ""));
-            } catch (JSONException e) {
-                e.printStackTrace();
+            } else {
+                subjects.setText(data.getShortBio());
             }
 
             SharedPreferences sp = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -100,6 +104,7 @@ public class StaffAdapter extends ArrayAdapter<StaffRateData> {
                 intent.putExtra("rateEnable", rateEnabled);
                 intent.putExtra("rated", data.getRated());
                 intent.putExtra("comment", data.getComment());
+                intent.putExtra("shortBio", data.getShortBio());
                 context.startActivity(intent);
             });
         }

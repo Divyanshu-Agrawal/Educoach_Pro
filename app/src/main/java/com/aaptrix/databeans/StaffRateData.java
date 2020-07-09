@@ -4,7 +4,15 @@ import java.io.Serializable;
 
 public class StaffRateData implements Serializable {
 
-    private String id, name, bio, image, rating, subjects, type, rated, comment;
+    private String id, name, bio, image, rating, subjects, type, rated, comment, shortBio;
+
+    public String getShortBio() {
+        return shortBio;
+    }
+
+    public void setShortBio(String shortBio) {
+        this.shortBio = shortBio;
+    }
 
     public String getRated() {
         return rated;

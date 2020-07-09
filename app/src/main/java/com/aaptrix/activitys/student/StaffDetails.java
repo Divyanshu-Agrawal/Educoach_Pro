@@ -67,7 +67,7 @@ public class StaffDetails extends AppCompatActivity {
     SharedPreferences sp;
     TextView name, bio, subjects, tool_title, bio_title, sub_title;
     Button rateBtn;
-    String strName, strId, strBio, strRateEnabled, strSubjects, strImage, strType, strRated, strComment, strRating;
+    String strName, strId, strBio, strRateEnabled, strSubjects, strImage, strType, strRated, strComment, strRating, strShort;
     String url = "", schoolId, userId, imageUrl;
     String selToolColor, selDrawerColor, selStatusColor, selTextColor1, selTextColor2;
 
@@ -117,6 +117,7 @@ public class StaffDetails extends AppCompatActivity {
         strRated = getIntent().getStringExtra("rated");
         strComment = getIntent().getStringExtra("comment");
         strRating = getIntent().getStringExtra("rating");
+        strShort = getIntent().getStringExtra("shortBio");
 
         if (strRated.equals("1")) {
             rateBtn.setText("Show Rating");
@@ -142,19 +143,23 @@ public class StaffDetails extends AppCompatActivity {
 
         String[] subs;
 
-        try {
-            JSONArray jsonArray = new JSONArray(strSubjects);
-            subs = new String[jsonArray.length()];
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                subs[i] = jsonObject.getString("tbl_batch_subjct_name");
+        if (strShort.equals("") || strShort.equals("null")) {
+            try {
+                JSONArray jsonArray = new JSONArray(strSubjects);
+                subs = new String[jsonArray.length()];
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    subs[i] = jsonObject.getString("tbl_batch_subjct_name");
+                }
+                if (subs.length < 2) {
+                    sub_title.setText("Subject");
+                }
+                subjects.setText(Arrays.toString(subs).replace("[", "").replace("]", ""));
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            if (subs.length < 2) {
-                sub_title.setText("Subject");
-            }
-            subjects.setText(Arrays.toString(subs).replace("[", "").replace("]", ""));
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } else {
+            subjects.setText(strShort);
         }
 
         if (!strImage.isEmpty() && !strImage.equals("0")) {

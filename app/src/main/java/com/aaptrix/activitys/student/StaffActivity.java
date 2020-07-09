@@ -138,6 +138,7 @@ public class StaffActivity extends AppCompatActivity {
                             data.setSubjects(jObject.getString("tbl_batch_subjct_name"));
                             data.setRated(jObject.getString("rated"));
                             data.setComment(jObject.getString("comment"));
+                            data.setShortBio(jObject.getString("user_short_bio"));
                             staffArray.add(data);
                         }
                     }
@@ -226,6 +227,7 @@ public class StaffActivity extends AppCompatActivity {
                             data.setSubjects(jObject.getString("tbl_batch_subjct_name"));
                             data.setRated(jObject.getString("rated"));
                             data.setComment(jObject.getString("comment"));
+                            data.setShortBio(jObject.getString("user_short_bio"));
                             staffArray.add(data);
                         }
                     }

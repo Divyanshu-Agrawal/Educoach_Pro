@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.PermissionChecker;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -32,6 +33,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -74,6 +76,7 @@ import cz.msebera.android.httpclient.conn.ssl.SSLConnectionSocketFactory;
 import cz.msebera.android.httpclient.conn.ssl.SSLContexts;
 import cz.msebera.android.httpclient.entity.mime.HttpMultipartMode;
 import cz.msebera.android.httpclient.entity.mime.MultipartEntityBuilder;
+import cz.msebera.android.httpclient.entity.mime.content.FileBody;
 import cz.msebera.android.httpclient.impl.client.HttpClients;
 import cz.msebera.android.httpclient.util.EntityUtils;
 import id.zelory.compressor.Compressor;
@@ -100,6 +103,7 @@ public class UserSelfRegistration extends AppCompatActivity {
     String[] batch_array = {"Select Batch"};
     String selBatch = "Select Batch";
     String strDob = "0", strGender = "0";
+    ImageView attachment;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -123,6 +127,7 @@ public class UserSelfRegistration extends AppCompatActivity {
         register = findViewById(R.id.btn_verify);
         userDob = findViewById(R.id.user_dob);
         userEmail = findViewById(R.id.user_email);
+        attachment = findViewById(R.id.attachment);
         userGender = findViewById(R.id.user_gender);
         userBatch = findViewById(R.id.user_batch);
         parentName = findViewById(R.id.parent_name);
@@ -193,6 +198,17 @@ public class UserSelfRegistration extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
+
+        attachment.setOnClickListener(v -> {
+            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED) {
+                Intent photoPickerIntent = new Intent();
+                photoPickerIntent.setType("image/*");
+                photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(photoPickerIntent, 1);
+            } else {
+                isPermissionGranted();
             }
         });
 
@@ -433,6 +449,10 @@ public class UserSelfRegistration extends AppCompatActivity {
                 HttpPost httppost = new HttpPost(USER_REGISTRATION);
                 MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
                 entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+                if (image != null) {
+                    FileBody fileBody = new FileBody(image);
+                    entityBuilder.addPart("attachment", fileBody);
+                }
                 entityBuilder.addTextBody("tbl_school_id", SCHOOL_ID);
                 entityBuilder.addTextBody("tbl_users_name", username);
                 entityBuilder.addTextBody("tbl_users_phone", userphone);

@@ -184,6 +184,7 @@
                 android:hint="Enter Parent Name"
                 android:inputType="textCapWords"
                 android:paddingStart="@dimen/siz10"
+                android:visibility="gone"
                 android:paddingEnd="10dip"
                 android:textColor="@color/black"
                 android:textColorHint="@color/text_gray"
@@ -200,6 +201,7 @@
                 android:hint="Enter Parent Phone Number"
                 android:inputType="phone"
                 android:maxLength="10"
+                android:visibility="gone"
                 android:paddingStart="@dimen/siz10"
                 android:paddingEnd="10dip"
                 android:textColor="@color/black"
@@ -217,6 +219,7 @@
                 android:hint="Enter Parent Occupation"
                 android:inputType="textCapWords"
                 android:paddingStart="@dimen/siz10"
+                android:visibility="gone"
                 android:paddingEnd="10dip"
                 android:textColor="@color/black"
                 android:textColorHint="@color/text_gray"
@@ -238,6 +241,22 @@
                 android:textColorHint="@color/text_gray"
                 android:textSize="@dimen/siz14"
                 tools:ignore="Autofill,HardcodedText" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Attachment"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_gravity="start"
+                android:layout_marginStart="@dimen/_20sdp"
+                tools:ignore="HardcodedText" />
+
+            <ImageView
+                android:layout_width="@dimen/_280sdp"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:src="@drawable/placeholder"
+                android:id="@+id/attachment"/>
 
         </LinearLayout>
 
