@@ -63,8 +63,8 @@
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:background="@android:color/transparent"
                     android:padding="10dp"
-                    android:tint="@android:color/white"
-                    android:src="@drawable/more_icon" />
+                    android:src="@drawable/more_icon"
+                    android:tint="@android:color/white" />
 
                 <!--A view that draws a semi tranparent black overlay so that title is visible once expanded -->
 
@@ -263,6 +263,47 @@
                     android:textColor="@android:color/black"
                     android:textSize="14sp" />
 
+                <TextView
+                    android:id="@+id/id_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/class_teacher"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:paddingStart="10dp"
+                    android:visibility="gone"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="5dp"
+                    android:text="Device ID" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/id_title">
+
+                    <TextView
+                        android:id="@+id/android_id"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:layout_height="@dimen/_30sdp"
+                        android:paddingStart="10dp"
+                        android:visibility="gone"
+                        android:gravity="center_vertical"
+                        android:paddingEnd="10dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:id="@+id/copy"
+                        android:visibility="gone"
+                        android:tint="@color/black"
+                        android:padding="10dp"
+                        android:src="@drawable/copy_icon"/>
+                </LinearLayout>
+
             </RelativeLayout>
 
         </RelativeLayout>
@@ -277,18 +318,18 @@
         android:visibility="gone" />
 
     <RelativeLayout
+        android:id="@+id/fullscr_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/fullscr_image"
-        android:visibility="gone"
         android:animateLayoutChanges="true"
-        android:background="#80111111">
+        android:background="#80111111"
+        android:visibility="gone">
 
         <com.github.chrisbanes.photoview.PhotoView
+            android:id="@+id/fullscr_user_profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/fullscr_user_profile"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true" />
 
     </RelativeLayout>
 

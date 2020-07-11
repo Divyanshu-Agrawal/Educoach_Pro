@@ -102,10 +102,7 @@ public class StartSubjective extends AppCompatActivity {
             assert enddate != null;
             endDate.setText(sdf.format(enddate));
 
-            String ins = "<b>&#8226;</b> You can use \"Next\" and \"Previous\" buttons to navigate the questions.<br/><br/>" +
-                    "<b>&#8226;</b> \"Mark As Review\" button can be used to mark the answer for reviewing later.<br/><br/>" +
-                    "<b>&#8226;</b> It is to be noted that the question marked for review will not be counted in marking until submitted.<br/><br/>" +
-                    "<b>&#8226;</b> Negative marking is there, for every wrong question will be deducted.<br/><br/>" +
+            String ins = "<b>&#8226;</b> You can only submit answer with the exam period. Answers submitted after end time will not be considered for marking<br/><br/>" +
                     "<b>&#8226;</b> You will be notified once result is published.";
             instructions.setText(Html.fromHtml(ins));
         } catch (Exception e) {

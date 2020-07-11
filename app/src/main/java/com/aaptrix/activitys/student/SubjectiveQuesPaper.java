@@ -111,7 +111,7 @@ public class SubjectiveQuesPaper extends AppCompatActivity {
         examName = getIntent().getStringExtra("examName");
         startTime = getIntent().getStringExtra("startTime");
         endTime = getIntent().getStringExtra("endTime");
-        strPdf = getIntent().getStringExtra("pdf");
+        strPdf = getIntent().getStringExtra("quesPdf");
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         schoolId = settings.getString("str_school_id", "");
@@ -131,18 +131,21 @@ public class SubjectiveQuesPaper extends AppCompatActivity {
         }
 
         String url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/subjectiveExam/" + strPdf;
+        Log.e("url", url);
         watermark.setText(rollNo);
         watermark.bringToFront();
         setTimer();
 
-        try {
-            URL u = new URL(url);
-            u.openConnection();
-            DataInputStream stream = new DataInputStream(u.openStream());
-            pdfView.fromStream(stream).load();
-        } catch (IOException e) {
-            // swallow a 404
-        }
+        new Thread(() -> {
+            try {
+                URL u = new URL(url);
+                u.openConnection();
+                DataInputStream stream = new DataInputStream(u.openStream());
+                pdfView.fromStream(stream).load();
+            } catch (IOException e) {
+                // swallow a 404
+            }
+        }).start();
 
         submit.setOnClickListener(v -> {
             if (isInternetOn()) {

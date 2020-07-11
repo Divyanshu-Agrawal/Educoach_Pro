@@ -97,9 +97,10 @@ public class SplashScreen extends Activity {
     TextView mainTxt, version;
     String currentVersion, schoolId, roleId, user_token_id, android_id, userId, userType, priority, userSection, userPhone;
     public static String HTTP_HOST = "https://dashboard.educoachapp.com/android_services/";
-    public static String SENDER_ID = "EDCACH";
+    public static String SENDER_ID = BuildConfig.SENDER_ID;
 	public static final String SCHOOL_ID = BuildConfig.SCHOOL_ID;
-    public static final String SCHOOL_NAME = "Demo Institute";
+    public static final String SCHOOL_NAME = BuildConfig.SCHOOL_NAME;
+    public static final String TNC = BuildConfig.TNC;
     CountDownTimer mTimer;
 
     @Override

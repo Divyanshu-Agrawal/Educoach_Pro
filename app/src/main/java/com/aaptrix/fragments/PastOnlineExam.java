@@ -11,6 +11,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -340,7 +341,7 @@ public class PastOnlineExam extends Fragment {
             progressBar.setVisibility(View.GONE);
             swipeRefreshLayout.setRefreshing(false);
             examArray.clear();
-            if (result != null && !result.equals("{\"OnlineExamList\":null}")) {
+            if (result != null && !result.contains("{\"OnlineExamList\":null}")) {
                 try {
                     JSONObject jsonObject = new JSONObject(result);
                     JSONArray jsonArray = jsonObject.getJSONArray("OnlineExamList");
@@ -394,17 +395,19 @@ public class PastOnlineExam extends Fragment {
                             }
                         }
                     }
-                    JSONArray array = jsonObject.getJSONArray("subjectiveExamList");
-                    for (int i = 0; i < array.length(); i++) {
-                        JSONObject object = jsonArray.getJSONObject(i);
-                        OnlineExamData data = new OnlineExamData();
-                        Date date = sdf.parse(object.getString("tbl_online_exam_end_date"));
-                        String attempt = object.getString("user_exam_taken_status");
-                        if (userType.equals("Student")) {
-                            String sub = jsonObject.getString("DisableSubject");
-                            if (!sub.contains(object.getString("subject_name"))) {
-                                if (calendar.getTime().after(date) || attempt.equals("1")) {
-                                    if (object.getString("tbl_online_exam_result_publish").equals("1")) {
+                    if (!result.contains("{\"subjectiveExamList\":null}")) {
+                        JSONArray array = jsonObject.getJSONArray("subjectiveExamList");
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject object = array.getJSONObject(i);
+                            OnlineExamData data = new OnlineExamData();
+                            String start = object.getString("tbl_online_exam_date");
+                            String end = object.getString("tbl_online_exam_end_date");
+                            Date startdate = sdf.parse(start);
+                            Date enddate = sdf.parse(end);
+                            if (userType.equals("Student")) {
+                                String sub = jsonObject.getString("DisableSubject");
+                                if (!sub.contains(object.getString("subject_name"))) {
+                                    if (calendar.getTime().equals(startdate) || calendar.getTime().before(startdate) || (calendar.getTime().after(startdate) && calendar.getTime().before(enddate))) {
                                         data.setId(object.getString("tbl_subjective_online_exams_id"));
                                         data.setName(object.getString("tbl_online_exam_nm"));
                                         data.setDate(object.getString("tbl_online_exam_date"));
@@ -417,13 +420,13 @@ public class PastOnlineExam extends Fragment {
                                         data.setQuesPdf(object.getString("tbl_exam_question_pdf"));
                                         data.setAnsPdf(object.getString("tbl_exam_answer_sheat"));
                                         data.setType("Subjective");
+                                        Log.e("start", start);
+                                        Log.e("end", end);
                                         examArray.add(data);
                                     }
                                 }
-                            }
-                        } else {
-                            if (calendar.getTime().after(date) || attempt.equals("1")) {
-                                if (object.getString("tbl_online_exam_result_publish").equals("1")) {
+                            } else {
+                                if (calendar.getTime().before(startdate) || (calendar.getTime().after(startdate) && calendar.getTime().before(enddate))) {
                                     data.setId(object.getString("tbl_subjective_online_exams_id"));
                                     data.setName(object.getString("tbl_online_exam_nm"));
                                     data.setDate(object.getString("tbl_online_exam_date"));

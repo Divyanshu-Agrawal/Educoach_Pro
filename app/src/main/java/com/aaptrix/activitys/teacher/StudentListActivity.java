@@ -89,7 +89,7 @@ public class StudentListActivity extends AppCompatActivity {
 	String studentId, studentName, studentImage, studentAttendStatus;
 	StudentAttendanceListAdaptor studentAttendanceListAdaptor;
 	String stdSection, value, date, stdSubject;
-	LinearLayout submitAttendanceLayout;
+	LinearLayout submitAttendanceLayout, markAll;
 	TextView submit_attendance;
 	String formattedDate1;
 	
@@ -127,6 +127,7 @@ public class StudentListActivity extends AppCompatActivity {
 		tool_title = findViewById(R.id.tool_title);
 		attenMark = findViewById(R.id.atten_marked_by);
 		layout = findViewById(R.id.layout);
+		markAll = findViewById(R.id.mark_all);
 		
 		//color
 		colorSetSP();
@@ -672,16 +673,24 @@ public class StudentListActivity extends AppCompatActivity {
 		studentList.setAdapter(studentAttendanceListAdaptor);
 		studentAttendanceListAdaptor.notifyDataSetChanged();
 
+		if (value.equals("take")) {
+			markAll.setVisibility(View.VISIBLE);
+		}
+
 		RadioButton rb_present = findViewById(R.id.rb_present);
 		RadioButton rb_absent = findViewById(R.id.rb_absent);
 
 		rb_present.setOnClickListener(v -> {
 			selectAll = "present";
+			studentAttendanceListAdaptor = new StudentAttendanceListAdaptor(StudentListActivity.this, R.layout.user_attendance_list_item1, studentArray, value, stdSubject, selectAll);
+			studentList.setAdapter(studentAttendanceListAdaptor);
 			studentAttendanceListAdaptor.notifyDataSetChanged();
 		});
 
 		rb_absent.setOnClickListener(v -> {
 			selectAll = "absent";
+			studentAttendanceListAdaptor = new StudentAttendanceListAdaptor(StudentListActivity.this, R.layout.user_attendance_list_item1, studentArray, value, stdSubject, selectAll);
+			studentList.setAdapter(studentAttendanceListAdaptor);
 			studentAttendanceListAdaptor.notifyDataSetChanged();
 		});
 		

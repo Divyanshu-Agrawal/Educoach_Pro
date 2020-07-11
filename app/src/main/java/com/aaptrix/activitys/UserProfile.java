@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +17,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -70,6 +74,8 @@ public class UserProfile extends AppCompatActivity {
     RelativeLayout fullscrLayout;
     PhotoView fullscrImage;
     boolean isVisible = false;
+    TextView androidId, idTitle;
+    ImageView copy;
     RelativeLayout layout;
     String url = "", selToolColor, strPhone;
 
@@ -103,11 +109,30 @@ public class UserProfile extends AppCompatActivity {
         rollTitle = findViewById(R.id.roll_title);
         classTecher = findViewById(R.id.class_teacher);
         teacherTitle = findViewById(R.id.teacher_title);
+        idTitle = findViewById(R.id.id_title);
+        androidId = findViewById(R.id.android_id);
+        copy = findViewById(R.id.copy);
 
         String userImg = sp.getString("userImg", "");
         String userType = sp.getString("userrType", "");
         String imageUrl = sp.getString("imageUrl", "") + sp.getString("userSchoolId", "");
         String school = sp.getString("userSchoolName", "");
+
+        if (userType.equals("Admin") || userType.equals("Teacher")) {
+            idTitle.setVisibility(View.VISIBLE);
+            androidId.setVisibility(View.VISIBLE);
+            copy.setVisibility(View.VISIBLE);
+
+            @SuppressLint("HardwareIds") String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+            androidId.setText(deviceId);
+
+            copy.setOnClickListener(v -> {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Device ID", deviceId);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+            });
+        }
 
         schoolName.setText(school);
 

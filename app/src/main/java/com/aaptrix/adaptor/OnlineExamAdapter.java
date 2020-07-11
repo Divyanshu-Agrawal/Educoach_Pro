@@ -74,7 +74,13 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
             } else {
                 examName.setText(Html.fromHtml(data.getName()));
             }
-            examDuration.setText("Duration : " + data.getDuration() + " Hours");
+
+            if (data.getType().equals("MCQ")) {
+                examDuration.setText("Duration : " + data.getDuration() + " Hours");
+            } else {
+                examDuration.setText("Duration : None");
+            }
+
             sub.setText("Subject : " + data.getSubject());
             type.setText("Exam Type : " + data.getType());
 

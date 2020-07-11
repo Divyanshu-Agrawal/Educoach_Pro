@@ -35,6 +35,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -84,6 +85,7 @@ import id.zelory.compressor.Compressor;
 import pl.droidsonroids.gif.GifImageView;
 
 import static com.aaptrix.activitys.SplashScreen.SCHOOL_ID;
+import static com.aaptrix.activitys.SplashScreen.TNC;
 import static com.aaptrix.tools.HttpUrl.ALL_BATCHS;
 import static com.aaptrix.tools.HttpUrl.PV;
 import static com.aaptrix.tools.HttpUrl.TC;
@@ -107,8 +109,9 @@ public class UserSelfRegistration extends AppCompatActivity {
     String selBatch = "Select Batch";
     String strDob = "0", strGender = "0";
     ImageView attachment;
-    TextView ts, pv;
+    TextView ts;
     CheckBox cb;
+    LinearLayout termsLayout;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -141,7 +144,7 @@ public class UserSelfRegistration extends AppCompatActivity {
         referral = findViewById(R.id.referral_code);
         ts = findViewById(R.id.ts);
         cb = findViewById(R.id.cb);
-        pv = findViewById(R.id.pv);
+        termsLayout = findViewById(R.id.terms_layout);
 
         userRoll.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus)
@@ -174,18 +177,14 @@ public class UserSelfRegistration extends AppCompatActivity {
 
         layout.setOnTouchListener((v, event) -> false);
 
+        if (TNC.equals("")) {
+            termsLayout.setVisibility(View.GONE);
+        }
+
         ts.setOnClickListener(view -> {
             Intent i = new Intent(this, TermsConditionsActivity.class);
-            i.putExtra("url", TC);
+            i.putExtra("url", TNC);
             i.putExtra("tool_title", "Terms and Conditions");
-            startActivity(i);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        });
-
-        pv.setOnClickListener(view -> {
-            Intent i = new Intent(this, TermsConditionsActivity.class);
-            i.putExtra("url", PV);
-            i.putExtra("tool_title", "Privacy Policy");
             startActivity(i);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });

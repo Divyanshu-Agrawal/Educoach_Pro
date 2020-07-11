@@ -289,14 +289,16 @@ public class SchoolCalenderActivity extends AppCompatActivity {
                 for (int i = 0; i < offlineExamArray.length(); i++) {
                     dbe = new DatabeanEvents();
                     JSONObject jsonObject = offlineExamArray.getJSONObject(i);
-                    dbe.setEventId(jsonObject.getString("tbl_exam_id"));
-                    dbe.setEventTitle(jsonObject.getString("tbl_exam_name"));
-                    dbe.setEventDesc(jsonObject.getString("exam_type"));
-                    dbe.setEventDate(jsonObject.getString("tbl_exam_start_date"));
-                    dbe.setEventEndDate(jsonObject.getString("tbl_exam_start_date"));
-                    dbe.setEventImg("");
-                    dbe.setType("exam");
-                    eventsArray.add(dbe);
+                    if (!jsonObject.getString("tbl_exam_start_date").equals("null")) {
+                        dbe.setEventId(jsonObject.getString("tbl_exam_id"));
+                        dbe.setEventTitle(jsonObject.getString("tbl_exam_name"));
+                        dbe.setEventDesc(jsonObject.getString("exam_type"));
+                        dbe.setEventDate(jsonObject.getString("tbl_exam_start_date"));
+                        dbe.setEventEndDate(jsonObject.getString("tbl_exam_start_date"));
+                        dbe.setEventImg("");
+                        dbe.setType("exam");
+                        eventsArray.add(dbe);
+                    }
                 }
             }
             if (!events.contains("\"onlineExam\": null")) {
@@ -304,14 +306,16 @@ public class SchoolCalenderActivity extends AppCompatActivity {
                 for (int i = 0; i < onlineExamArray.length(); i++) {
                     dbe = new DatabeanEvents();
                     JSONObject jsonObject = onlineExamArray.getJSONObject(i);
-                    dbe.setEventId(jsonObject.getString("tbl_online_exams_id"));
-                    dbe.setEventTitle(jsonObject.getString("tbl_online_exam_nm"));
-                    dbe.setEventDesc(jsonObject.getString("tbl_stnt_prsnl_data_section"));
-                    dbe.setEventDate(jsonObject.getString("tbl_online_exam_date"));
-                    dbe.setEventEndDate(jsonObject.getString("tbl_online_exam_end_date"));
-                    dbe.setEventImg("");
-                    dbe.setType("exam");
-                    eventsArray.add(dbe);
+                    if (!jsonObject.getString("tbl_online_exam_date").equals("null")) {
+                        dbe.setEventId(jsonObject.getString("tbl_online_exams_id"));
+                        dbe.setEventTitle(jsonObject.getString("tbl_online_exam_nm"));
+                        dbe.setEventDesc(jsonObject.getString("tbl_stnt_prsnl_data_section"));
+                        dbe.setEventDate(jsonObject.getString("tbl_online_exam_date"));
+                        dbe.setEventEndDate(jsonObject.getString("tbl_online_exam_end_date"));
+                        dbe.setEventImg("");
+                        dbe.setType("exam");
+                        eventsArray.add(dbe);
+                    }
                 }
             }
             if (!events.contains("\"activities\": null")) {
@@ -735,14 +739,16 @@ public class SchoolCalenderActivity extends AppCompatActivity {
                         for (int i = 0; i < offlineExamArray.length(); i++) {
                             dbe = new DatabeanEvents();
                             JSONObject jsonObject = offlineExamArray.getJSONObject(i);
-                            dbe.setEventId(jsonObject.getString("tbl_exam_id"));
-                            dbe.setEventTitle(jsonObject.getString("tbl_exam_name"));
-                            dbe.setEventDesc(jsonObject.getString("exam_type"));
-                            dbe.setEventDate(jsonObject.getString("tbl_exam_start_date"));
-                            dbe.setEventEndDate(jsonObject.getString("tbl_exam_start_date"));
-                            dbe.setEventImg("");
-                            dbe.setType("offline exam");
-                            eventsArray1.add(dbe);
+                            if (!jsonObject.getString("tbl_exam_start_date").equals("null")) {
+                                dbe.setEventId(jsonObject.getString("tbl_exam_id"));
+                                dbe.setEventTitle(jsonObject.getString("tbl_exam_name"));
+                                dbe.setEventDesc(jsonObject.getString("exam_type"));
+                                dbe.setEventDate(jsonObject.getString("tbl_exam_start_date"));
+                                dbe.setEventEndDate(jsonObject.getString("tbl_exam_start_date"));
+                                dbe.setEventImg("");
+                                dbe.setType("offline exam");
+                                eventsArray1.add(dbe);
+                            }
                         }
                     }
                     if (!result.contains("\"onlineExam\":null")) {
@@ -750,14 +756,16 @@ public class SchoolCalenderActivity extends AppCompatActivity {
                         for (int i = 0; i < onlineExamArray.length(); i++) {
                             dbe = new DatabeanEvents();
                             JSONObject jsonObject = onlineExamArray.getJSONObject(i);
-                            dbe.setEventId(jsonObject.getString("tbl_online_exams_id"));
-                            dbe.setEventTitle(jsonObject.getString("tbl_online_exam_nm"));
-                            dbe.setEventDesc(jsonObject.getString("tbl_stnt_prsnl_data_section"));
-                            dbe.setEventDate(jsonObject.getString("tbl_online_exam_date"));
-                            dbe.setEventEndDate(jsonObject.getString("tbl_online_exam_end_date"));
-                            dbe.setEventImg("");
-                            dbe.setType("online exam");
-                            eventsArray1.add(dbe);
+                            if (!jsonObject.getString("tbl_online_exam_date").equals("null")) {
+                                dbe.setEventId(jsonObject.getString("tbl_online_exams_id"));
+                                dbe.setEventTitle(jsonObject.getString("tbl_online_exam_nm"));
+                                dbe.setEventDesc(jsonObject.getString("tbl_stnt_prsnl_data_section"));
+                                dbe.setEventDate(jsonObject.getString("tbl_online_exam_date"));
+                                dbe.setEventEndDate(jsonObject.getString("tbl_online_exam_end_date"));
+                                dbe.setEventImg("");
+                                dbe.setType("online exam");
+                                eventsArray1.add(dbe);
+                            }
                         }
                     }
                     if (!result.contains("\"activities\":null")) {

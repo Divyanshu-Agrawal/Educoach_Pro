@@ -262,6 +262,7 @@
             <LinearLayout
                 android:layout_width="@dimen/_280sdp"
                 android:layout_marginTop="@dimen/_20sdp"
+                android:id="@+id/terms_layout"
                 android:layout_height="wrap_content">
 
                 <CheckBox
@@ -270,7 +271,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
                     android:buttonTint="@color/dark_green"
-                    android:fontFamily="ROBOTO-REGULAR.TTF"
                     android:text=""
                     android:textColor="@color/orange"
                     android:textSize="@dimen/siz12"
@@ -281,7 +281,6 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2.7"
                     android:buttonTint="@color/dark_green"
-                    android:fontFamily="ROBOTO-REGULAR.TTF"
                     android:gravity="center|start"
                     android:orientation="vertical"
                     android:text="By registering you are agreeing to our "
@@ -298,7 +297,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:buttonTint="@color/dark_green"
-                            android:fontFamily="ROBOTO-REGULAR.TTF"
                             android:gravity="center|start"
                             android:text="By registering you are agreeing to our "
                             android:textColor="@color/orange"
@@ -310,36 +308,12 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:buttonTint="@color/dark_green"
-                            android:fontFamily="ROBOTO-REGULAR.TTF"
                             android:gravity="center|start"
                             android:text="@string/tcc"
                             android:textColor="@color/orange"
                             android:textSize="@dimen/siz10"
                             tools:ignore="UnusedAttribute" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:buttonTint="@color/dark_green"
-                            android:fontFamily="ROBOTO-REGULAR.TTF"
-                            android:gravity="center|start"
-                            android:text=" and"
-                            android:textColor="@color/orange"
-                            android:textSize="@dimen/siz10"
-                            tools:ignore="HardcodedText,UnusedAttribute" />
                     </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/pv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:buttonTint="@color/dark_green"
-                        android:fontFamily="ROBOTO-REGULAR.TTF"
-                        android:gravity="center|start"
-                        android:text="@string/pv"
-                        android:textColor="@color/orange"
-                        android:textSize="@dimen/siz10"
-                        tools:ignore="UnusedAttribute" />
 
                 </LinearLayout>
 
