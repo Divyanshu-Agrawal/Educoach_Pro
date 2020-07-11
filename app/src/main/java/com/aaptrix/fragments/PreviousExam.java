@@ -21,6 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.aaptrix.R;
 import com.aaptrix.activitys.student.OnlineReport;
+import com.aaptrix.activitys.student.SubjectiveExamResult;
 import com.aaptrix.adaptor.OnlineResadapter;
 import com.aaptrix.databeans.OnlineExamData;
 
@@ -306,6 +307,11 @@ public class PreviousExam extends Fragment {
                 intent.putExtra("userSection", studentSection);
                 intent.putExtra("examId", examArray.get(position).getId());
                 intent.putExtra("examName", examArray.get(position).getName());
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(getContext(), SubjectiveExamResult.class);
+                intent.putExtra("examName", examArray.get(position).getName());
+                intent.putExtra("pdf", examArray.get(position).getAnsPdf());
                 startActivity(intent);
             }
         });

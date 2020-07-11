@@ -39,16 +39,17 @@ public class StudentAttendanceListAdaptor extends ArrayAdapter<DataBeanStudent> 
 	private ArrayList<DataBeanStudent> studentArray = new ArrayList<>();
 	private String value, subject;
 	private DataBeanStudent dbs;
-	private String attendanceStatus = "";
+	private String attendanceStatus = "", selectAll;
 	
 	private static final String PREFS_ATTENDANCE = "attendance";
 	
 	
-	public StudentAttendanceListAdaptor(Context context, int resource, ArrayList<DataBeanStudent> objects, String value, String subject) {
+	public StudentAttendanceListAdaptor(Context context, int resource, ArrayList<DataBeanStudent> objects, String value, String subject, String selectAll) {
 		super(context, resource, objects);
 		this.objects = objects;
 		this.value = value;
 		this.subject = subject;
+		this.selectAll = selectAll;
 	}
 	
 	
@@ -88,6 +89,38 @@ public class StudentAttendanceListAdaptor extends ArrayAdapter<DataBeanStudent> 
 			} else {
 				userLogo.setImageDrawable(v.getContext().getResources().getDrawable(R.drawable.user_place_hoder));
 			}
+
+			if(value.equals("take")) {
+				if (selectAll.equals("present")) {
+					rb_present.setChecked(true);
+					attendanceStatus = "Present";
+					dbs = new DataBeanStudent();
+					dbs.setUserID(dbItemsDist.getUserID());
+					dbs.setUserLoginId(attendanceStatus);
+					for (int i = 0; i < studentArray.size(); i++) {
+						if (studentArray.get(i).getUserID().equals(dbItemsDist.getUserID())) {
+							studentArray.remove(i);
+							break;
+						}
+					}
+					studentArray.add(dbs);
+					saveDataInSP(studentArray);
+				} else if (selectAll.equals("absent")) {
+					rb_absent.setChecked(true);
+					attendanceStatus = "Absent";
+					dbs = new DataBeanStudent();
+					dbs.setUserID(dbItemsDist.getUserID());
+					dbs.setUserLoginId(attendanceStatus);
+					for (int i = 0; i < studentArray.size(); i++) {
+						if (studentArray.get(i).getUserID().equals(dbItemsDist.getUserID())) {
+							studentArray.remove(i);
+							break;
+						}
+					}
+					studentArray.add(dbs);
+					saveDataInSP(studentArray);
+				}
+			}
 			
 			if (value.equals("take")) {
 				switch (objects.get(position).getUserClass()) {
@@ -124,7 +157,7 @@ public class StudentAttendanceListAdaptor extends ArrayAdapter<DataBeanStudent> 
 							dbs.setUserID(dbItemsDist.getUserID());
 							dbs.setUserLoginId(attendanceStatus);
 							studentArray.add(dbs);
-							saveDataInSP(studentArray, v);
+							saveDataInSP(studentArray);
 						}
 						
 						rb_absent.setOnClickListener(view -> {
@@ -139,7 +172,7 @@ public class StudentAttendanceListAdaptor extends ArrayAdapter<DataBeanStudent> 
 								}
 							}
 							studentArray.add(dbs);
-							saveDataInSP(studentArray, view);
+							saveDataInSP(studentArray);
 						});
 						
 						rb_leave.setOnClickListener(view -> {
@@ -154,7 +187,7 @@ public class StudentAttendanceListAdaptor extends ArrayAdapter<DataBeanStudent> 
 								}
 							}
 							studentArray.add(dbs);
-							saveDataInSP(studentArray, view);
+							saveDataInSP(studentArray);
 						});
 						
 						rb_present.setOnClickListener(view -> {
@@ -169,7 +202,7 @@ public class StudentAttendanceListAdaptor extends ArrayAdapter<DataBeanStudent> 
 								}
 							}
 							studentArray.add(dbs);
-							saveDataInSP(studentArray, view);
+							saveDataInSP(studentArray);
 						});
 				}
 			} else if (value.equals("view")) {
@@ -219,10 +252,10 @@ public class StudentAttendanceListAdaptor extends ArrayAdapter<DataBeanStudent> 
 		return v;
 	}
 	
-	private void saveDataInSP(ArrayList<DataBeanStudent> studentArray, View view) {
+	private void saveDataInSP(ArrayList<DataBeanStudent> studentArray) {
 		Gson gson = new GsonBuilder().create();
 		JsonArray myCustomArray = gson.toJsonTree(studentArray).getAsJsonArray();
-		SharedPreferences sp_attend = view.getContext().getSharedPreferences(PREFS_ATTENDANCE, 0);
+		SharedPreferences sp_attend = getContext().getSharedPreferences(PREFS_ATTENDANCE, 0);
 		SharedPreferences.Editor se_attend = sp_attend.edit();
 		se_attend.clear();
 		se_attend.putString("json_attend", "" + myCustomArray);

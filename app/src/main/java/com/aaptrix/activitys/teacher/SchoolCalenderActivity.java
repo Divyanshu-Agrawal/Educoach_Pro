@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.aaptrix.activitys.admin.AddNewEvent;
 import com.aaptrix.activitys.student.OnlineExam;
 import com.aaptrix.activitys.student.StudentTimeTableActivity;
 import com.google.android.material.appbar.AppBarLayout;
@@ -219,9 +220,9 @@ public class SchoolCalenderActivity extends AppCompatActivity {
 
         iv_add_more_event.setOnClickListener(view -> {
             if (isInternetOn()) {
-                Intent i = new Intent(SchoolCalenderActivity.this, IntermidiateScreenActivityPublication.class);
-                i.putExtra("str_tool_title", "Add Event");
-                startActivity(i);
+                Intent intent = new Intent(this, AddNewEvent.class);
+                intent.putExtra("type", "add");
+                startActivity(intent);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             } else {
                 Toast.makeText(SchoolCalenderActivity.this, "No network Please connect with network for update", Toast.LENGTH_SHORT).show();

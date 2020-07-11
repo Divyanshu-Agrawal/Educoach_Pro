@@ -301,7 +301,7 @@ public class AddNewEvent extends AppCompatActivity {
 								String studentArray = sp.getString("studentArray", "");
 								UploadEvent uploadEvent = new UploadEvent(this);
 								uploadEvent.execute(sp_user.getString("userID", ""), title.getText().toString(),
-										description.getText().toString(), date.getText().toString(), sp_user.getString("userSection", ""),
+										description.getText().toString(), date.getText().toString(),
 										endDate.getText().toString(), cbValue, studentArray);
 							} else {
 								Toast.makeText(this, "Start date cannot be after end date", Toast.LENGTH_SHORT).show();
@@ -471,10 +471,9 @@ public class AddNewEvent extends AppCompatActivity {
 			String str_title = params[1];
 			String str_desc = params[2];
 			String str_date = params[3];
-			String userSection = params[4];
-			String str_date_end = params[5];
-			String cbValue = params[6];
-			String studentArray1 = params[7];
+			String str_date_end = params[4];
+			String cbValue = params[5];
+			String studentArray1 = params[6];
 			String notiImage = "0";
 			
 			try {
@@ -525,7 +524,6 @@ public class AddNewEvent extends AppCompatActivity {
 					entityBuilder.addTextBody("str_title", str_title);
 					entityBuilder.addTextBody("str_desc", str_desc);
 					entityBuilder.addTextBody("str_date", str_date);
-					entityBuilder.addTextBody("userSection", userSection);
 					entityBuilder.addTextBody("str_date_end", str_date_end);
 					entityBuilder.addTextBody("cbValue", cbValue);
 					entityBuilder.addTextBody("studentArray1", studentArray1);

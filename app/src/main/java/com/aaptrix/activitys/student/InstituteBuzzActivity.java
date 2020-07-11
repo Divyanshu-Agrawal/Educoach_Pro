@@ -1916,7 +1916,7 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
             if ("Online Exam".equals(data.getName())) {
                 if (data.getWrite().equals("Active"))
                     exam.setVisible(true);
-            } else if ("Online Fee Payment".equals(data.getName())) {
+            } else if ("Fees".equals(data.getName())) {
                 if (data.getWrite().equals("Active"))
                     fee.setVisible(true);
             } else if (data.getName().equals("Video Live Streaming")) {

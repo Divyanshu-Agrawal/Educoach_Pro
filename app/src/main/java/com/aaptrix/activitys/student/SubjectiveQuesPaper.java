@@ -66,7 +66,7 @@ import static cz.msebera.android.httpclient.conn.ssl.SSLConnectionSocketFactory.
 
 public class SubjectiveQuesPaper extends AppCompatActivity {
 
-    String examId, examName, startTime, endTime, strPdf;
+    String examId, examName, startTime, endTime, strPdf, userName;
     AppBarLayout appBarLayout;
     TextView tool_title;
     CardView cardView;
@@ -118,6 +118,7 @@ public class SubjectiveQuesPaper extends AppCompatActivity {
         userId = settings.getString("userID", "");
         userSection = settings.getString("userSection", "");
         userType = settings.getString("userrType", "");
+        userName = settings.getString("userName", "");
         String rollNo = SCHOOL_NAME + "\n" + settings.getString("userName", "") + ", " + settings.getString("userPhone", "");
 
         if (settings.getString("userrType", "").equals("Guest")) {
@@ -185,7 +186,7 @@ public class SubjectiveQuesPaper extends AppCompatActivity {
                                 .setMessage("Are you sure you want to upload this file. Once uploaded no changes can be made.")
                                 .setPositiveButton("Upload", (dialog, which) -> {
                                     SubmitExam submitExam = new SubmitExam(this);
-                                    submitExam.execute(schoolId, examId, userId);
+                                    submitExam.execute(schoolId, examId, userId, userName);
                                 })
                                 .setNegativeButton("Cancel", null)
                                 .show();
@@ -288,6 +289,7 @@ public class SubjectiveQuesPaper extends AppCompatActivity {
             String school_id = params[0];
             String examId = params[1];
             String userId = params[2];
+            String username = params[3];
 
             try {
                 SSLContext sslContext = SSLContexts.custom().useTLS().build();
@@ -300,10 +302,11 @@ public class SubjectiveQuesPaper extends AppCompatActivity {
                 HttpPost httppost = new HttpPost(SUBMIT_SUBJECTIVE_EXAM);
                 MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
                 entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-                entityBuilder.addPart("", new FileBody(uploadFile));
+                entityBuilder.addPart("tbl_user_answer_sheet", new FileBody(uploadFile));
                 entityBuilder.addTextBody("tbl_school_id", school_id);
                 entityBuilder.addTextBody("tbl_subjective_online_exams_id", examId);
                 entityBuilder.addTextBody("tbl_users_id", userId);
+                entityBuilder.addTextBody("tbl_users_nm", username);
                 HttpEntity entity = entityBuilder.build();
                 httppost.setEntity(entity);
                 HttpResponse response = httpclient.execute(httppost);

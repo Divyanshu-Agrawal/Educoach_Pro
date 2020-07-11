@@ -37,37 +37,38 @@
             android:paddingBottom="@dimen/_40sdp">
 
             <ImageView
+                android:id="@+id/school_logo"
                 android:layout_width="@dimen/_250sdp"
                 android:layout_height="@dimen/_90sdp"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:src="@drawable/app_logo"
-                android:id="@+id/school_logo"
                 tools:ignore="ContentDescription" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:gravity="center"
+                android:orientation="horizontal"
                 android:weightSum="1">
+
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".05"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/cube1"/>
+                    android:layout_weight=".05"
+                    android:background="@drawable/cube1" />
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_weight=".8"
                     android:layout_height="@dimen/siz2"
-                    android:background="@color/colorPrimaryDark"/>
+                    android:layout_weight=".8"
+                    android:background="@color/colorPrimaryDark" />
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".05"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/cube1"/>
+                    android:layout_weight=".05"
+                    android:background="@drawable/cube1" />
             </LinearLayout>
 
             <EditText
@@ -92,10 +93,10 @@
                 android:layout_height="@dimen/_35sdp"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:background="@drawable/et_background_design"
+                android:focusable="false"
                 android:fontFamily="ROBOTO-REGULAR.TTF"
                 android:hint="Enter DOB"
                 android:inputType="date"
-                android:focusable="false"
                 android:paddingStart="@dimen/siz10"
                 android:paddingEnd="10dip"
                 android:textColor="@color/black"
@@ -112,7 +113,7 @@
                 android:fontFamily="ROBOTO-REGULAR.TTF"
                 android:textColor="@color/black"
                 android:textColorHint="@color/text_gray"
-                android:textSize="@dimen/siz14"/>
+                android:textSize="@dimen/siz14" />
 
             <EditText
                 android:id="@+id/user_phone"
@@ -156,7 +157,7 @@
                 android:fontFamily="ROBOTO-REGULAR.TTF"
                 android:textColor="@color/black"
                 android:textColorHint="@color/text_gray"
-                android:textSize="@dimen/siz14"/>
+                android:textSize="@dimen/siz14" />
 
             <EditText
                 android:id="@+id/user_roll_no"
@@ -184,11 +185,11 @@
                 android:hint="Enter Parent Name"
                 android:inputType="textCapWords"
                 android:paddingStart="@dimen/siz10"
-                android:visibility="gone"
                 android:paddingEnd="10dip"
                 android:textColor="@color/black"
                 android:textColorHint="@color/text_gray"
                 android:textSize="@dimen/siz14"
+                android:visibility="gone"
                 tools:ignore="Autofill,HardcodedText" />
 
             <EditText
@@ -201,12 +202,12 @@
                 android:hint="Enter Parent Phone Number"
                 android:inputType="phone"
                 android:maxLength="10"
-                android:visibility="gone"
                 android:paddingStart="@dimen/siz10"
                 android:paddingEnd="10dip"
                 android:textColor="@color/black"
                 android:textColorHint="@color/text_gray"
                 android:textSize="@dimen/siz14"
+                android:visibility="gone"
                 tools:ignore="Autofill,HardcodedText" />
 
             <EditText
@@ -219,11 +220,11 @@
                 android:hint="Enter Parent Occupation"
                 android:inputType="textCapWords"
                 android:paddingStart="@dimen/siz10"
-                android:visibility="gone"
                 android:paddingEnd="10dip"
                 android:textColor="@color/black"
                 android:textColorHint="@color/text_gray"
                 android:textSize="@dimen/siz14"
+                android:visibility="gone"
                 tools:ignore="Autofill,HardcodedText" />
 
             <EditText
@@ -245,18 +246,104 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Attachment"
-                android:layout_marginTop="@dimen/_20sdp"
                 android:layout_gravity="start"
                 android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:text="Attachment"
                 tools:ignore="HardcodedText" />
 
             <ImageView
+                android:id="@+id/attachment"
                 android:layout_width="@dimen/_280sdp"
                 android:layout_height="@dimen/_100sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:src="@drawable/placeholder"
-                android:id="@+id/attachment"/>
+                android:src="@drawable/placeholder" />
+
+            <LinearLayout
+                android:layout_width="@dimen/_280sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_height="wrap_content">
+
+                <CheckBox
+                    android:id="@+id/cb"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:buttonTint="@color/dark_green"
+                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                    android:text=""
+                    android:textColor="@color/orange"
+                    android:textSize="@dimen/siz12"
+                    tools:ignore="NestedWeights,UnusedAttribute" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.7"
+                    android:buttonTint="@color/dark_green"
+                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                    android:gravity="center|start"
+                    android:orientation="vertical"
+                    android:text="By registering you are agreeing to our "
+                    android:textColor="@color/orange"
+                    android:textSize="@dimen/siz10"
+                    tools:ignore="HardcodedText,UnusedAttribute">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:buttonTint="@color/dark_green"
+                            android:fontFamily="ROBOTO-REGULAR.TTF"
+                            android:gravity="center|start"
+                            android:text="By registering you are agreeing to our "
+                            android:textColor="@color/orange"
+                            android:textSize="@dimen/siz10"
+                            tools:ignore="HardcodedText,UnusedAttribute" />
+
+                        <TextView
+                            android:id="@+id/ts"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:buttonTint="@color/dark_green"
+                            android:fontFamily="ROBOTO-REGULAR.TTF"
+                            android:gravity="center|start"
+                            android:text="@string/tcc"
+                            android:textColor="@color/orange"
+                            android:textSize="@dimen/siz10"
+                            tools:ignore="UnusedAttribute" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:buttonTint="@color/dark_green"
+                            android:fontFamily="ROBOTO-REGULAR.TTF"
+                            android:gravity="center|start"
+                            android:text=" and"
+                            android:textColor="@color/orange"
+                            android:textSize="@dimen/siz10"
+                            tools:ignore="HardcodedText,UnusedAttribute" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/pv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:buttonTint="@color/dark_green"
+                        android:fontFamily="ROBOTO-REGULAR.TTF"
+                        android:gravity="center|start"
+                        android:text="@string/pv"
+                        android:textColor="@color/orange"
+                        android:textSize="@dimen/siz10"
+                        tools:ignore="UnusedAttribute" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 

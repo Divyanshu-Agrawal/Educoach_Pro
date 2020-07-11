@@ -32,6 +32,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -84,6 +85,8 @@ import pl.droidsonroids.gif.GifImageView;
 
 import static com.aaptrix.activitys.SplashScreen.SCHOOL_ID;
 import static com.aaptrix.tools.HttpUrl.ALL_BATCHS;
+import static com.aaptrix.tools.HttpUrl.PV;
+import static com.aaptrix.tools.HttpUrl.TC;
 import static com.aaptrix.tools.HttpUrl.USER_REGISTRATION;
 import static com.aaptrix.tools.SPClass.PREF_COLOR;
 import static cz.msebera.android.httpclient.conn.ssl.SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
@@ -104,6 +107,8 @@ public class UserSelfRegistration extends AppCompatActivity {
     String selBatch = "Select Batch";
     String strDob = "0", strGender = "0";
     ImageView attachment;
+    TextView ts, pv;
+    CheckBox cb;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -134,6 +139,9 @@ public class UserSelfRegistration extends AppCompatActivity {
         parentNumber = findViewById(R.id.parent_number);
         parentOccupation = findViewById(R.id.parent_occupation);
         referral = findViewById(R.id.referral_code);
+        ts = findViewById(R.id.ts);
+        cb = findViewById(R.id.cb);
+        pv = findViewById(R.id.pv);
 
         userRoll.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus)
@@ -165,6 +173,22 @@ public class UserSelfRegistration extends AppCompatActivity {
         });
 
         layout.setOnTouchListener((v, event) -> false);
+
+        ts.setOnClickListener(view -> {
+            Intent i = new Intent(this, TermsConditionsActivity.class);
+            i.putExtra("url", TC);
+            i.putExtra("tool_title", "Terms and Conditions");
+            startActivity(i);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
+
+        pv.setOnClickListener(view -> {
+            Intent i = new Intent(this, TermsConditionsActivity.class);
+            i.putExtra("url", PV);
+            i.putExtra("tool_title", "Privacy Policy");
+            startActivity(i);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
 
         GetAllBatches b1 = new GetAllBatches(this);
         b1.execute();
@@ -242,6 +266,8 @@ public class UserSelfRegistration extends AppCompatActivity {
             } else if (userPhone.getText().toString().length() != 10) {
                 userPhone.requestFocus();
                 userPhone.setError("Please Enter Correct Phone Number");
+            } else if (!cb.isChecked()) {
+                Toast.makeText(this, "Please agree to our Terms and Conditions", Toast.LENGTH_SHORT).show();
             } else {
                 layout.setVisibility(View.VISIBLE);
                 layout.bringToFront();

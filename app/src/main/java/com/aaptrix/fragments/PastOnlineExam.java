@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.aaptrix.R;
 import com.aaptrix.activitys.admin.IntermidiateScreenActivity;
 import com.aaptrix.activitys.student.OnlineReport;
+import com.aaptrix.activitys.student.SubjectiveExamResult;
 import com.aaptrix.adaptor.OnlineResadapter;
 import com.aaptrix.databeans.OnlineExamData;
 
@@ -482,6 +483,11 @@ public class PastOnlineExam extends Fragment {
                     i.putExtra("examName", examArray.get(position).getName());
                     startActivity(i);
                 }
+            } else {
+                Intent intent = new Intent(getContext(), SubjectiveExamResult.class);
+                intent.putExtra("examName", examArray.get(position).getName());
+                intent.putExtra("pdf", examArray.get(position).getAnsPdf());
+                startActivity(intent);
             }
         });
     }

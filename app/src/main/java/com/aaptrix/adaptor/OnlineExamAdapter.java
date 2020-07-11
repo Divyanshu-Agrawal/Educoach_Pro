@@ -22,6 +22,7 @@ import com.aaptrix.R;
 import com.aaptrix.activitys.student.OnlineReport;
 import com.aaptrix.activitys.student.StartExam;
 import com.aaptrix.activitys.student.StartSubjective;
+import com.aaptrix.activitys.student.SubjectiveExamResult;
 import com.aaptrix.databeans.OnlineExamData;
 
 import java.text.ParseException;
@@ -125,6 +126,11 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
                                     intent.putExtra("examId", data.getId());
                                     intent.putExtra("examName", data.getName());
                                     intent.putExtra("userSection", userSection);
+                                    context.startActivity(intent);
+                                } else {
+                                    Intent intent = new Intent(context, SubjectiveExamResult.class);
+                                    intent.putExtra("examName", data.getName());
+                                    intent.putExtra("pdf", data.getAnsPdf());
                                     context.startActivity(intent);
                                 }
                             }

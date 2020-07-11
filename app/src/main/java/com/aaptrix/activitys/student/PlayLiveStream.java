@@ -79,6 +79,7 @@ import cz.msebera.android.httpclient.entity.mime.MultipartEntityBuilder;
 import cz.msebera.android.httpclient.impl.client.HttpClients;
 import cz.msebera.android.httpclient.util.EntityUtils;
 
+import static com.aaptrix.activitys.SplashScreen.SCHOOL_NAME;
 import static com.aaptrix.tools.HttpUrl.ADD_COMMENTS;
 import static com.aaptrix.tools.HttpUrl.GET_COMMENTS;
 import static com.aaptrix.tools.HttpUrl.REMOVE_LIVE;
@@ -158,7 +159,7 @@ public class PlayLiveStream extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         userrType = settings.getString("userrType", "");
         userSchoolId = settings.getString("userSchoolId", "");
-        rollNo = settings.getString("unique_id", "");
+        rollNo = SCHOOL_NAME + "\n" + settings.getString("userName", "") + ", " + settings.getString("userPhone", "");
         userId = settings.getString("userID", "");
 
         comments.setOnFocusChangeListener((v, hasFocus) -> {

@@ -497,7 +497,7 @@ public class AppLogin extends AppCompatActivity {
                 RegisterUser registerUser = new RegisterUser(progressBar);
                 registerUser.execute(str_user_phone, str_user_password, type);
             } else {
-                Toast.makeText(AppLogin.this, "Please agree to out Terms and Conditions", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AppLogin.this, "Please agree to our Terms and Conditions", Toast.LENGTH_SHORT).show();
             }
         });
     }

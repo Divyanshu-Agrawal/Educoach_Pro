@@ -240,16 +240,6 @@ public class IntermidiateScreenActivityPublication extends AppCompatActivity {
                     }
                     break;
                 }
-                case "Add Event": {
-                    if (!studentArray1.isEmpty()) {
-                        Intent intent = new Intent(this, AddNewEvent.class);
-                        intent.putExtra("type", "add");
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Select Batch", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-                }
                 case "Add Study Material": {
                     if (!studentArray1.isEmpty()) {
                         if (!selSubject.equals("Select Subject")) {

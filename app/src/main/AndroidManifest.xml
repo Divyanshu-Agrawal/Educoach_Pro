@@ -31,7 +31,6 @@
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="android:icon, android:theme">
         <activity android:name=".activitys.student.SubjectiveExamResult"></activity>
-        <activity android:name=".activitys.student.SubjectiveAnsSheet" />
         <activity android:name=".activitys.student.SubjectiveQuesPaper" />
         <activity android:name=".activitys.student.StartSubjective" />
         <activity android:name=".activitys.guest.GuestAnswerSheet" />

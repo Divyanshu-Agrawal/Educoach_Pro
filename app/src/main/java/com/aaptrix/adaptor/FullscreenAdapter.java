@@ -26,6 +26,7 @@ import com.aaptrix.R;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
+import static com.aaptrix.activitys.SplashScreen.SCHOOL_NAME;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
 
 public class FullscreenAdapter extends PagerAdapter {
@@ -57,7 +58,7 @@ public class FullscreenAdapter extends PagerAdapter {
         dismiss.setOnClickListener(v -> notice.setVisibility(View.GONE));
 
         SharedPreferences sp = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String rollNo = sp.getString("unique_id", "");
+        String rollNo = SCHOOL_NAME + "\n" + sp.getString("userName", "") + ", " + sp.getString("userPhone", "");
 
         if (sp.getString("userrType", "").equals("Guest")) {
             rollNo = context.getResources().getString(R.string.app_name);

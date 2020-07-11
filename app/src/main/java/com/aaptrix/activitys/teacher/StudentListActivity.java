@@ -29,6 +29,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -110,6 +111,7 @@ public class StudentListActivity extends AppCompatActivity {
 	ImageView addAtten;
 	TextView attenMark;
 	RelativeLayout layout;
+	String selectAll = "null";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -666,9 +668,22 @@ public class StudentListActivity extends AppCompatActivity {
 	}
 	
 	private void listItms(String value) {
-		studentAttendanceListAdaptor = new StudentAttendanceListAdaptor(StudentListActivity.this, R.layout.user_attendance_list_item1, studentArray, value, stdSubject);
+		studentAttendanceListAdaptor = new StudentAttendanceListAdaptor(StudentListActivity.this, R.layout.user_attendance_list_item1, studentArray, value, stdSubject, selectAll);
 		studentList.setAdapter(studentAttendanceListAdaptor);
 		studentAttendanceListAdaptor.notifyDataSetChanged();
+
+		RadioButton rb_present = findViewById(R.id.rb_present);
+		RadioButton rb_absent = findViewById(R.id.rb_absent);
+
+		rb_present.setOnClickListener(v -> {
+			selectAll = "present";
+			studentAttendanceListAdaptor.notifyDataSetChanged();
+		});
+
+		rb_absent.setOnClickListener(v -> {
+			selectAll = "absent";
+			studentAttendanceListAdaptor.notifyDataSetChanged();
+		});
 		
 		if(value.equals("view")) {
 			studentList.setOnItemClickListener((parent, view, position, id) -> {

@@ -58,6 +58,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.material.appbar.AppBarLayout;
 
+import static com.aaptrix.activitys.SplashScreen.SCHOOL_NAME;
 import static com.aaptrix.tools.HttpUrl.REMOVE_VIDEOS;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
 import static com.aaptrix.tools.SPClass.PREFS_RW;
@@ -182,7 +183,7 @@ public class VideoDetails extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         userrType = settings.getString("userrType", "");
         userSchoolId = settings.getString("userSchoolId", "");
-        rollNo = settings.getString("unique_id", "");
+        rollNo = SCHOOL_NAME + "\n" + settings.getString("userName", "") + ", " + settings.getString("userPhone", "");
 
         if (userrType.equals("Guest")) {
             rollNo = getResources().getString(R.string.app_name);
