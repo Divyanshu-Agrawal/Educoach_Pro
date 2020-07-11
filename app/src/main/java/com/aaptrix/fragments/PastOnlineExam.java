@@ -74,6 +74,7 @@ public class PastOnlineExam extends Fragment {
 
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -113,7 +114,7 @@ public class PastOnlineExam extends Fragment {
                     }
                     setBatch();
                 } else {
-                    String batch_array[] = {"All Batches"};
+                    String[] batch_array = {"All Batches"};
                     ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(getContext(), R.layout.spinner_list_item1, batch_array);
                     dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
                     batch_spinner.setAdapter(dataAdapter1);
@@ -234,7 +235,7 @@ public class PastOnlineExam extends Fragment {
                 }
                 setBatch();
             } else {
-                String batch_array[] = {"All Batches"};
+                String[] batch_array = {"All Batches"};
                 ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(ctx, R.layout.spinner_list_item1, batch_array);
                 dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
                 batch_spinner.setAdapter(dataAdapter1);
@@ -247,7 +248,7 @@ public class PastOnlineExam extends Fragment {
     }
 
     private void setBatch() {
-        ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(getContext(), R.layout.spinner_list_item1, batch_array);
+        ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(Objects.requireNonNull(getContext()), R.layout.spinner_list_item1, batch_array);
         dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
         batch_spinner.setAdapter(dataAdapter1);
         batch_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -367,6 +368,7 @@ public class PastOnlineExam extends Fragment {
                                         data.setEndDate(object.getString("tbl_online_exam_end_date"));
                                         data.setStatus(object.getString("user_exam_taken_status"));
                                         data.setDuration(object.getString("tbl_online_exam_duration"));
+                                        data.setType("MCQ");
                                         examArray.add(data);
                                     }
                                 }
@@ -385,6 +387,54 @@ public class PastOnlineExam extends Fragment {
                                     data.setEndDate(object.getString("tbl_online_exam_end_date"));
                                     data.setStatus(object.getString("user_exam_taken_status"));
                                     data.setDuration(object.getString("tbl_online_exam_duration"));
+                                    data.setType("MCQ");
+                                    examArray.add(data);
+                                }
+                            }
+                        }
+                    }
+                    JSONArray array = jsonObject.getJSONArray("subjectiveExamList");
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        OnlineExamData data = new OnlineExamData();
+                        Date date = sdf.parse(object.getString("tbl_online_exam_end_date"));
+                        String attempt = object.getString("user_exam_taken_status");
+                        if (userType.equals("Student")) {
+                            String sub = jsonObject.getString("DisableSubject");
+                            if (!sub.contains(object.getString("subject_name"))) {
+                                if (calendar.getTime().after(date) || attempt.equals("1")) {
+                                    if (object.getString("tbl_online_exam_result_publish").equals("1")) {
+                                        data.setId(object.getString("tbl_subjective_online_exams_id"));
+                                        data.setName(object.getString("tbl_online_exam_nm"));
+                                        data.setDate(object.getString("tbl_online_exam_date"));
+                                        data.setStartTime(object.getString("tbl_online_exam_start_time"));
+                                        data.setEndTime(object.getString("tbl_online_exam_end_time"));
+                                        data.setSubject(object.getString("subject_name"));
+                                        data.setEndDate(object.getString("tbl_online_exam_end_date"));
+                                        data.setStatus(object.getString("user_exam_taken_status"));
+                                        data.setResPublish(object.getString("tbl_online_exam_result_publish"));
+                                        data.setQuesPdf(object.getString("tbl_exam_question_pdf"));
+                                        data.setAnsPdf(object.getString("tbl_exam_answer_sheat"));
+                                        data.setType("Subjective");
+                                        examArray.add(data);
+                                    }
+                                }
+                            }
+                        } else {
+                            if (calendar.getTime().after(date) || attempt.equals("1")) {
+                                if (object.getString("tbl_online_exam_result_publish").equals("1")) {
+                                    data.setId(object.getString("tbl_subjective_online_exams_id"));
+                                    data.setName(object.getString("tbl_online_exam_nm"));
+                                    data.setDate(object.getString("tbl_online_exam_date"));
+                                    data.setStartTime(object.getString("tbl_online_exam_start_time"));
+                                    data.setEndTime(object.getString("tbl_online_exam_end_time"));
+                                    data.setSubject(object.getString("subject_name"));
+                                    data.setEndDate(object.getString("tbl_online_exam_end_date"));
+                                    data.setStatus(object.getString("user_exam_taken_status"));
+                                    data.setResPublish(object.getString("tbl_online_exam_result_publish"));
+                                    data.setQuesPdf(object.getString("tbl_exam_question_pdf"));
+                                    data.setAnsPdf(object.getString("tbl_exam_answer_sheat"));
+                                    data.setType("Subjective");
                                     examArray.add(data);
                                 }
                             }
@@ -417,19 +467,21 @@ public class PastOnlineExam extends Fragment {
         adapter.notifyDataSetChanged();
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            if (userType.equals("Student")) {
-                Intent intent = new Intent(getContext(), OnlineReport.class);
-                intent.putExtra("userId", userId);
-                intent.putExtra("userSection", userSection);
-                intent.putExtra("examId", examArray.get(position).getId());
-                intent.putExtra("examName", examArray.get(position).getName());
-                startActivity(intent);
-            } else {
-                Intent i = new Intent(getContext(), IntermidiateScreenActivity.class);
-                i.putExtra("str_tool_title", "Online Exam Result");
-                i.putExtra("examId", examArray.get(position).getId());
-                i.putExtra("examName", examArray.get(position).getName());
-                startActivity(i);
+            if (examArray.get(position).getType().equals("MCQ")) {
+                if (userType.equals("Student")) {
+                    Intent intent = new Intent(getContext(), OnlineReport.class);
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("userSection", userSection);
+                    intent.putExtra("examId", examArray.get(position).getId());
+                    intent.putExtra("examName", examArray.get(position).getName());
+                    startActivity(intent);
+                } else {
+                    Intent i = new Intent(getContext(), IntermidiateScreenActivity.class);
+                    i.putExtra("str_tool_title", "Online Exam Result");
+                    i.putExtra("examId", examArray.get(position).getId());
+                    i.putExtra("examName", examArray.get(position).getName());
+                    startActivity(i);
+                }
             }
         });
     }

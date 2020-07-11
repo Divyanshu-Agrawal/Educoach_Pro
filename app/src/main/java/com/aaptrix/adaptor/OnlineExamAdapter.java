@@ -21,6 +21,7 @@ import androidx.cardview.widget.CardView;
 import com.aaptrix.R;
 import com.aaptrix.activitys.student.OnlineReport;
 import com.aaptrix.activitys.student.StartExam;
+import com.aaptrix.activitys.student.StartSubjective;
 import com.aaptrix.databeans.OnlineExamData;
 
 import java.text.ParseException;
@@ -57,6 +58,7 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
         TextView examTime = view.findViewById(R.id.exam_time);
         TextView examDuration = view.findViewById(R.id.exam_duration);
         CardView cardView = view.findViewById(R.id.card_view);
+        TextView type = view.findViewById(R.id.type);
         TextView sub = view.findViewById(R.id.status);
 
         SharedPreferences sp = context.getSharedPreferences(PREFS_NAME, 0);
@@ -73,6 +75,7 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
             }
             examDuration.setText("Duration : " + data.getDuration() + " Hours");
             sub.setText("Subject : " + data.getSubject());
+            type.setText("Exam Type : " + data.getType());
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
             try {
@@ -91,17 +94,29 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
                         cardView.setCardBackgroundColor(Color.GREEN);
                         view.setOnClickListener(v -> {
                             if (!data.getStatus().equals("1")) {
-                                Intent intent = new Intent(context, StartExam.class);
-                                intent.putExtra("examId", data.getId());
-                                intent.putExtra("examName", data.getName());
-                                intent.putExtra("examStart", data.getStartTime());
-                                intent.putExtra("examEnd", data.getEndTime());
-                                intent.putExtra("negMarks", data.getNegMarks());
-                                intent.putExtra("resPublish", data.getResPublish());
-                                intent.putExtra("endDate", data.getEndDate());
-                                intent.putExtra("startDate", data.getDate());
-                                intent.putExtra("duration", data.getDuration());
-                                context.startActivity(intent);
+                                if(data.getType().equals("MCQ")) {
+                                    Intent intent = new Intent(context, StartExam.class);
+                                    intent.putExtra("examId", data.getId());
+                                    intent.putExtra("examName", data.getName());
+                                    intent.putExtra("examStart", data.getStartTime());
+                                    intent.putExtra("examEnd", data.getEndTime());
+                                    intent.putExtra("negMarks", data.getNegMarks());
+                                    intent.putExtra("resPublish", data.getResPublish());
+                                    intent.putExtra("endDate", data.getEndDate());
+                                    intent.putExtra("startDate", data.getDate());
+                                    intent.putExtra("duration", data.getDuration());
+                                    context.startActivity(intent);
+                                } else {
+                                    Intent intent = new Intent(context, StartSubjective.class);
+                                    intent.putExtra("examId", data.getId());
+                                    intent.putExtra("examName", data.getName());
+                                    intent.putExtra("examStart", data.getStartTime());
+                                    intent.putExtra("examEnd", data.getEndTime());
+                                    intent.putExtra("pdf", data.getQuesPdf());
+                                    intent.putExtra("endDate", data.getEndDate());
+                                    intent.putExtra("startDate", data.getDate());
+                                    context.startActivity(intent);
+                                }
                             } else {
                                 Toast.makeText(context, "You have already taken this exam", Toast.LENGTH_SHORT).show();
                                 if (data.getResPublish().equals("1")) {
@@ -119,17 +134,29 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
                     }
                 } else {
                     view.setOnClickListener(v -> {
-                        Intent intent = new Intent(context, StartExam.class);
-                        intent.putExtra("examId", data.getId());
-                        intent.putExtra("examName", data.getName());
-                        intent.putExtra("examStart", data.getStartTime());
-                        intent.putExtra("examEnd", data.getEndTime());
-                        intent.putExtra("negMarks", data.getNegMarks());
-                        intent.putExtra("resPublish", data.getResPublish());
-                        intent.putExtra("endDate", data.getEndDate());
-                        intent.putExtra("startDate", data.getDate());
-                        intent.putExtra("duration", data.getDuration());
-                        context.startActivity(intent);
+                        if(data.getType().equals("MCQ")) {
+                            Intent intent = new Intent(context, StartExam.class);
+                            intent.putExtra("examId", data.getId());
+                            intent.putExtra("examName", data.getName());
+                            intent.putExtra("examStart", data.getStartTime());
+                            intent.putExtra("examEnd", data.getEndTime());
+                            intent.putExtra("negMarks", data.getNegMarks());
+                            intent.putExtra("resPublish", data.getResPublish());
+                            intent.putExtra("endDate", data.getEndDate());
+                            intent.putExtra("startDate", data.getDate());
+                            intent.putExtra("duration", data.getDuration());
+                            context.startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(context, StartSubjective.class);
+                            intent.putExtra("examId", data.getId());
+                            intent.putExtra("examName", data.getName());
+                            intent.putExtra("examStart", data.getStartTime());
+                            intent.putExtra("examEnd", data.getEndTime());
+                            intent.putExtra("pdf", data.getQuesPdf());
+                            intent.putExtra("endDate", data.getEndDate());
+                            intent.putExtra("startDate", data.getDate());
+                            context.startActivity(intent);
+                        }
                     });
                 }
 

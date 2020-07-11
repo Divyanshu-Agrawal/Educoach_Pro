@@ -49,6 +49,7 @@ public class OnlineResadapter extends ArrayAdapter<OnlineExamData> {
         TextView examDate = view.findViewById(R.id.exam_date);
         TextView examTime = view.findViewById(R.id.exam_time);
         TextView status = view.findViewById(R.id.status);
+        TextView type = view.findViewById(R.id.type);
         TextView examDuration = view.findViewById(R.id.exam_duration);
 
         SharedPreferences sp = context.getSharedPreferences(PREFS_NAME, 0);
@@ -62,6 +63,7 @@ public class OnlineResadapter extends ArrayAdapter<OnlineExamData> {
                 examName.setText(Html.fromHtml(data.getName()));
             }
             examDuration.setText("Duration : " + data.getDuration() + " Hours");
+            type.setText("Exam Type : " + data.getType());
 
             if (userType.equals("Admin") || userType.equals("Teacher")) {
                 status.setVisibility(View.GONE);

@@ -142,7 +142,7 @@ public class PreviousExam extends Fragment {
 
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
                 data = URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
-                        URLEncoder.encode("batch_nm", "UTF-8") + "=" + URLEncoder.encode(batch, "UTF-8")+ "&" +
+                        URLEncoder.encode("batch_nm", "UTF-8") + "=" + URLEncoder.encode(batch, "UTF-8") + "&" +
                         URLEncoder.encode("tbl_users_id", "UTF-8") + "=" + URLEncoder.encode(studentId, "UTF-8") + "&" +
                         URLEncoder.encode("userType", "UTF-8") + "=" + URLEncoder.encode(userType, "UTF-8");
                 outputStream.write(data.getBytes());
@@ -186,22 +186,93 @@ public class PreviousExam extends Fragment {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject object = jsonArray.getJSONObject(i);
                         OnlineExamData data = new OnlineExamData();
-                        Date date = sdf.parse(object.getString("tbl_online_exam_end_date") + " " + object.getString("tbl_online_exam_end_time"));
+                        Date date = sdf.parse(object.getString("tbl_online_exam_end_date"));
                         String attempt = object.getString("user_exam_taken_status");
-                        if (calendar.getTime().after(date) || attempt.equals("1")) {
-                            if (object.getString("tbl_online_exam_result_publish").equals("1")) {
-                                data.setId(object.getString("tbl_online_exams_id"));
-                                data.setName(object.getString("tbl_online_exam_nm"));
-                                data.setDate(object.getString("tbl_online_exam_date"));
-                                data.setStartTime(object.getString("tbl_online_exam_start_time"));
-                                data.setEndTime(object.getString("tbl_online_exam_end_time"));
-                                data.setSubject(object.getString("subject_name"));
-                                data.setMarks(object.getString("tbl_online_exam_marks"));
-                                data.setNegMarks(object.getString("tbl_online_exam_neg_marks"));
-                                data.setEndDate(object.getString("tbl_online_exam_end_date"));
-                                data.setStatus(object.getString("user_exam_taken_status"));
-                                data.setDuration(object.getString("tbl_online_exam_duration"));
-                                examArray.add(data);
+                        if (userType.equals("Student")) {
+                            String sub = jsonObject.getString("DisableSubject");
+                            if (!sub.contains(object.getString("subject_name"))) {
+                                if (calendar.getTime().after(date) || attempt.equals("1")) {
+                                    if (object.getString("tbl_online_exam_result_publish").equals("1")) {
+                                        data.setId(object.getString("tbl_online_exams_id"));
+                                        data.setName(object.getString("tbl_online_exam_nm"));
+                                        data.setDate(object.getString("tbl_online_exam_date"));
+                                        data.setStartTime(object.getString("tbl_online_exam_start_time"));
+                                        data.setEndTime(object.getString("tbl_online_exam_end_time"));
+                                        data.setSubject(object.getString("subject_name"));
+                                        data.setMarks(object.getString("tbl_online_exam_marks"));
+                                        data.setNegMarks(object.getString("tbl_online_exam_neg_marks"));
+                                        data.setEndDate(object.getString("tbl_online_exam_end_date"));
+                                        data.setStatus(object.getString("user_exam_taken_status"));
+                                        data.setDuration(object.getString("tbl_online_exam_duration"));
+                                        data.setType("MCQ");
+                                        examArray.add(data);
+                                    }
+                                }
+                            }
+                        } else {
+                            if (calendar.getTime().after(date) || attempt.equals("1")) {
+                                if (object.getString("tbl_online_exam_result_publish").equals("1")) {
+                                    data.setId(object.getString("tbl_online_exams_id"));
+                                    data.setName(object.getString("tbl_online_exam_nm"));
+                                    data.setDate(object.getString("tbl_online_exam_date"));
+                                    data.setStartTime(object.getString("tbl_online_exam_start_time"));
+                                    data.setEndTime(object.getString("tbl_online_exam_end_time"));
+                                    data.setSubject(object.getString("subject_name"));
+                                    data.setMarks(object.getString("tbl_online_exam_marks"));
+                                    data.setNegMarks(object.getString("tbl_online_exam_neg_marks"));
+                                    data.setEndDate(object.getString("tbl_online_exam_end_date"));
+                                    data.setStatus(object.getString("user_exam_taken_status"));
+                                    data.setDuration(object.getString("tbl_online_exam_duration"));
+                                    data.setType("MCQ");
+                                    examArray.add(data);
+                                }
+                            }
+                        }
+                    }
+                    JSONArray array = jsonObject.getJSONArray("subjectiveExamList");
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        OnlineExamData data = new OnlineExamData();
+                        Date date = sdf.parse(object.getString("tbl_online_exam_end_date"));
+                        String attempt = object.getString("user_exam_taken_status");
+                        if (userType.equals("Student")) {
+                            String sub = jsonObject.getString("DisableSubject");
+                            if (!sub.contains(object.getString("subject_name"))) {
+                                if (calendar.getTime().after(date) || attempt.equals("1")) {
+                                    if (object.getString("tbl_online_exam_result_publish").equals("1")) {
+                                        data.setId(object.getString("tbl_subjective_online_exams_id"));
+                                        data.setName(object.getString("tbl_online_exam_nm"));
+                                        data.setDate(object.getString("tbl_online_exam_date"));
+                                        data.setStartTime(object.getString("tbl_online_exam_start_time"));
+                                        data.setEndTime(object.getString("tbl_online_exam_end_time"));
+                                        data.setSubject(object.getString("subject_name"));
+                                        data.setEndDate(object.getString("tbl_online_exam_end_date"));
+                                        data.setStatus(object.getString("user_exam_taken_status"));
+                                        data.setResPublish(object.getString("tbl_online_exam_result_publish"));
+                                        data.setQuesPdf(object.getString("tbl_exam_question_pdf"));
+                                        data.setAnsPdf(object.getString("tbl_exam_answer_sheat"));
+                                        data.setType("Subjective");
+                                        examArray.add(data);
+                                    }
+                                }
+                            }
+                        } else {
+                            if (calendar.getTime().after(date) || attempt.equals("1")) {
+                                if (object.getString("tbl_online_exam_result_publish").equals("1")) {
+                                    data.setId(object.getString("tbl_subjective_online_exams_id"));
+                                    data.setName(object.getString("tbl_online_exam_nm"));
+                                    data.setDate(object.getString("tbl_online_exam_date"));
+                                    data.setStartTime(object.getString("tbl_online_exam_start_time"));
+                                    data.setEndTime(object.getString("tbl_online_exam_end_time"));
+                                    data.setSubject(object.getString("subject_name"));
+                                    data.setEndDate(object.getString("tbl_online_exam_end_date"));
+                                    data.setStatus(object.getString("user_exam_taken_status"));
+                                    data.setResPublish(object.getString("tbl_online_exam_result_publish"));
+                                    data.setQuesPdf(object.getString("tbl_exam_question_pdf"));
+                                    data.setAnsPdf(object.getString("tbl_exam_answer_sheat"));
+                                    data.setType("Subjective");
+                                    examArray.add(data);
+                                }
                             }
                         }
                     }
@@ -229,12 +300,14 @@ public class PreviousExam extends Fragment {
         adapter.notifyDataSetChanged();
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            Intent intent = new Intent(getContext(), OnlineReport.class);
-            intent.putExtra("userId", studentId);
-            intent.putExtra("userSection", studentSection);
-            intent.putExtra("examId", examArray.get(position).getId());
-            intent.putExtra("examName", examArray.get(position).getName());
-            startActivity(intent);
+            if (examArray.get(position).getType().equals("MCQ")) {
+                Intent intent = new Intent(getContext(), OnlineReport.class);
+                intent.putExtra("userId", studentId);
+                intent.putExtra("userSection", studentSection);
+                intent.putExtra("examId", examArray.get(position).getId());
+                intent.putExtra("examName", examArray.get(position).getName());
+                startActivity(intent);
+            }
         });
     }
 

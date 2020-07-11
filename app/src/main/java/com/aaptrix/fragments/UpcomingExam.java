@@ -352,6 +352,7 @@ public class UpcomingExam extends Fragment {
                     Calendar calendar = Calendar.getInstance();
                     calendar.add(Calendar.DATE, -1);
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject object = jsonArray.getJSONObject(i);
                         OnlineExamData data = new OnlineExamData();
@@ -375,6 +376,7 @@ public class UpcomingExam extends Fragment {
                                     data.setResPublish(object.getString("tbl_online_exam_result_publish"));
                                     data.setEndDate(object.getString("tbl_online_exam_end_date"));
                                     data.setDuration(object.getString("tbl_online_exam_duration"));
+                                    data.setType("MCQ");
                                     examArray.add(data);
                                 }
                             }
@@ -392,6 +394,52 @@ public class UpcomingExam extends Fragment {
                                 data.setResPublish(object.getString("tbl_online_exam_result_publish"));
                                 data.setEndDate(object.getString("tbl_online_exam_end_date"));
                                 data.setDuration(object.getString("tbl_online_exam_duration"));
+                                data.setType("MCQ");
+                                examArray.add(data);
+                            }
+                        }
+                    }
+                    JSONArray array = jsonObject.getJSONArray("subjectiveExamList");
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        OnlineExamData data = new OnlineExamData();
+                        String start = object.getString("tbl_online_exam_date");
+                        String end = object.getString("tbl_online_exam_end_date");
+                        Date startdate = sdf.parse(start);
+                        Date enddate = sdf.parse(end);
+                        if (userType.equals("Student")) {
+                            String sub = jsonObject.getString("DisableSubject");
+                            if (!sub.contains(object.getString("subject_name"))) {
+                                if (calendar.getTime().equals(startdate) || calendar.getTime().before(startdate) || (calendar.getTime().after(startdate) && calendar.getTime().before(enddate))) {
+                                    data.setId(object.getString("tbl_subjective_online_exams_id"));
+                                    data.setName(object.getString("tbl_online_exam_nm"));
+                                    data.setDate(object.getString("tbl_online_exam_date"));
+                                    data.setStartTime(object.getString("tbl_online_exam_start_time"));
+                                    data.setEndTime(object.getString("tbl_online_exam_end_time"));
+                                    data.setSubject(object.getString("subject_name"));
+                                    data.setEndDate(object.getString("tbl_online_exam_end_date"));
+                                    data.setStatus(object.getString("user_exam_taken_status"));
+                                    data.setResPublish(object.getString("tbl_online_exam_result_publish"));
+                                    data.setQuesPdf(object.getString("tbl_exam_question_pdf"));
+                                    data.setAnsPdf(object.getString("tbl_exam_answer_sheat"));
+                                    data.setType("Subjective");
+                                    examArray.add(data);
+                                }
+                            }
+                        } else {
+                            if (calendar.getTime().before(startdate) || (calendar.getTime().after(startdate) && calendar.getTime().before(enddate))) {
+                                data.setId(object.getString("tbl_subjective_online_exams_id"));
+                                data.setName(object.getString("tbl_online_exam_nm"));
+                                data.setDate(object.getString("tbl_online_exam_date"));
+                                data.setStartTime(object.getString("tbl_online_exam_start_time"));
+                                data.setEndTime(object.getString("tbl_online_exam_end_time"));
+                                data.setSubject(object.getString("subject_name"));
+                                data.setEndDate(object.getString("tbl_online_exam_end_date"));
+                                data.setStatus(object.getString("user_exam_taken_status"));
+                                data.setResPublish(object.getString("tbl_online_exam_result_publish"));
+                                data.setQuesPdf(object.getString("tbl_exam_question_pdf"));
+                                data.setAnsPdf(object.getString("tbl_exam_answer_sheat"));
+                                data.setType("Subjective");
                                 examArray.add(data);
                             }
                         }

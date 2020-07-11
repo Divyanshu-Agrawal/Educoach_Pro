@@ -30,78 +30,82 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="android:icon, android:theme">
-        <activity android:name="com.aaptrix.activitys.guest.GuestAnswerSheet"/>
-        <activity android:name="com.aaptrix.activitys.guest.GuestExamReport" />
-        <activity android:name="com.aaptrix.activitys.guest.GenerateLead" />
-        <activity android:name="com.aaptrix.activitys.guest.StartGuestExam" />
-        <activity android:name="com.aaptrix.activitys.guest.GuestExam" />
-        <activity android:name="com.aaptrix.activitys.guest.GuestMaterial" />
-        <activity android:name="com.aaptrix.activitys.guest.GuestVideo" />
+        <activity android:name=".activitys.student.SubjectiveExamResult"></activity>
+        <activity android:name=".activitys.student.SubjectiveAnsSheet" />
+        <activity android:name=".activitys.student.SubjectiveQuesPaper" />
+        <activity android:name=".activitys.student.StartSubjective" />
+        <activity android:name=".activitys.guest.GuestAnswerSheet" />
+        <activity android:name=".activitys.guest.GuestExamReport" />
+        <activity android:name=".activitys.guest.GenerateLead" />
+        <activity android:name=".activitys.guest.StartGuestExam" />
+        <activity android:name=".activitys.guest.GuestExam" />
+        <activity android:name=".activitys.guest.GuestMaterial" />
+        <activity android:name=".activitys.guest.GuestVideo" />
         <activity
-            android:name="com.aaptrix.activitys.student.PlayLiveStream"
+            android:name=".activitys.student.PlayLiveStream"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AddLiveStream"
+            android:name=".activitys.admin.AddLiveStream"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.student.LiveStreaming"
+            android:name=".activitys.student.LiveStreaming"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.GetHelp"
+            android:name=".activitys.GetHelp"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.TroubleLoggingIn"
+            android:name=".activitys.TroubleLoggingIn"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.student.PaymentSuccess"
+            android:name=".activitys.student.PaymentSuccess"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.student.UpiPayment"
+            android:name=".activitys.student.UpiPayment"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.UserSelfRegistration"
+            android:name=".activitys.UserSelfRegistration"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.student.FeePayment"
+            android:name=".activitys.student.FeePayment"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.CoursesActivity"
+            android:name=".activitys.CoursesActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.InactiveInstitute"
+            android:name=".activitys.InactiveInstitute"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.admin.EnquiryDetails"
+            android:name=".activitys.admin.EnquiryDetails"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.admin.Enquiries"
+            android:name=".activitys.admin.Enquiries"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.admin.UpdateClassTimeTable"
+            android:name=".activitys.admin.UpdateClassTimeTable"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
@@ -109,155 +113,155 @@
         <service android:name="com.uxcam.service.HttpPostService" />
 
         <activity
-            android:name="com.aaptrix.activitys.AddUserForm"
+            android:name=".activitys.AddUserForm"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AddExamTimeTable"
+            android:name=".activitys.admin.AddExamTimeTable"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.student.FeedbackActivity"
+            android:name=".activitys.student.FeedbackActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.student.StaffDetails"
+            android:name=".activitys.student.StaffDetails"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.student.StaffActivity"
+            android:name=".activitys.student.StaffActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.teacher.StudentAttenInter"
+            android:name=".activitys.teacher.StudentAttenInter"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.ReferralActivity"
+            android:name=".activitys.ReferralActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.student.SubjectwiseReport"
+            android:name=".activitys.student.SubjectwiseReport"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.UserProfile"
+            android:name=".activitys.UserProfile"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.aaptrix.activitys.AppInfo"
+            android:name=".activitys.AppInfo"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.FullScrView"
+            android:name=".activitys.FullScrView"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.teacher.StudentPerformance"
+            android:name=".activitys.teacher.StudentPerformance"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.student.StudentResult"
+            android:name=".activitys.student.StudentResult"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.student.ViewReports"
+            android:name=".activitys.student.ViewReports"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AdminStaffLeaveIntermediate"
+            android:name=".activitys.admin.AdminStaffLeaveIntermediate"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AdminStaffLeave"
+            android:name=".activitys.admin.AdminStaffLeave"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AdminLeaveRequest"
+            android:name=".activitys.admin.AdminLeaveRequest"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.teacher.StaffLeaveApplication"
+            android:name=".activitys.teacher.StaffLeaveApplication"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.teacher.StaffLeaveList"
+            android:name=".activitys.teacher.StaffLeaveList"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.teacher.StaffMyAttendance"
+            android:name=".activitys.teacher.StaffMyAttendance"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AdminContacts"
+            android:name=".activitys.admin.AdminContacts"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.admin.TeacherAttendance"
+            android:name=".activitys.admin.TeacherAttendance"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.teacher.StaffAttendance"
+            android:name=".activitys.teacher.StaffAttendance"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AddNewVideo"
+            android:name=".activitys.admin.AddNewVideo"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.student.VideoDetails"
+            android:name=".activitys.student.VideoDetails"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.student.StudyMaterialDetail"
+            android:name=".activitys.student.StudyMaterialDetail"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AddNewMaterial"
+            android:name=".activitys.admin.AddNewMaterial"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.student.StudyMaterial"
+            android:name=".activitys.student.StudyMaterial"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AddNewGallery"
+            android:name=".activitys.admin.AddNewGallery"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.student.GalleryDetail"
+            android:name=".activitys.student.GalleryDetail"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.student.GalleryActivity"
+            android:name=".activitys.student.GalleryActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AddNewHomework"
+            android:name=".activitys.admin.AddNewHomework"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AddNewDiary"
+            android:name=".activitys.admin.AddNewDiary"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AddNewEvent"
+            android:name=".activitys.admin.AddNewEvent"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AddNewActivity"
+            android:name=".activitys.admin.AddNewActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AddNewPublication"
+            android:name=".activitys.admin.AddNewPublication"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 
@@ -266,7 +270,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.aaptrix.activitys.SplashScreen"
+            android:name=".activitys.SplashScreen"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:windowSoftInputMode="adjustPan">
@@ -280,17 +284,17 @@
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
 
-        <receiver android:name="com.aaptrix.notifications.NotificationPublisher" />
+        <receiver android:name=".notifications.NotificationPublisher" />
 
         <service
-            android:name="com.aaptrix.notifications.MyFirebaseInstanceIdService"
+            android:name=".notifications.MyFirebaseInstanceIdService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name="com.aaptrix.notifications.MyFirebaseMessagingService"
+            android:name=".notifications.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -298,144 +302,144 @@
         </service>
 
         <activity
-            android:name="com.aaptrix.activitys.TermsConditionsActivity"
+            android:name=".activitys.TermsConditionsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.SelectRoleActivity"
+            android:name=".activitys.SelectRoleActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.student.InstituteBuzzActivity"
+            android:name=".activitys.student.InstituteBuzzActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.MobileNumberActivity"
+            android:name=".activitys.MobileNumberActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.OtpScreenActivity"
+            android:name=".activitys.OtpScreenActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.ChangePasswordActivity"
+            android:name=".activitys.ChangePasswordActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.student.AchievmentDetailsActivity"
+            android:name=".activitys.student.AchievmentDetailsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.UpdatePhoneNumberActivity"
+            android:name=".activitys.UpdatePhoneNumberActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.UpdateNumberOtpScreenActivity"
+            android:name=".activitys.UpdateNumberOtpScreenActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.ForgotPasswordActivity"
+            android:name=".activitys.ForgotPasswordActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.ChangePasswordInitialActivity"
+            android:name=".activitys.ChangePasswordInitialActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.admin.InstituteBuzzActivityDiff"
+            android:name=".activitys.admin.InstituteBuzzActivityDiff"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.student.AboutUsActivity"
+            android:name=".activitys.student.AboutUsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.teacher.SchoolCalenderActivity"
+            android:name=".activitys.teacher.SchoolCalenderActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.student.ActivitiesActivity"
+            android:name=".activitys.student.ActivitiesActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.student.PublicationActivity"
+            android:name=".activitys.student.PublicationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.teacher.StudentAttendanceActivity"
+            android:name=".activitys.teacher.StudentAttendanceActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.teacher.TeacherAttendanceActivity"
+            android:name=".activitys.teacher.TeacherAttendanceActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.teacher.StudentListActivity"
+            android:name=".activitys.teacher.StudentListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.student.StudentTimeTableActivity"
+            android:name=".activitys.student.StudentTimeTableActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.student.DairyActivity"
+            android:name=".activitys.student.DairyActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.student.HomeworkActivity"
+            android:name=".activitys.student.HomeworkActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.teacher.TeacherDairyActivity"
+            android:name=".activitys.teacher.TeacherDairyActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.teacher.TeacherHomeWorkActivity"
+            android:name=".activitys.teacher.TeacherHomeWorkActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.student.ResultActivity"
+            android:name=".activitys.student.ResultActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.WelcomeActivity"
+            android:name=".activitys.WelcomeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.admin.IntermidiateScreenActivity"
+            android:name=".activitys.admin.IntermidiateScreenActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AdminTimeTableActivity"
+            android:name=".activitys.admin.AdminTimeTableActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.admin.IntermidiateScreenActivityPublication"
+            android:name=".activitys.admin.IntermidiateScreenActivityPublication"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.admin.ResultIntermidiateScreenActivity"
+            android:name=".activitys.admin.ResultIntermidiateScreenActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.admin.AddResultForStudentListActivity"
+            android:name=".activitys.admin.AddResultForStudentListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.AllUsersChatActivity"
+            android:name=".activitys.AllUsersChatActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.Chatctivity"
+            android:name=".activitys.Chatctivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
-            android:name="com.aaptrix.activitys.student.LeaveApplicationActivity"
+            android:name=".activitys.student.LeaveApplicationActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.teacher.LeaveListActivity"
+            android:name=".activitys.teacher.LeaveListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.teacher.TeacherRequestLeaveActivity"
+            android:name=".activitys.teacher.TeacherRequestLeaveActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.FullScreenImageActivity"
+            android:name=".activitys.FullScreenImageActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.student.VideoLibrary"
+            android:name=".activitys.student.VideoLibrary"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.AppLogin"
+            android:name=".activitys.AppLogin"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.aaptrix.activitys.student.OnlineExam"
+            android:name=".activitys.student.OnlineExam"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.student.OnlineExamResult"
+            android:name=".activitys.student.OnlineExamResult"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.student.OnlineReport"
+            android:name=".activitys.student.OnlineReport"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.student.StartOnlineExam"
+            android:name=".activitys.student.StartOnlineExam"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aaptrix.activitys.student.StartExam"
+            android:name=".activitys.student.StartExam"
             android:screenOrientation="portrait" />
     </application>
 

@@ -16,6 +16,31 @@ public class OnlineExamData implements Serializable {
     private String negMarks;
     private String resPublish;
     private String endDate;
+    private String type, quesPdf, ansPdf;
+
+    public String getQuesPdf() {
+        return quesPdf;
+    }
+
+    public void setQuesPdf(String quesPdf) {
+        this.quesPdf = quesPdf;
+    }
+
+    public String getAnsPdf() {
+        return ansPdf;
+    }
+
+    public void setAnsPdf(String ansPdf) {
+        this.ansPdf = ansPdf;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getEndDate() {
         return endDate;

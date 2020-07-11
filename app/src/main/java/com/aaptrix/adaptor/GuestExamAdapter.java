@@ -47,12 +47,14 @@ public class GuestExamAdapter extends ArrayAdapter<OnlineExamData> {
         TextView examName = view.findViewById(R.id.exam_name);
         TextView examDate = view.findViewById(R.id.exam_date);
         TextView examTime = view.findViewById(R.id.exam_time);
+        TextView type = view.findViewById(R.id.type);
         TextView examDuration = view.findViewById(R.id.exam_duration);
         TextView sub = view.findViewById(R.id.status);
 
         examDate.setVisibility(View.GONE);
         examTime.setVisibility(View.GONE);
         examDuration.setVisibility(View.GONE);
+        type.setVisibility(View.GONE);
         sub.setBackgroundColor(Color.parseColor("#4C4C4C"));
         sub.setGravity(Gravity.CENTER);
         sub.setTextColor(Color.WHITE);

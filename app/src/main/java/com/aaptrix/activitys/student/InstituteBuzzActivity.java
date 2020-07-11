@@ -289,6 +289,8 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         schoolId = settings.getString("str_school_id", "");
         numberOfUser = settings.getString("numberOfUser", "");
 
+        Log.e("user_id", userId);
+
         GetExam getExam = new GetExam(this);
         getExam.execute(schoolId, userSection, userId);
 
