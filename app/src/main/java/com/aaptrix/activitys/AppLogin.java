@@ -112,7 +112,6 @@ public class AppLogin extends AppCompatActivity {
     String selToolColor, selDrawerColor, selStatusColor, selTextColor1, selTextColor2;
     String selToolColor1, selDrawerColor1, selStatusColor1, selTextColor11, selTextColor22;
     SharedPreferences settings;
-    SharedPreferences.Editor editor;
     String Networkstatus, status, userType;
     private String type;
     CheckBox cb;
@@ -643,6 +642,7 @@ public class AppLogin extends AppCompatActivity {
                         break;
                     case "Invalid User login phone":
                         Toast.makeText(AppLogin.this, "Invalid User login phone", Toast.LENGTH_SHORT).show();
+                        break;
                     default:
                         JSONObject jsonObject;
                         try {
@@ -775,6 +775,9 @@ public class AppLogin extends AppCompatActivity {
                     break;
                 case "No active batch in this Student account":
                     Toast.makeText(AppLogin.this, "No active batch in this Student account", Toast.LENGTH_SHORT).show();
+                    break;
+                case "Device not registerd" :
+                    Toast.makeText(AppLogin.this, result, Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     try {
