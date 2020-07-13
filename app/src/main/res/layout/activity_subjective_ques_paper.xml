@@ -53,13 +53,6 @@
                             android:textSize="18sp"
                             tools:ignore="HardcodedText" />
 
-                        <ImageButton
-                            android:layout_width="?attr/actionBarSize"
-                            android:layout_height="match_parent"
-                            android:background="@android:color/transparent"
-                            android:src="@drawable/app_info_icon"
-                            android:id="@+id/view_dialog"/>
-
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

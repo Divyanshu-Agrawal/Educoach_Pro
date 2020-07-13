@@ -66,7 +66,7 @@ import static cz.msebera.android.httpclient.conn.ssl.SSLConnectionSocketFactory.
 
 public class SubjectiveQuesPaper extends AppCompatActivity {
 
-    String examId, examName, startTime, endTime, strPdf, userName;
+    String examId, examName, startTime, endTime, strPdf, userName, enroll_id;
     AppBarLayout appBarLayout;
     TextView tool_title;
     CardView cardView;
@@ -119,6 +119,7 @@ public class SubjectiveQuesPaper extends AppCompatActivity {
         userSection = settings.getString("userSection", "");
         userType = settings.getString("userrType", "");
         userName = settings.getString("userName", "");
+        enroll_id = settings.getString("sch_unique_id", "");
         String rollNo = SCHOOL_NAME + "\n" + settings.getString("userName", "") + ", " + settings.getString("userPhone", "");
 
         if (settings.getString("userrType", "").equals("Guest")) {
@@ -131,7 +132,6 @@ public class SubjectiveQuesPaper extends AppCompatActivity {
         }
 
         String url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/subjectiveExam/" + strPdf;
-        Log.e("url", url);
         watermark.setText(rollNo);
         watermark.bringToFront();
         setTimer();
@@ -189,7 +189,7 @@ public class SubjectiveQuesPaper extends AppCompatActivity {
                                 .setMessage("Are you sure you want to upload this file. Once uploaded no changes can be made.")
                                 .setPositiveButton("Upload", (dialog, which) -> {
                                     SubmitExam submitExam = new SubmitExam(this);
-                                    submitExam.execute(schoolId, examId, userId, userName);
+                                    submitExam.execute(schoolId, examId, userId, userName, enroll_id);
                                 })
                                 .setNegativeButton("Cancel", null)
                                 .show();
@@ -293,6 +293,7 @@ public class SubjectiveQuesPaper extends AppCompatActivity {
             String examId = params[1];
             String userId = params[2];
             String username = params[3];
+            String enroll = params[4];
 
             try {
                 SSLContext sslContext = SSLContexts.custom().useTLS().build();
@@ -310,6 +311,7 @@ public class SubjectiveQuesPaper extends AppCompatActivity {
                 entityBuilder.addTextBody("tbl_subjective_online_exams_id", examId);
                 entityBuilder.addTextBody("tbl_users_id", userId);
                 entityBuilder.addTextBody("tbl_users_nm", username);
+                entityBuilder.addTextBody("tbl_users_enrollment_id", enroll);
                 HttpEntity entity = entityBuilder.build();
                 httppost.setEntity(entity);
                 HttpResponse response = httpclient.execute(httppost);

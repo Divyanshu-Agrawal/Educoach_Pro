@@ -490,6 +490,7 @@ public class PastOnlineExam extends Fragment {
                 Intent intent = new Intent(getContext(), SubjectiveExamResult.class);
                 intent.putExtra("examName", examArray.get(position).getName());
                 intent.putExtra("pdf", examArray.get(position).getAnsPdf());
+                intent.putExtra("id", examArray.get(position).getId());
                 startActivity(intent);
             }
         });

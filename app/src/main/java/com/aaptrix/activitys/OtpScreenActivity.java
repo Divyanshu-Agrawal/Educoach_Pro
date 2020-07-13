@@ -18,6 +18,7 @@ import com.aaptrix.activitys.admin.InstituteBuzzActivityDiff;
 
 import androidx.annotation.Nullable;
 
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -278,8 +279,7 @@ public class OtpScreenActivity extends Activity {
 
             String mob = params[0];
             String password = params[1];
-            Log.e("mob", mob);
-            Log.e("pass", password);
+            @SuppressLint("HardwareIds") String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
             String data;
 
             try {
@@ -295,6 +295,7 @@ public class OtpScreenActivity extends Activity {
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
                 data = URLEncoder.encode("mob", "UTF-8") + "=" + URLEncoder.encode(mob, "UTF-8") + "&" +
                         URLEncoder.encode("str_user_password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8") + "&" +
+                        URLEncoder.encode("device_id", "UTF-8") + "=" + URLEncoder.encode(deviceId, "UTF-8") + "&" +
                         URLEncoder.encode("user_type", "UTF-8") + "=" + URLEncoder.encode(getSharedPreferences(PREF_ROLE, 0).getString("userRole", ""), "UTF-8");
                 outputStream.write(data.getBytes());
 

@@ -726,7 +726,8 @@ public class AppLogin extends AppCompatActivity {
                 data = URLEncoder.encode("str_user_phone", "UTF-8") + "=" + URLEncoder.encode(str_user_phone, "UTF-8") + "&" +
                         URLEncoder.encode("str_user_password", "UTF-8") + "=" + URLEncoder.encode(str_user_password, "UTF-8") + "&" +
                         URLEncoder.encode("user_type", "UTF-8") + "=" + URLEncoder.encode(userRole, "UTF-8") + "&" +
-                        URLEncoder.encode("device_id", "UTF-8") + "=" + URLEncoder.encode(deviceId, "UTF-8");
+                        URLEncoder.encode("device_id", "UTF-8") + "=" + URLEncoder.encode(deviceId, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_school_id", "UTF-8") + "=" + URLEncoder.encode(SCHOOL_ID, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);

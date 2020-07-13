@@ -54,6 +54,7 @@ public class SubjectiveExamResult extends AppCompatActivity {
         tool_title.setText(getIntent().getStringExtra("examName"));
 
         String strpdf = getIntent().getStringExtra("pdf");
+        String id = getIntent().getStringExtra("id");
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         String rollNo = SCHOOL_NAME + "\n" + settings.getString("userName", "") + ", " + settings.getString("userPhone", "");
@@ -67,14 +68,16 @@ public class SubjectiveExamResult extends AppCompatActivity {
         watermark.bringToFront();
         setTimer();
 
-        try {
-            URL u = new URL(url);
-            u.openConnection();
-            DataInputStream stream = new DataInputStream(u.openStream());
-            pdfView.fromStream(stream).load();
-        } catch (IOException e) {
-            // swallow a 404
-        }
+        new Thread(() -> {
+            try {
+                URL u = new URL(url);
+                u.openConnection();
+                DataInputStream stream = new DataInputStream(u.openStream());
+                pdfView.fromStream(stream).load();
+            } catch (IOException e) {
+                // swallow a 404
+            }
+        }).start();
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
         String selToolColor = settingsColor.getString("tool", "");

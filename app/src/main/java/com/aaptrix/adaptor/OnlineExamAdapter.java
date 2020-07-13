@@ -137,6 +137,7 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
                                     Intent intent = new Intent(context, SubjectiveExamResult.class);
                                     intent.putExtra("examName", data.getName());
                                     intent.putExtra("pdf", data.getAnsPdf());
+                                    intent.putExtra("id", data.getId());
                                     context.startActivity(intent);
                                 }
                             }
