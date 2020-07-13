@@ -224,7 +224,7 @@ public class FeeStructure extends Fragment {
         int total = 0;
 
         for (int i = 0; i < feeArray.size(); i++) {
-            total = total + Integer.valueOf(feeArray.get(i).getAmount());
+            total = total + Integer.parseInt(feeArray.get(i).getAmount().trim());
         }
 
         FeeData data = new FeeData();

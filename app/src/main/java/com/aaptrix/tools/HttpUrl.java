@@ -16,7 +16,7 @@ public class HttpUrl implements Serializable {
     public static final String ALL_CITY = HTTP_HOST + "city_list.php?tokenvalue=" + tokenvalue;
     public static final String ALL_SCHOOL = HTTP_HOST + "school_list.php?tokenvalue=" + tokenvalue;
     public static final String ALL_ROLE = HTTP_HOST + "role_list.php?tokenvalue=" + tokenvalue;
-    public static final String LOGIN_URL = HTTP_HOST + "login/user_login1.php?tokenvalue=" + tokenvalue;
+    public static final String LOGIN_URL = HTTP_HOST + "login/user_login.php?tokenvalue=" + tokenvalue;
     public static final String VERIFY_PHONE = HTTP_HOST + "login/user_mobile_verification.php";
     public static final String REGISTER_URL = HTTP_HOST + "login/user_register.php?tokenvalue=" + tokenvalue;
     public static final String ALL_INSTITUTE_BUZZ_CATE = HTTP_HOST + "all_insti_buzz_cate.php?tokenvalue=" + tokenvalue;

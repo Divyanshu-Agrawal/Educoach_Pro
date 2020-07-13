@@ -776,7 +776,7 @@ public class AppLogin extends AppCompatActivity {
                 case "No active batch in this Student account":
                     Toast.makeText(AppLogin.this, "No active batch in this Student account", Toast.LENGTH_SHORT).show();
                     break;
-                case "Device not registerd" :
+                case "Device not registered" :
                     Toast.makeText(AppLogin.this, result, Toast.LENGTH_SHORT).show();
                     break;
                 default:
