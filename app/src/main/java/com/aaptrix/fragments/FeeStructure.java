@@ -206,7 +206,7 @@ public class FeeStructure extends Fragment {
                         for (int i = 0; i < paidArray.length(); i++) {
                             JSONObject object = paidArray.getJSONObject(i);
                             if (object.getString("trans_status").equals("SUCCESS"))
-                                paidAmount = paidAmount + Integer.valueOf(object.getString("tbl_fees_collection_amount"));
+                                paidAmount = paidAmount + Integer.parseInt(object.getString("tbl_fees_collection_amount").trim());
                         }
                     }
                     listItems();
@@ -243,7 +243,7 @@ public class FeeStructure extends Fragment {
         feeArray.add(data);
 
         data = new FeeData();
-        total = total + Integer.valueOf(feeArray.get(0).getAdjusted());
+        total = total + Integer.parseInt(feeArray.get(0).getAdjusted().trim());
         total = total - paidAmount;
         data.setType("Final Amount");
         data.setAmount(String.valueOf(total));

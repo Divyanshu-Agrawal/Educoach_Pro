@@ -94,7 +94,7 @@ public class FeePayment extends AppCompatActivity {
         });
     }
 
-    private class ViewPagerAdapter extends FragmentStatePagerAdapter {
+    private static class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
         ViewPagerAdapter(FragmentManager manager) {
             super(manager);

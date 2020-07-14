@@ -49,7 +49,7 @@
                             android:layout_height="match_parent"
                             android:fontFamily="ROBOTO-REGULAR.TTF"
                             android:gravity="start|center"
-                            android:text="School Fee"
+                            android:text="Fees"
                             android:textAllCaps="false"
                             android:textColor="@color/white"
                             android:textSize="18sp"
