@@ -286,7 +286,7 @@ public class SplashScreen extends Activity {
 
     private void getVersionInfo() {
         mTimer.cancel();
-        if (BuildConfig.VERSION_CODE >= Integer.valueOf(currentVersion)) {
+        if (BuildConfig.VERSION_CODE >= Integer.parseInt(currentVersion)) {
             startnextActivity();
         } else {
             if (priority.equals("2")) {
