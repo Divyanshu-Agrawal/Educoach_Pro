@@ -847,7 +847,7 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
 
         @Override
         protected void onPostExecute(String result) {
-            if (!result.equals("{\"OnlineExamList\":null}")) {
+            if (!result.contains("{\"OnlineExamList\":null}")) {
                 try {
                     JSONObject jsonObject = new JSONObject(result);
                     JSONArray jsonArray = jsonObject.getJSONArray("OnlineExamList");

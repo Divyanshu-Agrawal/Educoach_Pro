@@ -17,8 +17,6 @@ import com.aaptrix.activitys.admin.AddNewEvent;
 import com.aaptrix.activitys.student.OnlineExam;
 import com.aaptrix.activitys.student.StudentTimeTableActivity;
 import com.google.android.material.appbar.AppBarLayout;
-
-import com.aaptrix.activitys.admin.IntermidiateScreenActivityPublication;
 import com.aaptrix.activitys.student.AchievmentDetailsActivity;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -83,11 +81,9 @@ import static com.aaptrix.tools.SPClass.PREF_COLOR;
 
 public class SchoolCalenderActivity extends AppCompatActivity {
 
-    private SharedPreferences settings, sp;
-    SharedPreferences.Editor editor;
+    private SharedPreferences settings;
     String userId, userSchoolId, userSchoolLogo, userRoleId, userSection, userrType;
     AppBarLayout appBarLayout;
-    SharedPreferences.Editor editorColor;
     String selToolColor, selDrawerColor, selStatusColor, selTextColor1, selTextColor2;
     TextView tool_title;
     LinearLayout add_layout;
@@ -99,7 +95,7 @@ public class SchoolCalenderActivity extends AppCompatActivity {
     TextView tv_detaails, tv_date, todayTv, noEventTv;
 
     //eventDetails
-    String eventId, eventTitle, eventDesc, eventDate, eventEndDate, eventImg;
+    String eventImg;
     DatabeanEvents dbe;
     ArrayList<DatabeanEvents> eventsArray = new ArrayList<>();
     ArrayList<DatabeanEvents> eventsArray1 = new ArrayList<>();
@@ -136,7 +132,6 @@ public class SchoolCalenderActivity extends AppCompatActivity {
         mainLayoutEvent = findViewById(R.id.mainLayoutEvent);
         add_layout = findViewById(R.id.add_layout);
         iv_add_more_event = findViewById(R.id.iv_add_more_event);
-        sp = this.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         ev_date = findViewById(R.id.ev_date);
         ev_today = findViewById(R.id.ev_today);
         upcoming_listView = findViewById(R.id.upcoming_listView);
@@ -147,7 +142,6 @@ public class SchoolCalenderActivity extends AppCompatActivity {
         noEventTv.setVisibility(View.GONE);
         eventLayout.setVisibility(View.GONE);
         settings = getSharedPreferences(PREFS_NAME, 0);
-        editor = settings.edit();
         userId = settings.getString("userID", "");
         userSchoolId = settings.getString("str_school_id", "");
         userSchoolLogo = settings.getString("userSchoolLogo", "");
@@ -158,7 +152,6 @@ public class SchoolCalenderActivity extends AppCompatActivity {
 
         //color
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
-        editorColor = settingsColor.edit();
         selToolColor = settingsColor.getString("tool", "");
         selDrawerColor = settingsColor.getString("drawer", "");
         selStatusColor = settingsColor.getString("status", "");
@@ -166,11 +159,9 @@ public class SchoolCalenderActivity extends AppCompatActivity {
         selTextColor2 = settingsColor.getString("text2", "");
 
         sp_event = getSharedPreferences(PREFS_EVENT, 0);
-        se_event = sp_event.edit();
         String events = sp_event.getString("json_event", "");
 
         sp_event = getSharedPreferences(PREFS_EVENT1, 0);
-        se_event = sp_event.edit();
         String events1 = sp_event.getString("json_event_upcomming", "");
 
         if (!events.equals("null") && !events.isEmpty() && events.length() > 5 &&
@@ -695,7 +686,7 @@ public class SchoolCalenderActivity extends AppCompatActivity {
             se_event = sp_event.edit();
             se_event.clear();
             se_event.putString("json_event_upcomming", result);
-            se_event.commit();
+            se_event.apply();
             mSwipeRefreshLayout.setRefreshing(false);
             mainLayoutEvent.setVisibility(View.VISIBLE);
 

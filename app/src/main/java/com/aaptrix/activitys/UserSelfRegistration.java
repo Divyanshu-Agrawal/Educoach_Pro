@@ -45,6 +45,7 @@ import com.aaptrix.R;
 import com.aaptrix.tools.FileUtil;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -304,6 +305,7 @@ public class UserSelfRegistration extends AppCompatActivity {
                                     .setQuality(25)
                                     .setCompressFormat(Bitmap.CompressFormat.JPEG)
                                     .compressToFile(FileUtil.from(this, data.getData()));
+                            Picasso.with(this).load(image).into(attachment);
                         } else {
                             FileNotFoundException fe = new FileNotFoundException();
                             Toast.makeText(this, "File not in required format.", Toast.LENGTH_SHORT).show();

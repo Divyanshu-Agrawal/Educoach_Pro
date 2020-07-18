@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,7 @@ public class FullscreenAdapter extends PagerAdapter {
 
         String url = sp.getString("imageUrl", "") + sp.getString("userSchoolId", "") + "/studyMaterial/" + studymaterial.get(position);
         String fileExt = studymaterial.get(position).substring(studymaterial.get(position).lastIndexOf(".") + 1);
+        Log.e("url", url);
 
         watermark.setText(rollNo);
         watermark.bringToFront();

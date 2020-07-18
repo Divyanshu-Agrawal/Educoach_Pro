@@ -522,11 +522,6 @@ public class VideoLibrary extends AppCompatActivity {
                 }
                 if (userrType.equals("Student")) {
                     String disable = jsonRootObject.getString("DisableSubject");
-                    for (int i = 0; i < array.size(); i++) {
-                        if (!disable.contains(array.get(i).getSubject())) {
-                            videosArray.add(array.get(i));
-                        }
-                    }
                     if (!result.contains("\"studyVideosStudent\":null")) {
                         JSONArray jsonArray = jsonRootObject.getJSONArray("studyVideosStudent");
                         for (int i = 0; i < jsonArray.length(); i++) {
@@ -540,6 +535,11 @@ public class VideoLibrary extends AppCompatActivity {
                             videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
                             videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
                             array.add(videosData);
+                        }
+                    }
+                    for (int i = 0; i < array.size(); i++) {
+                        if (!disable.contains(array.get(i).getSubject())) {
+                            videosArray.add(array.get(i));
                         }
                     }
                 } else {
