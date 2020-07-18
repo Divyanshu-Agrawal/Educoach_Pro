@@ -159,7 +159,12 @@ public class PlayLiveStream extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         userrType = settings.getString("userrType", "");
         userSchoolId = settings.getString("userSchoolId", "");
-        rollNo = SCHOOL_NAME + "\n" + settings.getString("userName", "") + ", " + settings.getString("userPhone", "");
+
+        if (getResources().getString(R.string.watermark).equals("full")) {
+            rollNo = SCHOOL_NAME + "\n" + settings.getString("userName", "") + ", " + settings.getString("userPhone", "");
+        } else {
+            rollNo = settings.getString("unique_id", "");
+        }
         userId = settings.getString("userID", "");
 
         comments.setOnFocusChangeListener((v, hasFocus) -> {

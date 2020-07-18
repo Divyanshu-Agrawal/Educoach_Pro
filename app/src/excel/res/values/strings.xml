@@ -13,6 +13,7 @@
     <string name="tool">#872828</string>
     <string name="text1">#FFFFFF</string>
     <string name="text2">#FFFFFF</string>
+    <string name="watermark">partial</string>
 
     <string name="phone_address">+91 6260 9696 47</string>
     <string name="contact_details">Contact Details</string>

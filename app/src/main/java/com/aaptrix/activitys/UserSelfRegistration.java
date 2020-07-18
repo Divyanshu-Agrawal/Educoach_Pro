@@ -152,6 +152,21 @@ public class UserSelfRegistration extends AppCompatActivity {
                 hideKeyboard(v);
         });
 
+        parentName.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus)
+                hideKeyboard(v);
+        });
+
+        parentNumber.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus)
+                hideKeyboard(v);
+        });
+
+        parentOccupation.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus)
+                hideKeyboard(v);
+        });
+
         userPhone.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus)
                 hideKeyboard(v);

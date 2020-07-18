@@ -66,7 +66,7 @@ import static cz.msebera.android.httpclient.conn.ssl.SSLConnectionSocketFactory.
 
 public class SubjectiveQuesPaper extends AppCompatActivity {
 
-    String examId, examName, startTime, endTime, strPdf, userName, enroll_id;
+    String examId, examName, startTime, endTime, strPdf, userName, enroll_id, rollNo;
     AppBarLayout appBarLayout;
     TextView tool_title;
     CardView cardView;
@@ -120,7 +120,11 @@ public class SubjectiveQuesPaper extends AppCompatActivity {
         userType = settings.getString("userrType", "");
         userName = settings.getString("userName", "");
         enroll_id = settings.getString("sch_unique_id", "");
-        String rollNo = SCHOOL_NAME + "\n" + settings.getString("userName", "") + ", " + settings.getString("userPhone", "");
+        if (getResources().getString(R.string.watermark).equals("full")) {
+            rollNo = SCHOOL_NAME + "\n" + settings.getString("userName", "") + ", " + settings.getString("userPhone", "");
+        } else {
+            rollNo = settings.getString("unique_id", "");
+        }
 
         if (settings.getString("userrType", "").equals("Guest")) {
             rollNo = getResources().getString(R.string.app_name);

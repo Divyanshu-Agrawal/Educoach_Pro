@@ -37,6 +37,7 @@ public class FullscreenAdapter extends PagerAdapter {
     private TextView watermark;
     private LinearLayout notice;
     private PDFView pdfView;
+    private String rollNo;
 
     public FullscreenAdapter(Context context, ArrayList<String> studymaterial) {
         this.context = context;
@@ -59,7 +60,11 @@ public class FullscreenAdapter extends PagerAdapter {
         dismiss.setOnClickListener(v -> notice.setVisibility(View.GONE));
 
         SharedPreferences sp = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String rollNo = SCHOOL_NAME + "\n" + sp.getString("userName", "") + ", " + sp.getString("userPhone", "");
+        if (context.getResources().getString(R.string.watermark).equals("full")) {
+            rollNo = SCHOOL_NAME + "\n" + sp.getString("userName", "") + ", " + sp.getString("userPhone", "");
+        } else {
+            rollNo = sp.getString("unique_id", "");
+        }
 
         if (sp.getString("userrType", "").equals("Guest")) {
             rollNo = context.getResources().getString(R.string.app_name);

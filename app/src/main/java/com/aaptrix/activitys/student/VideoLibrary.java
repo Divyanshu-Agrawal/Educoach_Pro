@@ -60,7 +60,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -489,43 +491,28 @@ public class VideoLibrary extends AppCompatActivity {
             mSwipeRefreshLayout.setRefreshing(false);
             listView.setEnabled(true);
             try {
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
                 JSONObject jsonRootObject = new JSONObject(result);
                 if (!result.contains("\"result\":null")) {
                     JSONArray jsonArray = jsonRootObject.getJSONArray("result");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        videosData = new VideosData();
-                        videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
-                        videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
-                        videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
-                        videosData.setSubject(jsonObject.getString("subject_name"));
-                        videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
-                        videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
-                        videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
-                        array.add(videosData);
-                    }
-                }
-                if (!result.contains("\"instituteVideos\":null")) {
-                    JSONArray jsonArray = jsonRootObject.getJSONArray("instituteVideos");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        videosData = new VideosData();
-                        videosData.setId(jsonObject.getString("tbl_school_institutevideo_id"));
-                        videosData.setTitle(jsonObject.getString("tbl_school_institutevideo_title"));
-                        videosData.setUrl(url + jsonObject.getString("tbl_school_institutevideo_video"));
-                        videosData.setDesc(jsonObject.getString("tbl_school_institutevideo_desc"));
-                        videosData.setSubject(jsonObject.getString("subject_name"));
-                        videosData.setDate(jsonObject.getString("tbl_school_institutevideo_date"));
-                        videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
-                        array.add(videosData);
-                    }
-                }
-                if (userrType.equals("Student")) {
-                    String disable = jsonRootObject.getString("DisableSubject");
-                    if (!result.contains("\"studyVideosStudent\":null")) {
-                        JSONArray jsonArray = jsonRootObject.getJSONArray("studyVideosStudent");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        if (!jsonObject.getString("visible_till").toLowerCase().equals("null") && !jsonObject.getString("visible_till_time").toLowerCase().equals("null")) {
+                            String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
+                            Date enddate = sdf.parse(end);
+                            if (calendar.getTime().before(enddate)) {
+                                videosData = new VideosData();
+                                videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
+                                videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
+                                videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
+                                videosData.setSubject(jsonObject.getString("subject_name"));
+                                videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
+                                videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
+                                videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
+                                array.add(videosData);
+                            }
+                        } else {
                             videosData = new VideosData();
                             videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
                             videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
@@ -537,6 +524,71 @@ public class VideoLibrary extends AppCompatActivity {
                             array.add(videosData);
                         }
                     }
+                }
+                if (!result.contains("\"instituteVideos\":null")) {
+                    JSONArray jsonArray = jsonRootObject.getJSONArray("instituteVideos");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        if (!jsonObject.getString("visible_till").toLowerCase().equals("null") && !jsonObject.getString("visible_till_time").toLowerCase().equals("null")) {
+                            String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
+                            Date enddate = sdf.parse(end);
+                            if (calendar.getTime().before(enddate)) {
+                                videosData = new VideosData();
+                                videosData.setId(jsonObject.getString("tbl_school_institutevideo_id"));
+                                videosData.setTitle(jsonObject.getString("tbl_school_institutevideo_title"));
+                                videosData.setUrl(url + jsonObject.getString("tbl_school_institutevideo_video"));
+                                videosData.setDesc(jsonObject.getString("tbl_school_institutevideo_desc"));
+                                videosData.setSubject(jsonObject.getString("subject_name"));
+                                videosData.setDate(jsonObject.getString("tbl_school_institutevideo_date"));
+                                videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
+                                array.add(videosData);
+                            }
+                        } else {
+                            videosData = new VideosData();
+                            videosData.setId(jsonObject.getString("tbl_school_institutevideo_id"));
+                            videosData.setTitle(jsonObject.getString("tbl_school_institutevideo_title"));
+                            videosData.setUrl(url + jsonObject.getString("tbl_school_institutevideo_video"));
+                            videosData.setDesc(jsonObject.getString("tbl_school_institutevideo_desc"));
+                            videosData.setSubject(jsonObject.getString("subject_name"));
+                            videosData.setDate(jsonObject.getString("tbl_school_institutevideo_date"));
+                            videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
+                            array.add(videosData);
+                        }
+                    }
+                }
+                if (userrType.equals("Student")) {
+                    String disable = jsonRootObject.getString("DisableSubject");
+                    if (!result.contains("\"studyVideosStudent\":null")) {
+                        JSONArray jsonArray = jsonRootObject.getJSONArray("studyVideosStudent");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            if (!jsonObject.getString("visible_till").toLowerCase().equals("null") && !jsonObject.getString("visible_till_time").toLowerCase().equals("null")) {
+                                String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
+                                Date enddate = sdf.parse(end);
+                                if (calendar.getTime().before(enddate)) {
+                                    videosData = new VideosData();
+                                    videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
+                                    videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
+                                    videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
+                                    videosData.setSubject(jsonObject.getString("subject_name"));
+                                    videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
+                                    videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
+                                    videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
+                                    array.add(videosData);
+                                }
+                            } else {
+                                videosData = new VideosData();
+                                videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
+                                videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
+                                videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
+                                videosData.setSubject(jsonObject.getString("subject_name"));
+                                videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
+                                videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
+                                videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
+                                array.add(videosData);
+                            }
+                        }
+                    }
                     for (int i = 0; i < array.size(); i++) {
                         if (!disable.contains(array.get(i).getSubject())) {
                             videosArray.add(array.get(i));
@@ -545,7 +597,7 @@ public class VideoLibrary extends AppCompatActivity {
                 } else {
                     videosArray.addAll(array);
                 }
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             if (videosArray.size() == 0) {

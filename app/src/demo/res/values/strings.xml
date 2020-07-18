@@ -7,6 +7,7 @@
     <string name="login_phone">Registered Phone Number</string>
     <string name="password">Password</string>
     <string name="conpassword">Confirm Password</string>
+    <string name="watermark">partial</string>
 
     <string name="status">#21bcc2</string>
     <string name="drawer">#4C4C4C</string>
