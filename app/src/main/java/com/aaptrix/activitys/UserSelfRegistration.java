@@ -205,13 +205,10 @@ public class UserSelfRegistration extends AppCompatActivity {
                 ((TextView) adapterView.getChildAt(0)).setTextColor(getResources().getColor(R.color.black));
                 switch (i) {
                     case 1:
-                        strGender = "m";
+                        strGender = "male";
                         break;
                     case 2:
-                        strGender = "f";
-                        break;
-                    case 3:
-                        strGender = "not specified";
+                        strGender = "female";
                         break;
                     default:
                         strGender = "0";
@@ -298,6 +295,7 @@ public class UserSelfRegistration extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
                     String fileName = FileUtil.getFileName(this, data.getData());
+                    Log.e("file", fileName);
                     String file_extn = fileName.substring(fileName.lastIndexOf(".") + 1);
                     try {
                         if (file_extn.equals("jpg") || file_extn.equals("jpeg") || file_extn.equals("png")) {

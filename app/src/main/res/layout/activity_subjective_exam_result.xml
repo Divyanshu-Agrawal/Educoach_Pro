@@ -61,20 +61,46 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appBarLayout"
+        android:padding="10dp"
+        android:text="Marks Obtained : "
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:id="@+id/marks"/>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="28sp"
-        android:rotation="-45"
         android:layout_centerInParent="true"
-        android:textStyle="bold"
-        android:text="Student roll number"
-        android:textColor="#80111111"
-        android:id="@+id/watermark"/>
+        android:id="@+id/no_answer"
+        android:text="No Answer Sheet Available"
+        android:textSize="20sp"
+        android:visibility="gone"/>
 
-    <com.github.barteksc.pdfviewer.PDFView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/appBarLayout"
-        android:id="@+id/ans_pdf"/>
+        android:id="@+id/relative"
+        android:layout_below="@id/marks">
+
+        <TextView
+            android:id="@+id/watermark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:rotation="-45"
+            android:text="Student roll number"
+            android:textColor="#80111111"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <com.github.barteksc.pdfviewer.PDFView
+            android:id="@+id/ans_pdf"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

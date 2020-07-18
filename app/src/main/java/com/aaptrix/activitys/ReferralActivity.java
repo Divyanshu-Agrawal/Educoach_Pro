@@ -183,7 +183,8 @@ public class ReferralActivity extends AppCompatActivity {
 
     private void share() {
         String msg = "Join " + schoolName + ",\n \n" + "With my referral code : "
-                + referCode.getText() + "\n \n Benefits : \n" + referBenefit.getText();
+                + referCode.getText() + "\n \n Benefits : \n" + referBenefit.getText() + "\n \n Download our app : \n"
+                + "http://play.google.com/store/apps/details?id=" + getPackageName();
 
         whatsapp.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_SEND);

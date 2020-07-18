@@ -187,9 +187,6 @@ public class AddNewEvent extends AppCompatActivity {
 		});
 		
 		gridView.setOnItemClickListener((parent, view, position, id) -> {
-//			image.clear();
-//			filepath.clear();
-//			imageArray.clear();
 			image.remove(addImageUri);
 			if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED) {
 				Intent photoPickerIntent = new Intent();

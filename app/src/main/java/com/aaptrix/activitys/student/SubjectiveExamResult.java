@@ -11,6 +11,7 @@ import android.os.CountDownTimer;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aaptrix.R;
@@ -33,6 +34,8 @@ public class SubjectiveExamResult extends AppCompatActivity {
     TextView tool_title;
     TextView watermark;
     PDFView pdfView;
+    RelativeLayout layout;
+    TextView marks, noAnswer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,9 @@ public class SubjectiveExamResult extends AppCompatActivity {
         watermark = findViewById(R.id.watermark);
         tool_title = findViewById(R.id.tool_title);
         pdfView = findViewById(R.id.ans_pdf);
+        layout = findViewById(R.id.relative);
+        marks = findViewById(R.id.marks);
+        noAnswer = findViewById(R.id.no_answer);
 
         tool_title.setText(getIntent().getStringExtra("examName"));
 
