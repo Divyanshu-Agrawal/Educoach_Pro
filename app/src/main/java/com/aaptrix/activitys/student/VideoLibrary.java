@@ -492,16 +492,19 @@ public class VideoLibrary extends AppCompatActivity {
             listView.setEnabled(true);
             try {
                 Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.DATE, -1);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
                 JSONObject jsonRootObject = new JSONObject(result);
                 if (!result.contains("\"result\":null")) {
                     JSONArray jsonArray = jsonRootObject.getJSONArray("result");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if (!jsonObject.getString("visible_till").toLowerCase().equals("null") && !jsonObject.getString("visible_till_time").toLowerCase().equals("null")) {
-                            String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
-                            Date enddate = sdf.parse(end);
-                            if (calendar.getTime().before(enddate)) {
+                        String start = jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time");
+                        String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
+                        Date startdate = sdf.parse(start);
+                        Date enddate = sdf.parse(end);
+                        if (!start.equals("0000-00-00 00:00:00") && !end.equals("0000-00-00 00:00:00")) {
+                            if (calendar.getTime().equals(startdate) || calendar.getTime().before(startdate) || (calendar.getTime().after(startdate) && calendar.getTime().before(enddate))) {
                                 videosData = new VideosData();
                                 videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
                                 videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
@@ -529,10 +532,12 @@ public class VideoLibrary extends AppCompatActivity {
                     JSONArray jsonArray = jsonRootObject.getJSONArray("instituteVideos");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if (!jsonObject.getString("visible_till").toLowerCase().equals("null") && !jsonObject.getString("visible_till_time").toLowerCase().equals("null")) {
-                            String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
-                            Date enddate = sdf.parse(end);
-                            if (calendar.getTime().before(enddate)) {
+                        String start = jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time");
+                        String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
+                        Date startdate = sdf.parse(start);
+                        Date enddate = sdf.parse(end);
+                        if (!start.equals("0000-00-00 00:00:00") && !end.equals("0000-00-00 00:00:00")) {
+                            if (calendar.getTime().equals(startdate) || calendar.getTime().before(startdate) || (calendar.getTime().after(startdate) && calendar.getTime().before(enddate))) {
                                 videosData = new VideosData();
                                 videosData.setId(jsonObject.getString("tbl_school_institutevideo_id"));
                                 videosData.setTitle(jsonObject.getString("tbl_school_institutevideo_title"));
@@ -562,10 +567,12 @@ public class VideoLibrary extends AppCompatActivity {
                         JSONArray jsonArray = jsonRootObject.getJSONArray("studyVideosStudent");
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            if (!jsonObject.getString("visible_till").toLowerCase().equals("null") && !jsonObject.getString("visible_till_time").toLowerCase().equals("null")) {
-                                String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
-                                Date enddate = sdf.parse(end);
-                                if (calendar.getTime().before(enddate)) {
+                            String start = jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time");
+                            String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
+                            Date startdate = sdf.parse(start);
+                            Date enddate = sdf.parse(end);
+                            if (!start.equals("0000-00-00 00:00:00") && !end.equals("0000-00-00 00:00:00")) {
+                                if (calendar.getTime().equals(startdate) || calendar.getTime().before(startdate) || (calendar.getTime().after(startdate) && calendar.getTime().before(enddate))) {
                                     videosData = new VideosData();
                                     videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
                                     videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
