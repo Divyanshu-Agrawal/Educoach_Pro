@@ -81,7 +81,7 @@ public class StudyMaterial extends AppCompatActivity {
     ListView listView;
     LinearLayout add_layout;
     ImageView addMaterial;
-    String userId, userSchoolId, userRoleId, userrType, userSection;
+    String userId, userSchoolId, userRoleId, userrType, userSection, userName;
     String skip;
     String[] batch_array = {"All Batches"};
     Spinner batch_spinner;
@@ -119,6 +119,7 @@ public class StudyMaterial extends AppCompatActivity {
         userRoleId = settings.getString("str_role_id", "");
         userSection = settings.getString("userSection", "");
         userrType = settings.getString("userrType", "");
+        userName = settings.getString("userName", "");
 
         if (userrType.equals("Admin") || userrType.equals("Teacher")) {
             setBatch();
@@ -408,9 +409,6 @@ public class StudyMaterial extends AppCompatActivity {
             skip = params[3];
             String data;
 
-            Log.e("userid", userId);
-            Log.e("section", userSection);
-
             try {
                 URL url = new URL(ALL_STUDY_MATERIAL);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -424,7 +422,8 @@ public class StudyMaterial extends AppCompatActivity {
                 data = URLEncoder.encode("schoolId", "UTF-8") + "=" + URLEncoder.encode(schoolId, "UTF-8") + "&" +
                         URLEncoder.encode("userSection", "UTF-8") + "=" + URLEncoder.encode(userSection, "UTF-8") + "&" +
                         URLEncoder.encode("userrType", "UTF-8") + "=" + URLEncoder.encode(userrType, "UTF-8") + "&" +
-                        URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8");
+                        URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);
@@ -492,6 +491,13 @@ public class StudyMaterial extends AppCompatActivity {
                     String disable = jsonRootObject.getString("DisableSubject");
                     for (int i = 0; i < array.size(); i++) {
                         if (!disable.contains(array.get(i).getSubject())) {
+                            studyMaterialArray.add(array.get(i));
+                        }
+                    }
+                } if (userrType.equals("Teacher")) {
+                    String restricted = jsonRootObject.getString("RistrictedSubject");
+                    for (int i = 0; i < array.size(); i++) {
+                        if (!restricted.contains(array.get(i).getSubject())) {
                             studyMaterialArray.add(array.get(i));
                         }
                     }
@@ -654,7 +660,8 @@ public class StudyMaterial extends AppCompatActivity {
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
                 data = URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
                         URLEncoder.encode("batchArray", "UTF-8") + "=" + URLEncoder.encode(batchArray, "UTF-8") + "&" +
-                        URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8");
+                        URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);
@@ -689,6 +696,7 @@ public class StudyMaterial extends AppCompatActivity {
                 subject_array.add("All Subjects");
             } else {
                 try {
+                    subject_array.clear();
                     JSONObject jsonRootObject = new JSONObject(result);
                     JSONArray jsonArray = jsonRootObject.getJSONArray("SubjectList");
                     subjects = new String[jsonArray.length()];

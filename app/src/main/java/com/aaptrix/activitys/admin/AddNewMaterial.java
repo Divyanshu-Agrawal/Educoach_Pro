@@ -108,7 +108,7 @@ public class AddNewMaterial extends AppCompatActivity {
     Toolbar toolbar;
     AppBarLayout appBarLayout;
     Button save;
-    String selToolColor, selStatusColor, selTextColor1, userSchoolId, userId, userType;
+    String selToolColor, selStatusColor, selTextColor1, userSchoolId, userId, userType, userName;
     MediaPlayer mp;
     CardView cardView;
     RelativeLayout layout;
@@ -160,6 +160,7 @@ public class AddNewMaterial extends AppCompatActivity {
         userSchoolId = sp_user.getString("str_school_id", "");
         userId = sp_user.getString("userID", "");
         userType = sp_user.getString("userrType", "");
+        userName = sp_user.getString("userName", "");
 
         GetCourse getCourse = new GetCourse(this);
         getCourse.execute(userSchoolId);
@@ -621,7 +622,9 @@ public class AddNewMaterial extends AppCompatActivity {
 
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
                 data = URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
-                        URLEncoder.encode("batchArray", "UTF-8") + "=" + URLEncoder.encode(batchArray, "UTF-8");
+                        URLEncoder.encode("batchArray", "UTF-8") + "=" + URLEncoder.encode(batchArray, "UTF-8") + "&" +
+                        URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);

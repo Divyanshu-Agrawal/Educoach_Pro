@@ -67,7 +67,6 @@ import com.aaptrix.databeans.DataBeanStudent;
 import com.aaptrix.R;
 
 import static com.aaptrix.tools.HttpUrl.ALL_BATCHS;
-import static com.aaptrix.tools.HttpUrl.GET_SUBS;
 import static com.aaptrix.tools.SPClass.PREFS_DAIRY;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
 import static com.aaptrix.tools.SPClass.PREF_COLOR;
@@ -80,20 +79,16 @@ public class IntermidiateScreenActivityPublication extends AppCompatActivity {
     String selToolColor, selDrawerColor, selStatusColor, selTextColor1, selTextColor2, numberOfUser;
     AppBarLayout appBarLayout;
     TextView tool_title;
-    String userID, userLoginId, userName, userImg, userrType, userPassword, userSchoolLogo;
-    String userSchoolId;
+    String userLoginId, userName, userImg, userrType, userPassword, userSchoolLogo;
     //
     TextView view1;
     LinearLayout attendance_diary;
     ImageView school_logo;
-    ProgressBar loader_student, loader_subject;
+    ProgressBar loader_student;
     //
-    View v;
     String str_tool_title;
 
     ArrayList<DataBeanStudent> studentArray = new ArrayList<>();
-    String[] subject_array = {"Select Subject"};
-    String[] subject_id = {"0"};
     DataBeanStudent dbs;
     String studentId, studentName;
     ListView user_list;
@@ -102,13 +97,11 @@ public class IntermidiateScreenActivityPublication extends AppCompatActivity {
     AlertDialog alertDialog;
     boolean IsVisibleMain = false;
     TextView tv_student;
-    Spinner tv_subject;
     private SharedPreferences sp_dairy;
     SharedPreferences.Editor se_dairy;
     AlertDialog.Builder alert;
     TextView cube1, cube2;
     TextView view2;
-    String selSubject = "Select Subject";
     MediaPlayer mp;
 
     @Override
@@ -164,8 +157,6 @@ public class IntermidiateScreenActivityPublication extends AppCompatActivity {
 
         school_logo = findViewById(R.id.school_logo);
         tv_student = findViewById(R.id.tv_student);
-        tv_subject = findViewById(R.id.tv_subject);
-        loader_subject = findViewById(R.id.loader_subject);
         loader_student = findViewById(R.id.loader_student);
 
         Picasso.with(this).load(R.drawable.large_logo).into(school_logo);
@@ -200,28 +191,6 @@ public class IntermidiateScreenActivityPublication extends AppCompatActivity {
             b1.execute(schoolId);
         }
 
-        tv_subject.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (view != null) {
-                    v = view;
-                    ((TextView) view).setTextColor(getResources().getColor(R.color.text_gray));
-                } else {
-                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray));
-                }
-                if (position != 0) {
-                    selSubject = subject_array[position];
-                } else {
-                    selSubject = "Select Subject";
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
         sp_dairy = getSharedPreferences(PREFS_DAIRY, 0);
         se_dairy = sp_dairy.edit();
         se_dairy.clear();
@@ -229,44 +198,13 @@ public class IntermidiateScreenActivityPublication extends AppCompatActivity {
         view1.setOnClickListener(view -> {
             mp.start();
             String studentArray1 = sp_dairy.getString("studentArray", "");
-            switch (str_tool_title) {
-                case "Add Activity": {
-                    if (!studentArray1.isEmpty()) {
-                        Intent intent = new Intent(this, AddNewActivity.class);
-                        intent.putExtra("type", "add");
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Select Batch", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-                }
-                case "Add Study Material": {
-                    if (!studentArray1.isEmpty()) {
-                        if (!selSubject.equals("Select Subject")) {
-                            Intent intent = new Intent(this, AddNewMaterial.class);
-                            intent.putExtra("subject", selSubject);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(this, "Select Subject", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Select Batch", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-                }
-                case "Add New Video": {
-                    if (!studentArray1.isEmpty()) {
-                        if (!selSubject.equals("Select Subject")) {
-                            Intent intent = new Intent(this, AddNewVideo.class);
-                            intent.putExtra("subject", selSubject);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(this, "Select Subject", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Select Batch", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
+            if ("Add Activity".equals(str_tool_title)) {
+                if (!studentArray1.isEmpty()) {
+                    Intent intent = new Intent(this, AddNewActivity.class);
+                    intent.putExtra("type", "add");
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Select Batch", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -386,101 +324,6 @@ public class IntermidiateScreenActivityPublication extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
-    public class GetSubject extends AsyncTask<String, String, String> {
-        Context ctx;
-
-        GetSubject(Context ctx) {
-            this.ctx = ctx;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            loader_subject.setVisibility(View.VISIBLE);
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            String school_id = params[0];
-            String batchArray = params[1];
-            String data;
-
-            try {
-
-                URL url = new URL(GET_SUBS);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
-                data = URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
-                        URLEncoder.encode("batchArray", "UTF-8") + "=" + URLEncoder.encode(batchArray, "UTF-8");
-                outputStream.write(data.getBytes());
-
-                bufferedWriter.write(data);
-                bufferedWriter.flush();
-                bufferedWriter.close();
-                outputStream.flush();
-                outputStream.close();
-
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
-                StringBuilder response = new StringBuilder();
-                String line;
-
-                while ((line = bufferedReader.readLine()) != null) {
-
-                    response.append(line);
-                }
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-                return response.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            loader_subject.setVisibility(View.GONE);
-            tv_subject.setFocusable(true);
-            if (result.equals("{\"SubjectList\":null}")) {
-                String[] subject_array = {"Select Subject"};
-                ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(ctx, R.layout.spinner_list_item1, subject_array);
-                dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
-                tv_subject.setAdapter(dataAdapter1);
-            } else {
-                try {
-                    JSONObject jsonRootObject = new JSONObject(result);
-                    JSONArray jsonArray = jsonRootObject.getJSONArray("SubjectList");
-                    subject_array = new String[jsonArray.length() + 1];
-                    subject_array[0] = "Select Subject";
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        subject_array[i + 1] = jsonObject.getString("tbl_batch_subjct_name");
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                setSubject();
-                super.onPostExecute(result);
-            }
-        }
-    }
-
-    private void setSubject() {
-        ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(this, R.layout.spinner_list_item1, subject_array);
-        dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
-        tv_subject.setAdapter(dataAdapter1);
-    }
-
     private void setNumberOfUsers(final ArrayList<DataBeanStudent> studentArray) {
         LayoutInflater factory = LayoutInflater.from(IntermidiateScreenActivityPublication.this);
         final View textEntryView = factory.inflate(R.layout.tudent_select_dialog, null);
@@ -527,13 +370,6 @@ public class IntermidiateScreenActivityPublication extends AppCompatActivity {
         alert.setTitle("Select Batch").setView(textEntryView).setPositiveButton("Ok",
                 (dialog, whichButton) -> {
                     alertDialog.dismiss();
-                    if (str_tool_title.equals("Add New Video") || str_tool_title.equals("Add Study Material")) {
-                        tv_subject.setVisibility(View.VISIBLE);
-                        String studentArray1 = sp_dairy.getString("studentArray", "");
-                        GetSubject subject = new GetSubject(this);
-                        subject.execute(schoolId, studentArray1);
-                        tv_subject.setFocusable(false);
-                    }
                 }).setNegativeButton("Cancel",
                 (dialog, whichButton) -> {
                 });

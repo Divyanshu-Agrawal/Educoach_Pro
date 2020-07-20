@@ -93,7 +93,7 @@ public class AddLiveStream extends AppCompatActivity {
     TextView tool_title;
     Button save;
     EditText title, url, desc, batch_spinner;
-    String userId, userSchoolId, userRoleId, userSection, userrType;
+    String userId, userSchoolId, userRoleId, userSection, userrType, userName;
     MediaPlayer mp;
     CardView cardView;
     RelativeLayout layout;
@@ -184,6 +184,7 @@ public class AddLiveStream extends AppCompatActivity {
         userRoleId = settings.getString("str_role_id", "");
         userSection = settings.getString("userSection", "");
         userrType = settings.getString("userrType", "");
+        userName = settings.getString("userName", "");
 
         GetCourse getCourse = new GetCourse(this);
         getCourse.execute(userSchoolId);
@@ -530,7 +531,9 @@ public class AddLiveStream extends AppCompatActivity {
 
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
                 data = URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
-                        URLEncoder.encode("batchArray", "UTF-8") + "=" + URLEncoder.encode(batchArray, "UTF-8");
+                        URLEncoder.encode("batchArray", "UTF-8") + "=" + URLEncoder.encode(batchArray, "UTF-8") + "&" +
+                        URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);

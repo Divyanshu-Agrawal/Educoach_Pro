@@ -52,6 +52,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -97,7 +98,7 @@ public class VideoLibrary extends AppCompatActivity {
     Spinner batch_spinner;
     String selBatch = "All Batches";
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    String userId, userSchoolId, userRoleId, userrType, userSection, url;
+    String userId, userSchoolId, userRoleId, userrType, userSection, url, userName;
     ImageButton filter;
     private String selSubject = "All Subjects";
     LinearLayout liveVideo;
@@ -134,6 +135,8 @@ public class VideoLibrary extends AppCompatActivity {
         userId = sp.getString("userID", "");
         userRoleId = sp.getString("str_role_id", "");
         userrType = sp.getString("userrType", "");
+        userName = sp.getString("userName", "");
+
         url = sp.getString("imageUrl", "") + userSchoolId + "/InstituteVideo/";
 
         appBarLayout.setBackgroundColor(Color.parseColor(selToolColor));
@@ -458,7 +461,8 @@ public class VideoLibrary extends AppCompatActivity {
                 data = URLEncoder.encode("schoolId", "UTF-8") + "=" + URLEncoder.encode(schoolId, "UTF-8") + "&" +
                         URLEncoder.encode("userSection", "UTF-8") + "=" + URLEncoder.encode(sectionName, "UTF-8") + "&" +
                         URLEncoder.encode("userType", "UTF-8") + "=" + URLEncoder.encode(userType, "UTF-8") + "&" +
-                        URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8");
+                        URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);
@@ -598,6 +602,13 @@ public class VideoLibrary extends AppCompatActivity {
                     }
                     for (int i = 0; i < array.size(); i++) {
                         if (!disable.contains(array.get(i).getSubject())) {
+                            videosArray.add(array.get(i));
+                        }
+                    }
+                } if (userrType.equals("Teacher")) {
+                    String restricted = jsonRootObject.getString("RistrictedSubject");
+                    for (int i = 0; i < array.size(); i++) {
+                        if (!restricted.contains(array.get(i).getSubject())) {
                             videosArray.add(array.get(i));
                         }
                     }
@@ -775,7 +786,8 @@ public class VideoLibrary extends AppCompatActivity {
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
                 data = URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
                         URLEncoder.encode("batchArray", "UTF-8") + "=" + URLEncoder.encode(batchArray, "UTF-8") + "&" +
-                        URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8");
+                        URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);
@@ -805,11 +817,11 @@ public class VideoLibrary extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.e("sub", result);
             if (result.equals("{\"SubjectList\":null}")) {
                 subject_array.add("All Subjects");
             } else {
                 try {
+                    subject_array.clear();
                     JSONObject jsonRootObject = new JSONObject(result);
                     JSONArray jsonArray = jsonRootObject.getJSONArray("SubjectList");
                     subjects = new String[jsonArray.length()];
