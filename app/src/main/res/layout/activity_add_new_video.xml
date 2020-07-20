@@ -192,6 +192,56 @@
                     android:fontFamily="ROBOTO-REGULAR.TTF"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
+                    android:text="Visible From Date &amp; Time"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/siz12" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_1sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/visible_from"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/text_gray"
+                        android:focusable="false"
+                        android:gravity="start"
+                        android:hint="Select Date"
+                        android:padding="5dp"
+                        android:textColor="@color/text_gray"
+                        android:textCursorDrawable="@drawable/cursor_color1" />
+
+                    <EditText
+                        android:id="@+id/visible_from_time"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/text_gray"
+                        android:focusable="false"
+                        android:gravity="start"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:hint="Select Time"
+                        android:padding="5dp"
+                        android:textColor="@color/text_gray"
+                        android:textCursorDrawable="@drawable/cursor_color1" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:fontFamily="ROBOTO-REGULAR.TTF"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
                     android:text="Visible Till Date &amp; Time"
                     android:textColor="@color/black"
                     android:textSize="@dimen/siz12" />

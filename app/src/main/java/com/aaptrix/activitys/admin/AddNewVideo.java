@@ -110,9 +110,9 @@ public class AddNewVideo extends AppCompatActivity {
     String[] course_array = {"Select Course"};
     String[] course_id = {"0"};
     BatchListAdaptor batchListAdaptor;
-    String selsubject = "Select Subject", strDate = "0", strTime = "0";
+    String selsubject = "Select Subject", strDate = "0", strTime = "0", strStart = "0", strstartTime = "0";
     AlertDialog.Builder alert;
-    EditText visibleDate, visibleTime;
+    EditText visibleDate, visibleTime, visibleFrom, visibleFromTime;
     AlertDialog alertDialog;
     private ArrayList<DataBeanStudent> studentArray = new ArrayList<>();
 
@@ -140,6 +140,8 @@ public class AddNewVideo extends AppCompatActivity {
         course_spinner = findViewById(R.id.course_spinner);
         visibleDate = findViewById(R.id.visible_till);
         visibleTime = findViewById(R.id.visible_till_time);
+        visibleFrom = findViewById(R.id.visible_from);
+        visibleFromTime = findViewById(R.id.visible_from_time);
 
         title.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
@@ -189,6 +191,11 @@ public class AddNewVideo extends AppCompatActivity {
         tool_title.setTextColor(Color.parseColor(selTextColor1));
         save.setBackgroundColor(Color.parseColor(selToolColor));
         save.setTextColor(Color.parseColor(selTextColor1));
+        visibleDate.setEnabled(false);
+        visibleTime.setEnabled(false);
+        visibleFromTime.setEnabled(false);
+
+        Calendar calendar = Calendar.getInstance();
 
         visibleDate.setOnClickListener(v -> {
             final Calendar mcurrentDate = Calendar.getInstance();
@@ -204,8 +211,31 @@ public class AddNewVideo extends AppCompatActivity {
                 visibleDate.setText(sdf.format(mcurrentDate.getTime()));
                 sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                 strDate = sdf.format(mcurrentDate.getTime());
+                visibleTime.setEnabled(true);
             }, mYear, mMonth, mDay);
-            mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis());
+            mDatePicker.getDatePicker().setMinDate(calendar.getTimeInMillis());
+            mDatePicker.show();
+        });
+
+        visibleFrom.setOnClickListener(v -> {
+            final Calendar mcurrentDate = Calendar.getInstance();
+            int mYear = mcurrentDate.get(Calendar.YEAR);
+            int mMonth = mcurrentDate.get(Calendar.MONTH);
+            int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
+            DatePickerDialog mDatePicker = new DatePickerDialog(
+                    this, R.style.AlertDialogCustom1, (datepicker, selectedyear, selectedmonth, selectedday) -> {
+                mcurrentDate.set(Calendar.YEAR, selectedyear);
+                mcurrentDate.set(Calendar.MONTH, selectedmonth);
+                mcurrentDate.set(Calendar.DAY_OF_MONTH, selectedday);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+                visibleFrom.setText(sdf.format(mcurrentDate.getTime()));
+                sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                strStart = sdf.format(mcurrentDate.getTime());
+                visibleDate.setEnabled(true);
+                visibleFromTime.setEnabled(true);
+                calendar.setTime(mcurrentDate.getTime());
+            }, mYear, mMonth, mDay);
+            mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
             mDatePicker.show();
         });
 
@@ -214,10 +244,22 @@ public class AddNewVideo extends AppCompatActivity {
             int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
             int minute = mcurrentTime.get(Calendar.MINUTE);
             TimePickerDialog mTimePicker;
-            mTimePicker = new TimePickerDialog(this, (timePicker, selectedHour, selectedMinute) ->
-            {
+            mTimePicker = new TimePickerDialog(this, (timePicker, selectedHour, selectedMinute) -> {
                 strTime = selectedHour + ":" + selectedMinute;
                 visibleTime.setText(selectedHour + ":" + selectedMinute);
+            }, hour, minute, true);
+            mTimePicker.setTitle("Select Time");
+            mTimePicker.show();
+        });
+
+        visibleFromTime.setOnClickListener(v -> {
+            Calendar mcurrentTime = Calendar.getInstance();
+            int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+            int minute = mcurrentTime.get(Calendar.MINUTE);
+            TimePickerDialog mTimePicker;
+            mTimePicker = new TimePickerDialog(this, (timePicker, selectedHour, selectedMinute) -> {
+                strstartTime = selectedHour + ":" + selectedMinute;
+                visibleFromTime.setText(selectedHour + ":" + selectedMinute);
             }, hour, minute, true);
             mTimePicker.setTitle("Select Time");
             mTimePicker.show();
@@ -676,6 +718,8 @@ public class AddNewVideo extends AppCompatActivity {
                 entityBuilder.addTextBody("subject_nm", subject);
                 entityBuilder.addTextBody("visible_till", strDate);
                 entityBuilder.addTextBody("visible_till_time", strTime);
+                entityBuilder.addTextBody("visible_start_date", strStart);
+                entityBuilder.addTextBody("visible_start_time", strstartTime);
                 HttpEntity entity = entityBuilder.build();
                 httppost.setEntity(entity);
                 HttpResponse response = httpclient.execute(httppost);

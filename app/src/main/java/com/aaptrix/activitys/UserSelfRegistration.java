@@ -278,8 +278,9 @@ public class UserSelfRegistration extends AppCompatActivity {
             } else if (userPhone.getText().toString().length() != 10) {
                 userPhone.requestFocus();
                 userPhone.setError("Please Enter Correct Phone Number");
-            } else if (!cb.isChecked()) {
-                Toast.makeText(this, "Please agree to our Terms and Conditions", Toast.LENGTH_SHORT).show();
+            } else if (!TNC.equals("")) {
+                if (!cb.isChecked())
+                    Toast.makeText(this, "Please agree to our Terms and Conditions", Toast.LENGTH_SHORT).show();
             } else {
                 layout.setVisibility(View.VISIBLE);
                 layout.bringToFront();

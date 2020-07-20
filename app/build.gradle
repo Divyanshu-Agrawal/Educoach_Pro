@@ -101,7 +101,7 @@ android {
                     appIcon: "@mipmap/ic_launcher",
                     appIconRound: "@mipmap/ic_launcher_round"
             ]
-            versionCode 31vid
+            versionCode 31
             versionName "v2.1.1"
             signingConfig signingConfigs.npc
         }
