@@ -101,7 +101,7 @@ public class AddNewVideo extends AppCompatActivity {
     TextView tool_title;
     Button save;
     EditText title, url, desc, batch_spinner;
-    String userId, userSchoolId, userRoleId, userSection, userrType, userName;
+    String userId, userSchoolId, userRoleId, userSection, userrType, userName, restricted;
     MediaPlayer mp;
     CardView cardView;
     RelativeLayout layout;
@@ -111,7 +111,7 @@ public class AddNewVideo extends AppCompatActivity {
     String[] course_array = {"Select Course"};
     String[] course_id = {"0"};
     BatchListAdaptor batchListAdaptor;
-    String selsubject = "Select Subject", strDate = "0", strTime = "0", strStart = "0", strstartTime = "0";
+    String selsubject = "Select Subject", strDate = "0000-00-00", strTime = "00:00:00", strStart = "0000-00-00", strstartTime = "00:00:00";
     AlertDialog.Builder alert;
     EditText visibleDate, visibleTime, visibleFrom, visibleFromTime;
     AlertDialog alertDialog;
@@ -180,6 +180,7 @@ public class AddNewVideo extends AppCompatActivity {
         userSection = settings.getString("userSection", "");
         userrType = settings.getString("userrType", "");
         userName = settings.getString("userName", "");
+        restricted = settings.getString("restricted", "");
 
         GetCourse getCourse = new GetCourse(this);
         getCourse.execute(userSchoolId);
@@ -193,7 +194,6 @@ public class AddNewVideo extends AppCompatActivity {
         tool_title.setTextColor(Color.parseColor(selTextColor1));
         save.setBackgroundColor(Color.parseColor(selToolColor));
         save.setTextColor(Color.parseColor(selTextColor1));
-        visibleDate.setEnabled(false);
         visibleTime.setEnabled(false);
         visibleFromTime.setEnabled(false);
 
@@ -233,7 +233,6 @@ public class AddNewVideo extends AppCompatActivity {
                 visibleFrom.setText(sdf.format(mcurrentDate.getTime()));
                 sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                 strStart = sdf.format(mcurrentDate.getTime());
-                visibleDate.setEnabled(true);
                 visibleFromTime.setEnabled(true);
                 calendar.setTime(mcurrentDate.getTime());
             }, mYear, mMonth, mDay);
@@ -590,7 +589,8 @@ public class AddNewVideo extends AppCompatActivity {
                 data = URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
                         URLEncoder.encode("batchArray", "UTF-8") + "=" + URLEncoder.encode(batchArray, "UTF-8") + "&" +
                         URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
-                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8");
+                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8") + "&" +
+                        URLEncoder.encode("restricted_access", "UTF-8") + "=" + URLEncoder.encode(restricted, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);

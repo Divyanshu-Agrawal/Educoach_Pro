@@ -81,7 +81,7 @@ public class StudyMaterial extends AppCompatActivity {
     ListView listView;
     LinearLayout add_layout;
     ImageView addMaterial;
-    String userId, userSchoolId, userRoleId, userrType, userSection, userName;
+    String userId, userSchoolId, userRoleId, userrType, userSection, userName, restricted;
     String skip;
     String[] batch_array = {"All Batches"};
     Spinner batch_spinner;
@@ -120,6 +120,7 @@ public class StudyMaterial extends AppCompatActivity {
         userSection = settings.getString("userSection", "");
         userrType = settings.getString("userrType", "");
         userName = settings.getString("userName", "");
+        restricted = settings.getString("restricted", "");
 
         if (userrType.equals("Admin") || userrType.equals("Teacher")) {
             setBatch();
@@ -522,9 +523,9 @@ public class StudyMaterial extends AppCompatActivity {
     private void listItms(String subject) {
         ArrayList<StudyMaterialData> arrayList = new ArrayList<>();
         listView.setVisibility(View.VISIBLE);
+        ArrayList<String> ids = new ArrayList<>();
         if (!userrType.equals("Student")) {
             if (subject.equals("All Subjects")) {
-                ArrayList<String> ids = new ArrayList<>();
                 for (int i = 0; i < studyMaterialArray.size(); i++) {
                     if (!ids.contains(studyMaterialArray.get(i).getId())) {
                         ids.add(studyMaterialArray.get(i).getId());
@@ -539,7 +540,6 @@ public class StudyMaterial extends AppCompatActivity {
                     }
                 }
             } else {
-                ArrayList<String> ids = new ArrayList<>();
                 for (int i = 0; i < studyMaterialArray.size(); i++) {
                     if (!ids.contains(studyMaterialArray.get(i).getId())) {
                         ids.add(studyMaterialArray.get(i).getId());
@@ -558,11 +558,33 @@ public class StudyMaterial extends AppCompatActivity {
             }
         } else {
             if (subject.equals("All Subjects")) {
-                arrayList.addAll(studyMaterialArray);
+                for (int i = 0; i < studyMaterialArray.size(); i++) {
+                    if (!ids.contains(studyMaterialArray.get(i).getId())) {
+                        ids.add(studyMaterialArray.get(i).getId());
+                    }
+                }
+                for (int i = 0; i < ids.size(); i++) {
+                    for (int j = 0; j < studyMaterialArray.size(); j++) {
+                        if (ids.get(i).equals(studyMaterialArray.get(j).getId())) {
+                            arrayList.add(studyMaterialArray.get(j));
+                            break;
+                        }
+                    }
+                }
             } else {
                 for (int i = 0; i < studyMaterialArray.size(); i++) {
-                    if (studyMaterialArray.get(i).getSubject().equals(subject)) {
-                        arrayList.add(studyMaterialArray.get(i));
+                    if (!ids.contains(studyMaterialArray.get(i).getId())) {
+                        ids.add(studyMaterialArray.get(i).getId());
+                    }
+                }
+                for (int i = 0; i < ids.size(); i++) {
+                    for (int j = 0; j < studyMaterialArray.size(); j++) {
+                        if (ids.get(i).equals(studyMaterialArray.get(j).getId())) {
+                            if (studyMaterialArray.get(j).getSubject().equals(subject) || studyMaterialArray.get(j).getSubject().equals("0")) {
+                                arrayList.add(studyMaterialArray.get(j));
+                                break;
+                            }
+                        }
                     }
                 }
             }

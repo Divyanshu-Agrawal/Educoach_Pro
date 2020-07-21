@@ -1521,6 +1521,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                             dbs.setParentPassword(jsonObject.getString("tbl_users_parents_password"));
                             dbs.setInstStatus(jsonObject.getString("tbl_school_status"));
                             dbs.setUniqueId(jsonObject.getString("sch_unique_id"));
+                            dbs.setRestricted(jsonObject.getString("restricted_access"));
                             dbs.setUserSchoolRoleName(userSchoolRoleName);
                             dbs.setUserID(userID);
                             dbs.setUserrType(userrType);
@@ -1646,6 +1647,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                             editor.putString("userSchoolLogo1", userSchoolSchoolLogo12);
                             editor.putString("userSchoolLogo3", userSchoolSchoolLogo13);
                             editor.putString("unique_id", studentArray.get(position).getUniqueId());
+                            editor.putString("restricted", studentArray.get(position).getRestricted());
 
                             editor.putString("numberOfUser", "multiple");
 
@@ -1683,7 +1685,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                     case "Admin":
                     case "Staff":
                     case "Others":
-                        differentValidLogin1(userID1, studentArray.get(position).getUniqueId());
+                        differentValidLogin1(userID1, studentArray.get(position).getUniqueId(), studentArray.get(position).getRestricted());
                         break;
                 }
 
@@ -1754,6 +1756,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                         editor.putString("str_school_id", userSchoolId);
                         editor.putString("str_role_id", userSchoolRoleId);
                         editor.putString("unique_id", studentArray.get(0).getUniqueId());
+                        editor.putString("restricted", studentArray.get(0).getRestricted());
                         editor.apply();
 
                         //color set
@@ -1786,7 +1789,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                 case "Admin":
                 case "Staff":
                 case "Others":
-                    differentValidLogin(userID, studentArray.get(0).getUniqueId());
+                    differentValidLogin(userID, studentArray.get(0).getUniqueId(), studentArray.get(0).getRestricted());
                     break;
             }
         } else {
@@ -1794,12 +1797,13 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         }
     }
 
-    private void differentValidLogin(String userID, String uniqueId) {
+    private void differentValidLogin(String userID, String uniqueId, String restricted) {
         if (userPhoneStatus.equalsIgnoreCase("1")) {
             SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("logged", "logged");
             editor.putString("userID", userID);
+            editor.putString("restricted", restricted);
             editor.putString("userLoginId", userLoginId);
             editor.putString("userName", userName);
             editor.putString("userPhone", userPhone);
@@ -1844,11 +1848,12 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         }
     }
 
-    private void differentValidLogin1(String userID1, String uniqueId) {
+    private void differentValidLogin1(String userID1, String uniqueId, String restricted) {
         if (userPhoneStatus1.equalsIgnoreCase("1")) {
             SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("logged", "logged");
+            editor.putString("restricted", restricted);
             editor.putString("userID", userID1);
             editor.putString("userLoginId", userLoginId1);
             editor.putString("userName", userName1);

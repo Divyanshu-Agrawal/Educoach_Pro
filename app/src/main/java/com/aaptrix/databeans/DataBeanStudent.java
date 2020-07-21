@@ -8,7 +8,16 @@ import java.io.Serializable;
 
 public class DataBeanStudent implements Serializable {
     private String userID, userLoginId, userName, userPhone, userEmailId, userDob, userGender, userImg, userPhoneStatus, userrType, userPassword;
-    private String userClass, userSection, userRollNumber, userTeacherName;
+    private String userClass, userSection, userRollNumber, userTeacherName, restricted;
+
+    public String getRestricted() {
+        return restricted;
+    }
+
+    public void setRestricted(String restricted) {
+        this.restricted = restricted;
+    }
+
     private String selToolColor, selDrawerColor, selStatusColor, selTextColor1, selTextColor2, userSchoolSchoolLogo3;
 
     private String userSchoolId, userSchoolRoleId, userSchoolSchoolLogo, userSchoolSchoolLogo1;

@@ -98,7 +98,7 @@ public class VideoLibrary extends AppCompatActivity {
     Spinner batch_spinner;
     String selBatch = "All Batches";
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    String userId, userSchoolId, userRoleId, userrType, userSection, url, userName;
+    String userId, userSchoolId, userRoleId, userrType, userSection, url, userName, restricted;
     ImageButton filter;
     private String selSubject = "All Subjects";
     LinearLayout liveVideo;
@@ -136,6 +136,7 @@ public class VideoLibrary extends AppCompatActivity {
         userRoleId = sp.getString("str_role_id", "");
         userrType = sp.getString("userrType", "");
         userName = sp.getString("userName", "");
+        restricted = sp.getString("restricted", "");
 
         url = sp.getString("imageUrl", "") + userSchoolId + "/InstituteVideo/";
 
@@ -462,7 +463,8 @@ public class VideoLibrary extends AppCompatActivity {
                         URLEncoder.encode("userSection", "UTF-8") + "=" + URLEncoder.encode(sectionName, "UTF-8") + "&" +
                         URLEncoder.encode("userType", "UTF-8") + "=" + URLEncoder.encode(userType, "UTF-8") + "&" +
                         URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
-                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8");
+                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8") + "&" +
+                        URLEncoder.encode("restricted_access", "UTF-8") + "=" + URLEncoder.encode(restricted, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);
@@ -496,7 +498,6 @@ public class VideoLibrary extends AppCompatActivity {
             listView.setEnabled(true);
             try {
                 Calendar calendar = Calendar.getInstance();
-//                calendar.add(Calendar.DATE, -1);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
                 JSONObject jsonRootObject = new JSONObject(result);
                 if (!result.contains("\"result\":null")) {
@@ -632,9 +633,9 @@ public class VideoLibrary extends AppCompatActivity {
 
         ArrayList<VideosData> arrayList = new ArrayList<>();
 
+        ArrayList<String> ids = new ArrayList<>();
         if (!userrType.equals("Student")) {
             if (subject.equals("All Subjects")) {
-                ArrayList<String> ids = new ArrayList<>();
                 for (int i = 0; i < videosArray.size(); i++) {
                     if (!ids.contains(videosArray.get(i).getId())) {
                         ids.add(videosArray.get(i).getId());
@@ -649,7 +650,6 @@ public class VideoLibrary extends AppCompatActivity {
                     }
                 }
             } else {
-                ArrayList<String> ids = new ArrayList<>();
                 for (int i = 0; i < videosArray.size(); i++) {
                     if (!ids.contains(videosArray.get(i).getId())) {
                         ids.add(videosArray.get(i).getId());
@@ -668,11 +668,33 @@ public class VideoLibrary extends AppCompatActivity {
             }
         } else {
             if (subject.equals("All Subjects")) {
-                arrayList.addAll(videosArray);
+                for (int i = 0; i < videosArray.size(); i++) {
+                    if (!ids.contains(videosArray.get(i).getId())) {
+                        ids.add(videosArray.get(i).getId());
+                    }
+                }
+                for (int i = 0; i < ids.size(); i++) {
+                    for (int j = 0; j < videosArray.size(); j++) {
+                        if (ids.get(i).equals(videosArray.get(j).getId())) {
+                            arrayList.add(videosArray.get(j));
+                            break;
+                        }
+                    }
+                }
             } else {
                 for (int i = 0; i < videosArray.size(); i++) {
-                    if (videosArray.get(i).getSubject().equals(subject)) {
-                        arrayList.add(videosArray.get(i));
+                    if (!ids.contains(videosArray.get(i).getId())) {
+                        ids.add(videosArray.get(i).getId());
+                    }
+                }
+                for (int i = 0; i < ids.size(); i++) {
+                    for (int j = 0; j < videosArray.size(); j++) {
+                        if (ids.get(i).equals(videosArray.get(j).getId())) {
+                            if (videosArray.get(j).getSubject().contentEquals(subject) || videosArray.get(j).getSubject().equals("0")) {
+                                arrayList.add(videosArray.get(j));
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -787,7 +809,8 @@ public class VideoLibrary extends AppCompatActivity {
                 data = URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
                         URLEncoder.encode("batchArray", "UTF-8") + "=" + URLEncoder.encode(batchArray, "UTF-8") + "&" +
                         URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
-                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8");
+                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8") + "&" +
+                        URLEncoder.encode("restricted_access", "UTF-8") + "=" + URLEncoder.encode(restricted, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);

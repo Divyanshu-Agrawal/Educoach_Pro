@@ -93,7 +93,7 @@ public class AddLiveStream extends AppCompatActivity {
     TextView tool_title;
     Button save;
     EditText title, url, desc, batch_spinner;
-    String userId, userSchoolId, userRoleId, userSection, userrType, userName;
+    String userId, userSchoolId, userRoleId, userSection, userrType, userName, restricted;
     MediaPlayer mp;
     CardView cardView;
     RelativeLayout layout;
@@ -185,6 +185,7 @@ public class AddLiveStream extends AppCompatActivity {
         userSection = settings.getString("userSection", "");
         userrType = settings.getString("userrType", "");
         userName = settings.getString("userName", "");
+        restricted = settings.getString("restricted", "");
 
         GetCourse getCourse = new GetCourse(this);
         getCourse.execute(userSchoolId);
@@ -533,7 +534,8 @@ public class AddLiveStream extends AppCompatActivity {
                 data = URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
                         URLEncoder.encode("batchArray", "UTF-8") + "=" + URLEncoder.encode(batchArray, "UTF-8") + "&" +
                         URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
-                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8");
+                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8") + "&" +
+                        URLEncoder.encode("restricted_access", "UTF-8") + "=" + URLEncoder.encode(restricted, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);

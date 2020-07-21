@@ -265,6 +265,7 @@ public class ChangePasswordInitialActivity extends AppCompatActivity {
                             dbs.setParentPassword(jsonObject.getString("tbl_users_parents_password"));
                             dbs.setInstStatus(jsonObject.getString("tbl_school_status"));
                             dbs.setUniqueId(jsonObject.getString("sch_unique_id"));
+                            dbs.setRestricted(jsonObject.getString("restricted_access"));
                             dbs.setUserSchoolId(userSchoolId);
                             dbs.setUserSchoolRoleId(userSchoolRoleId);
                             dbs.setUserSchoolSchoolLogo(userSchoolSchoolLogo);
@@ -357,6 +358,7 @@ public class ChangePasswordInitialActivity extends AppCompatActivity {
                         editor.putString("parentPhone", studentArray.get(0).getParentPhone());
                         editor.putString("parentPassword", studentArray.get(0).getParentPassword());
                         editor.putString("unique_id", studentArray.get(0).getUniqueId());
+                        editor.putString("restricted", studentArray.get(0).getRestricted());
 
                         editor.putString("str_school_id", userSchoolId);
                         editor.putString("str_role_id", userSchoolRoleId);
@@ -390,7 +392,7 @@ public class ChangePasswordInitialActivity extends AppCompatActivity {
                 case "Admin":
                 case "Staff":
                 case "Others":
-                    differentValidLogin(userID, studentArray.get(0).getUniqueId());
+                    differentValidLogin(userID, studentArray.get(0).getUniqueId(), studentArray.get(0).getRestricted());
                     break;
             }
         } else {
@@ -398,11 +400,12 @@ public class ChangePasswordInitialActivity extends AppCompatActivity {
         }
     }
 
-    private void differentValidLogin(String userID, String uniqueId) {
+    private void differentValidLogin(String userID, String uniqueId, String restricted) {
         if (userPhoneStatus.equalsIgnoreCase("1")) {
             SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("logged", "logged");
+            editor.putString("restricted", restricted);
             editor.putString("userID", userID);
             editor.putString("userLoginId", userLoginId);
             editor.putString("userName", userName);
@@ -451,12 +454,13 @@ public class ChangePasswordInitialActivity extends AppCompatActivity {
         }
     }
 
-    private void differentValidLogin1(String userID1, String uniqueId) {
+    private void differentValidLogin1(String userID1, String uniqueId, String restricted) {
         if (userPhoneStatus.equalsIgnoreCase("1")) {
             SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("logged", "logged");
             editor.putString("userID", userID1);
+            editor.putString("restricted", restricted);
             editor.putString("userLoginId", userLoginId1);
             editor.putString("userName", userName1);
             editor.putString("userPhone", userPhone1);
@@ -553,8 +557,6 @@ public class ChangePasswordInitialActivity extends AppCompatActivity {
                 userSchoolSchoolLogo13 = studentArray.get(position).getUserSchoolSchoolLogo3();
                 userSchoolName1 = studentArray.get(position).getUserSchoolName();
                 userSchoolRoleName1 = studentArray.get(position).getUserSchoolRoleName();
-//			alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-//					.setEnabled(true);
 
                 switch (userrType1) {
                     case "Student":
@@ -584,6 +586,7 @@ public class ChangePasswordInitialActivity extends AppCompatActivity {
                             editor.putString("userSchoolLogo3", userSchoolSchoolLogo13);
 
                             editor.putString("numberOfUser", "multiple");
+                            editor.putString("restricted", studentArray.get(position).getRestricted());
                             editor.putString("parentStatus", studentArray.get(position).getParentStatus());
                             editor.putString("parentPhone", studentArray.get(position).getParentPhone());
                             editor.putString("unique_id", studentArray.get(position).getUniqueId());
@@ -623,7 +626,7 @@ public class ChangePasswordInitialActivity extends AppCompatActivity {
                     case "Admin":
                     case "Staff":
                     case "Others":
-                        differentValidLogin1(userID1, studentArray.get(position).getUniqueId());
+                        differentValidLogin1(userID1, studentArray.get(position).getUniqueId(), studentArray.get(position).getRestricted());
                         break;
                 }
 
