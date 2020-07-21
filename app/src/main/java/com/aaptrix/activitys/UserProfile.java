@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -72,6 +74,8 @@ public class UserProfile extends AppCompatActivity {
     ProgressBar progressBar;
     TextView gender, dob, email, number, type, name, section, roll, sectionTitle, rollTitle, classTecher, teacherTitle, schoolName;
     RelativeLayout fullscrLayout;
+    LinearLayout edit_layout;
+    ImageView edit;
     PhotoView fullscrImage;
     boolean isVisible = false;
     TextView androidId, idTitle;
@@ -89,6 +93,8 @@ public class UserProfile extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar);
         name = findViewById(R.id.user_name);
         layout = findViewById(R.id.layout);
+        edit_layout = findViewById(R.id.edit_layout);
+        edit = findViewById(R.id.edit_details);
         setSupportActionBar(toolbar);
         toolbar.bringToFront();
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -163,6 +169,11 @@ public class UserProfile extends AppCompatActivity {
             classTecher.setVisibility(View.GONE);
             teacherTitle.setVisibility(View.GONE);
         }
+
+        edit.setOnClickListener(v -> {
+            Intent intent = new Intent(this, UpdateProfile.class);
+            startActivity(intent);
+        });
 
         if (userImg.equals("0")) {
             userProfile.setImageDrawable(getResources().getDrawable(R.drawable.user_place_hoder));
@@ -245,6 +256,9 @@ public class UserProfile extends AppCompatActivity {
             });
         });
 
+        GradientDrawable bgShape = (GradientDrawable) edit_layout.getBackground();
+        bgShape.setColor(Color.parseColor(selToolColor));
+        edit.setBackgroundColor(Color.parseColor(selToolColor));
     }
 
     private void logout(String mobileno) {

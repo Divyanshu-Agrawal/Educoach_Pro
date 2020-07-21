@@ -702,8 +702,10 @@ public class VideoLibrary extends AppCompatActivity {
 
         if (arrayList.size() == 0) {
             noVideos.setVisibility(View.VISIBLE);
+            listView.setVisibility(View.GONE);
         } else {
             noVideos.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
         }
 
         Collections.sort(arrayList, (o1, o2) -> {

@@ -128,4 +128,5 @@ public class HttpUrl implements Serializable {
     public static final String LEAD_GENERATION = HTTP_HOST + "onlineExamGuest/submit_online_exam.php?tokenvalue=" + tokenvalue;
     public static final String SUBMIT_SUBJECTIVE_EXAM = HTTP_HOST + "subjectiveOnlineExam/submit_subjective_online_exam.php?tokenvalue=" + tokenvalue;
     public static final String SUBJECTIVE_RESULT = HTTP_HOST + "subjectiveOnlineExam/result_subjective_exam.php?tokenvalue=" + tokenvalue;
+    public static final String UPDATE_PROFILE = HTTP_HOST + "update_user_details.php?tokenvalue=" + tokenvalue;
 }

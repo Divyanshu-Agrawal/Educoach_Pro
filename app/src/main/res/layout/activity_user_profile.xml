@@ -317,6 +317,25 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
+    <LinearLayout
+        android:id="@+id/edit_layout"
+        android:layout_width="43dp"
+        android:layout_height="43dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/img_desgin_add"
+        android:gravity="center"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/edit_details"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:tint="@color/white"
+            android:src="@drawable/pencil" />
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/fullscr_image"
         android:layout_width="match_parent"

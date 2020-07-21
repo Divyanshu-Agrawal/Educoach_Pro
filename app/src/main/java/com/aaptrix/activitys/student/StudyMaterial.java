@@ -592,8 +592,10 @@ public class StudyMaterial extends AppCompatActivity {
 
         if (arrayList.size() == 0) {
             no_material.setVisibility(View.VISIBLE);
+            listView.setVisibility(View.GONE);
         } else {
             no_material.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
         }
 
         listView.setEnabled(true);
