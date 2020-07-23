@@ -36,14 +36,37 @@
             android:orientation="vertical"
             android:paddingBottom="@dimen/_40sdp">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/user_profile"
-                android:layout_width="@dimen/_100sdp"
-                android:layout_height="@dimen/_100sdp"
-                android:layout_marginTop="@dimen/_40sdp"
-                android:src="@drawable/user_place_hoder"
-                android:visibility="visible"
-                tools:ignore="ContentDescription" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_40sdp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/user_profile"
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_100sdp"
+                    android:src="@drawable/user_place_hoder"
+                    android:visibility="visible"
+                    tools:ignore="ContentDescription" />
+
+                <LinearLayout
+                    android:id="@+id/iv_edit_layout"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignEnd="@id/user_profile"
+                    android:layout_alignBottom="@id/user_profile"
+                    android:background="@drawable/img_desgin_edit"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/iv_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="15dp"
+                        android:src="@drawable/ic_pencil_100" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
             <EditText
                 android:id="@+id/user_name"

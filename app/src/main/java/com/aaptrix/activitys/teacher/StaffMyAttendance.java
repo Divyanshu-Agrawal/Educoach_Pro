@@ -1,5 +1,6 @@
 package com.aaptrix.activitys.teacher;
 
+import com.aaptrix.activitys.UserProfile;
 import com.aaptrix.activitys.admin.InstituteBuzzActivityDiff;
 import com.aaptrix.activitys.student.InstituteBuzzActivity;
 import com.aaptrix.databeans.DatabeanAttendance;
@@ -100,7 +101,7 @@ import java.util.Objects;
 import javax.net.ssl.SSLContext;
 
 import static com.aaptrix.tools.HttpUrl.STAFF_OWN_ATTENDANCE;
-import static com.aaptrix.tools.HttpUrl.UPDATE_USER_PRO_IMAGE;
+//import static com.aaptrix.tools.HttpUrl.UPDATE_USER_PRO_IMAGE;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
 import static com.aaptrix.tools.SPClass.PREFS_USER;
 import static com.aaptrix.tools.SPClass.PREF_COLOR;
@@ -270,6 +271,7 @@ public class StaffMyAttendance extends AppCompatActivity {
 			String url;
 			switch (userrType) {
 				case "Parent":
+				case "Student":
 					url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/users/students/profile/" + userImg;
 					Picasso.with(this).load(url).error(R.drawable.dummy).placeholder(R.drawable.dummy).into(iv_user_img);
 					break;
@@ -285,29 +287,12 @@ public class StaffMyAttendance extends AppCompatActivity {
 					url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/users/teachers/profile/" + userImg;
 					Picasso.with(this).load(url).error(R.drawable.dummy).placeholder(R.drawable.dummy).into(iv_user_img);
 					break;
-				case "Student":
-					url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/users/students/profile/" + userImg;
-					Picasso.with(this).load(url).error(R.drawable.dummy).placeholder(R.drawable.dummy).into(iv_user_img);
-					break;
 			}
 		} else {
 			iv_user_img.setImageDrawable(getResources().getDrawable(R.drawable.user_place_hoder));
 		}
 		
-		iv_edit.setOnClickListener(view -> {
-			if (isInternetOn()) {
-				if (ContextCompat.checkSelfPermission(view.getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-					ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-				}
-				
-				Intent gallery = new Intent();
-				gallery.setAction(Intent.ACTION_GET_CONTENT);
-				gallery.setType("image/*");
-				startActivityForResult(gallery, 1);
-			} else {
-				Toast.makeText(this, "No network Please connect with network for update", Toast.LENGTH_SHORT).show();
-			}
-		});
+		iv_edit.setOnClickListener(view -> startActivity(new Intent(this, UserProfile.class)));
 		
 		
 		submit_lieave_tv.setOnClickListener(view -> {
@@ -634,139 +619,139 @@ public class StaffMyAttendance extends AppCompatActivity {
 		progressBar1.setProgress(b);
 	}
 	
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		
-		Uri filePath;
-		if (requestCode == 1 && resultCode == RESULT_OK) {
-			filePath = data.getData();
-			
-			assert filePath != null;
-			CropImage.activity(filePath)
-					.setGuidelines(CropImageView.Guidelines.ON)/*
-                  .setMinCropResultSize(100,100)
-                  .setMaxCropResultSize(950,1250)*/
-					.setAspectRatio(150, 150)
-					.setGuidelines(CropImageView.Guidelines.ON)
-					.setCropShape(CropImageView.CropShape.OVAL)
-					.start(this);
-		}
-		
-		if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-			CropImage.ActivityResult result = CropImage.getActivityResult(data);
-			if (resultCode == RESULT_OK) {
-				filePath = result.getUri();
-				try {
-					File actualImage = FileUtil.from(this, filePath);
-					File compressedImage = new Compressor(this)
-							.setMaxWidth(640)
-							.setMaxHeight(480)
-							.setQuality(75)
-							.setCompressFormat(Bitmap.CompressFormat.WEBP)
-							.setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
-									Environment.DIRECTORY_PICTURES).getAbsolutePath())
-							.compressToFile(actualImage);
-					bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.fromFile(compressedImage));
-					
-					UpdateProfileImage updateProfileImage = new UpdateProfileImage(this, compressedImage);
-					updateProfileImage.execute(userId);
-					
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				
-			} else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-				Exception error = result.getError();
-				Toast.makeText(this, "" + error, Toast.LENGTH_SHORT).show();
-			}
-		}
-	}
-	
-	@SuppressLint("StaticFieldLeak")
-	public class UpdateProfileImage extends AsyncTask<String, String, String> {
-		Context ctx;
-		File image;
-		
-		UpdateProfileImage(Context ctx, File image) {
-			this.ctx = ctx;
-			this.image = image;
-		}
-		
-		@Override
-		protected void onPreExecute() {
-			Toast.makeText(ctx, "Please wait we are updating your profile", Toast.LENGTH_SHORT).show();
-			super.onPreExecute();
-			
-		}
-		
-		@Override
-		protected String doInBackground(String... params) {
-			
-			String userId = params[0];
-			
-			try {
-				SSLContext sslContext = SSLContexts.custom().useTLS().build();
-				SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
-						sslContext,
-						new String[]{"TLSv1.1", "TLSv1.2"},
-						null,
-						BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
-				HttpClient httpclient = HttpClients.custom().setSSLSocketFactory(f).build();
-				HttpPost httppost = new HttpPost(UPDATE_USER_PRO_IMAGE);
-				MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
-				entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-				FileBody newImage = new FileBody(image);
-				entityBuilder.addPart("image", newImage);
-				entityBuilder.addTextBody("userId", userId);
-				HttpEntity entity = entityBuilder.build();
-				httppost.setEntity(entity);
-				HttpResponse response = httpclient.execute(httppost);
-				HttpEntity httpEntity = response.getEntity();
-				String result = EntityUtils.toString(httpEntity);
-				Log.e("result", result);
-				return result;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(String result) {
-			Log.d("Json", "" + result);
-			try {
-				JSONObject jsonObject = new JSONObject(result);
-				if (jsonObject.getString("success").equals("true")) {
-					editor.putString("userImg", jsonObject.getString("imageNm"));
-					editor.commit();
-					String firebase_userID = "educoach" + userId + "@educoach.co.in";
-					String firebase_password = "educoach" + userId;
-					FirebaseAuth mAuth = FirebaseAuth.getInstance();
-					mAuth.signInWithEmailAndPassword(firebase_userID, firebase_password)
-							.addOnCompleteListener(task -> {
-								String current_user_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-								DatabaseReference storeUserDefaultDataReference = FirebaseDatabase.getInstance().getReference().child("Users").child(current_user_id);
-								try {
-									storeUserDefaultDataReference.child("userImg").setValue(jsonObject.getString("imageNm"))
-											.addOnCompleteListener(task1 -> {
-												Log.e("task", "" + task1.isSuccessful());
-											});
-								} catch (JSONException e) {
-									e.printStackTrace();
-								}
-							});
-					Toast.makeText(ctx, "Your Image is Updated", Toast.LENGTH_SHORT).show();
-				} else {
-					Toast.makeText(ctx, "Not uploaded image is too large", Toast.LENGTH_SHORT).show();
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			super.onPostExecute(result);
-		}
-		
-	}
+//	@Override
+//	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//		super.onActivityResult(requestCode, resultCode, data);
+//
+//		Uri filePath;
+//		if (requestCode == 1 && resultCode == RESULT_OK) {
+//			filePath = data.getData();
+//
+//			assert filePath != null;
+//			CropImage.activity(filePath)
+//					.setGuidelines(CropImageView.Guidelines.ON)/*
+//                  .setMinCropResultSize(100,100)
+//                  .setMaxCropResultSize(950,1250)*/
+//					.setAspectRatio(150, 150)
+//					.setGuidelines(CropImageView.Guidelines.ON)
+//					.setCropShape(CropImageView.CropShape.OVAL)
+//					.start(this);
+//		}
+//
+//		if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+//			CropImage.ActivityResult result = CropImage.getActivityResult(data);
+//			if (resultCode == RESULT_OK) {
+//				filePath = result.getUri();
+//				try {
+//					File actualImage = FileUtil.from(this, filePath);
+//					File compressedImage = new Compressor(this)
+//							.setMaxWidth(640)
+//							.setMaxHeight(480)
+//							.setQuality(75)
+//							.setCompressFormat(Bitmap.CompressFormat.WEBP)
+//							.setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
+//									Environment.DIRECTORY_PICTURES).getAbsolutePath())
+//							.compressToFile(actualImage);
+//					bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.fromFile(compressedImage));
+//
+//					UpdateProfileImage updateProfileImage = new UpdateProfileImage(this, compressedImage);
+//					updateProfileImage.execute(userId);
+//
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//
+//			} else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+//				Exception error = result.getError();
+//				Toast.makeText(this, "" + error, Toast.LENGTH_SHORT).show();
+//			}
+//		}
+//	}
+//
+//	@SuppressLint("StaticFieldLeak")
+//	public class UpdateProfileImage extends AsyncTask<String, String, String> {
+//		Context ctx;
+//		File image;
+//
+//		UpdateProfileImage(Context ctx, File image) {
+//			this.ctx = ctx;
+//			this.image = image;
+//		}
+//
+//		@Override
+//		protected void onPreExecute() {
+//			Toast.makeText(ctx, "Please wait we are updating your profile", Toast.LENGTH_SHORT).show();
+//			super.onPreExecute();
+//
+//		}
+//
+//		@Override
+//		protected String doInBackground(String... params) {
+//
+//			String userId = params[0];
+//
+//			try {
+//				SSLContext sslContext = SSLContexts.custom().useTLS().build();
+//				SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
+//						sslContext,
+//						new String[]{"TLSv1.1", "TLSv1.2"},
+//						null,
+//						BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+//				HttpClient httpclient = HttpClients.custom().setSSLSocketFactory(f).build();
+//				HttpPost httppost = new HttpPost(UPDATE_USER_PRO_IMAGE);
+//				MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
+//				entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+//				FileBody newImage = new FileBody(image);
+//				entityBuilder.addPart("image", newImage);
+//				entityBuilder.addTextBody("userId", userId);
+//				HttpEntity entity = entityBuilder.build();
+//				httppost.setEntity(entity);
+//				HttpResponse response = httpclient.execute(httppost);
+//				HttpEntity httpEntity = response.getEntity();
+//				String result = EntityUtils.toString(httpEntity);
+//				Log.e("result", result);
+//				return result;
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			return null;
+//		}
+//
+//		@Override
+//		protected void onPostExecute(String result) {
+//			Log.d("Json", "" + result);
+//			try {
+//				JSONObject jsonObject = new JSONObject(result);
+//				if (jsonObject.getString("success").equals("true")) {
+//					editor.putString("userImg", jsonObject.getString("imageNm"));
+//					editor.commit();
+//					String firebase_userID = "educoach" + userId + "@educoach.co.in";
+//					String firebase_password = "educoach" + userId;
+//					FirebaseAuth mAuth = FirebaseAuth.getInstance();
+//					mAuth.signInWithEmailAndPassword(firebase_userID, firebase_password)
+//							.addOnCompleteListener(task -> {
+//								String current_user_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+//								DatabaseReference storeUserDefaultDataReference = FirebaseDatabase.getInstance().getReference().child("Users").child(current_user_id);
+//								try {
+//									storeUserDefaultDataReference.child("userImg").setValue(jsonObject.getString("imageNm"))
+//											.addOnCompleteListener(task1 -> {
+//												Log.e("task", "" + task1.isSuccessful());
+//											});
+//								} catch (JSONException e) {
+//									e.printStackTrace();
+//								}
+//							});
+//					Toast.makeText(ctx, "Your Image is Updated", Toast.LENGTH_SHORT).show();
+//				} else {
+//					Toast.makeText(ctx, "Not uploaded image is too large", Toast.LENGTH_SHORT).show();
+//				}
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			}
+//			super.onPostExecute(result);
+//		}
+//
+//	}
 	
 	
 	@Override

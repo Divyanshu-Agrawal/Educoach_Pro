@@ -18,13 +18,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -36,18 +33,19 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aaptrix.R;
-import com.aaptrix.activitys.student.InstituteBuzzActivity;
 import com.aaptrix.tools.FileUtil;
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -99,6 +97,7 @@ public class UpdateProfile extends AppCompatActivity {
     CircleImageView profile;
     String userrType, userImg, imgUrl;
     File image;
+    LinearLayout edit;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -122,6 +121,7 @@ public class UpdateProfile extends AppCompatActivity {
         userGender = findViewById(R.id.user_gender);
         save = findViewById(R.id.btn_verify);
         profile = findViewById(R.id.user_profile);
+        edit = findViewById(R.id.iv_edit_layout);
 
         userEmail.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus)
@@ -226,10 +226,21 @@ public class UpdateProfile extends AppCompatActivity {
 
         profile.setOnClickListener(v -> {
             if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED) {
-                Intent photoPickerIntent = new Intent();
-                photoPickerIntent.setType("image/*");
-                photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(photoPickerIntent, 1);
+                Intent gallery = new Intent();
+                gallery.setAction(Intent.ACTION_GET_CONTENT);
+                gallery.setType("image/*");
+                startActivityForResult(gallery, 1);
+            } else {
+                isPermissionGranted();
+            }
+        });
+
+        edit.setOnClickListener(v -> {
+            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED) {
+                Intent gallery = new Intent();
+                gallery.setAction(Intent.ACTION_GET_CONTENT);
+                gallery.setType("image/*");
+                startActivityForResult(gallery, 1);
             } else {
                 isPermissionGranted();
             }
@@ -413,6 +424,21 @@ public class UpdateProfile extends AppCompatActivity {
                             sp.putString("userGender", strGender);
                             if (image != null) {
                                 sp.putString("userImg", img);
+                                if (!userrType.equals("Student") && !userrType.equals("Parent")) {
+                                    String firebase_userID = "educoach" + userId + "@educoach.co.in";
+                                    String firebase_password = "educoach" + userId;
+                                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                                    mAuth.signInWithEmailAndPassword(firebase_userID, firebase_password)
+                                            .addOnCompleteListener(task -> {
+                                                String current_user_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                                                DatabaseReference storeUserDefaultDataReference = FirebaseDatabase.getInstance().getReference().child("Users").child(current_user_id);
+                                                try {
+                                                    storeUserDefaultDataReference.child("userImg").setValue(jsonObject.getString("imageNm"));
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            });
+                                }
                             }
                             sp.apply();
                             Intent intent = new Intent(ctx, UserProfile.class);

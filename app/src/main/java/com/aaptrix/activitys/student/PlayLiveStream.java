@@ -374,7 +374,7 @@ public class PlayLiveStream extends AppCompatActivity {
                 int left = random.nextInt(width - 150);
                 params.setMargins(left, top, 0, 0);
                 watermark_yt.setLayoutParams(params);
-                int color = Color.argb(200, random.nextInt(256), random.nextInt(256), random.nextInt(256));
+                int color = Color.argb(150, random.nextInt(256), random.nextInt(256), random.nextInt(256));
                 watermark_yt.setTextColor(color);
                 watermark_yt.bringToFront();
                 start();

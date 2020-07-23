@@ -107,7 +107,7 @@ public class FullscreenAdapter extends PagerAdapter {
             @Override
             public void onFinish() {
                 Random random = new Random();
-                int color = Color.argb(100, random.nextInt(256), random.nextInt(256), random.nextInt(256));
+                int color = Color.argb(80, random.nextInt(256), random.nextInt(256), random.nextInt(256));
                 watermark.setTextColor(color);
                 watermark.bringToFront();
                 start();
