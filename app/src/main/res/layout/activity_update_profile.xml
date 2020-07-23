@@ -36,40 +36,14 @@
             android:orientation="vertical"
             android:paddingBottom="@dimen/_40sdp">
 
-            <ImageView
-                android:id="@+id/school_logo"
-                android:layout_width="@dimen/_250sdp"
-                android:layout_height="@dimen/_90sdp"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:src="@drawable/app_logo"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/user_profile"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:src="@drawable/user_place_hoder"
+                android:visibility="visible"
                 tools:ignore="ContentDescription" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".05"
-                    android:background="@drawable/cube1" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/siz2"
-                    android:layout_weight=".8"
-                    android:background="@color/colorPrimaryDark" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".05"
-                    android:background="@drawable/cube1" />
-            </LinearLayout>
 
             <EditText
                 android:id="@+id/user_name"

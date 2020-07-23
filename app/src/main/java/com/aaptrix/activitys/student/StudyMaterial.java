@@ -495,11 +495,16 @@ public class StudyMaterial extends AppCompatActivity {
                             studyMaterialArray.add(array.get(i));
                         }
                     }
-                } if (userrType.equals("Teacher")) {
+                }
+                if (userrType.equals("Teacher")) {
                     String restricted = jsonRootObject.getString("RistrictedSubject");
-                    for (int i = 0; i < array.size(); i++) {
-                        if (!restricted.contains(array.get(i).getSubject())) {
-                            studyMaterialArray.add(array.get(i));
+                    if (restricted.equals("null")) {
+                        studyMaterialArray.addAll(array);
+                    } else {
+                        for (int i = 0; i < array.size(); i++) {
+                            if (restricted.contains(array.get(i).getSubject())) {
+                                studyMaterialArray.add(array.get(i));
+                            }
                         }
                     }
                 } else {
@@ -507,6 +512,7 @@ public class StudyMaterial extends AppCompatActivity {
                 }
                 if (studyMaterialArray.size() > 0) {
                     no_material.setVisibility(View.GONE);
+                    listView.setVisibility(View.VISIBLE);
                     listItms(selSubject);
                 } else {
                     no_material.setVisibility(View.VISIBLE);
@@ -734,6 +740,18 @@ public class StudyMaterial extends AppCompatActivity {
                         for (String subject : subjects) {
                             if (!object.contains(subject)) {
                                 subject_array.add(subject);
+                            }
+                        }
+                    } else if (userrType.equals("Teacher")) {
+                        String object = jsonRootObject.getString("RistrictedSubject");
+                        subject_array.add("All Subjects");
+                        if (object.equals("null")) {
+                            subject_array.addAll(Arrays.asList(subjects));
+                        } else {
+                            for (String subject : subjects) {
+                                if (object.contains(subject)) {
+                                    subject_array.add(subject);
+                                }
                             }
                         }
                     } else {

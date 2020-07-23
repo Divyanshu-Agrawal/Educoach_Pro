@@ -281,6 +281,12 @@ public class UserSelfRegistration extends AppCompatActivity {
             } else if (!TNC.equals("")) {
                 if (!cb.isChecked())
                     Toast.makeText(this, "Please agree to our Terms and Conditions", Toast.LENGTH_SHORT).show();
+                else {
+                    layout.setVisibility(View.VISIBLE);
+                    layout.bringToFront();
+                    SendRequest sendRequest = new SendRequest(this);
+                    sendRequest.execute();
+                }
             } else {
                 layout.setVisibility(View.VISIBLE);
                 layout.bringToFront();

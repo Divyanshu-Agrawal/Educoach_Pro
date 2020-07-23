@@ -131,10 +131,8 @@ public class OtpScreenActivity extends Activity {
         mAuth = FirebaseAuth.getInstance();
 
         troubleOtp.setOnClickListener(v -> {
-            Intent intent = new Intent(this, TroubleLoggingIn.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent intent = new Intent(this, TroubleFAQ.class);
             startActivity(intent);
-            finish();
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
 

@@ -86,6 +86,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 import javax.net.ssl.SSLContext;
@@ -108,7 +109,7 @@ public class AddNewMaterial extends AppCompatActivity {
     Toolbar toolbar;
     AppBarLayout appBarLayout;
     Button save;
-    String selToolColor, selStatusColor, selTextColor1, userSchoolId, userId, userType, userName, restricted;
+    String selToolColor, selStatusColor, selTextColor1, userSchoolId, userId, userType, userName, restricted, userrType;
     MediaPlayer mp;
     CardView cardView;
     RelativeLayout layout;
@@ -116,7 +117,8 @@ public class AddNewMaterial extends AppCompatActivity {
     String strShowToGuest = "0", strDownload = "1";
     GifImageView taskStatus;
     Spinner subject_spinner, course_spinner;
-    String[] subject_array = {"Select Subject"};
+    String[] subjects = {"Select Subject"};
+    ArrayList<String> subject_array = new ArrayList<>();
     String[] course_array = {"Select Course"};
     String[] course_id = {"0"};
     BatchListAdaptor batchListAdaptor;
@@ -162,6 +164,7 @@ public class AddNewMaterial extends AppCompatActivity {
         userType = sp_user.getString("userrType", "");
         userName = sp_user.getString("userName", "");
         restricted = sp_user.getString("restricted", "");
+        userrType = sp_user.getString("userrType", "");
 
         GetCourse getCourse = new GetCourse(this);
         getCourse.execute(userSchoolId);
@@ -665,11 +668,24 @@ public class AddNewMaterial extends AppCompatActivity {
                 try {
                     JSONObject jsonRootObject = new JSONObject(result);
                     JSONArray jsonArray = jsonRootObject.getJSONArray("SubjectList");
-                    subject_array = new String[jsonArray.length() + 1];
-                    subject_array[0] = "Select Subject";
+                    subjects = new String[jsonArray.length() + 1];
+                    subjects[0] = "Select Subject";
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        subject_array[i + 1] = jsonObject.getString("tbl_batch_subjct_name");
+                        subjects[i + 1] = jsonObject.getString("tbl_batch_subjct_name");
+                    }
+                    if (userrType.equals("Teacher")) {
+                        String object = jsonRootObject.getString("RistrictedSubject");
+                        subject_array.add("Select Subject");
+                        if (object.equals("null")) {
+                            subject_array.addAll(Arrays.asList(subjects));
+                        } else {
+                            for (String subject : subjects) {
+                                if (object.contains(subject)) {
+                                    subject_array.add(subject);
+                                }
+                            }
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -691,7 +707,7 @@ public class AddNewMaterial extends AppCompatActivity {
                 if (view != null) {
                     ((TextView) view).setTextColor(getResources().getColor(R.color.text_gray));
                 }
-                selsubject = subject_array[position];
+                selsubject = subject_array.get(position);
             }
 
             @Override

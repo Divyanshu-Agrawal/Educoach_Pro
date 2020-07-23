@@ -1,21 +1,30 @@
 package com.aaptrix.activitys;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.PermissionChecker;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -33,11 +42,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aaptrix.R;
+import com.aaptrix.activitys.student.InstituteBuzzActivity;
+import com.aaptrix.tools.FileUtil;
 import com.google.android.material.appbar.AppBarLayout;
+import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -56,6 +73,8 @@ import cz.msebera.android.httpclient.entity.mime.HttpMultipartMode;
 import cz.msebera.android.httpclient.entity.mime.MultipartEntityBuilder;
 import cz.msebera.android.httpclient.impl.client.HttpClients;
 import cz.msebera.android.httpclient.util.EntityUtils;
+import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
 import pl.droidsonroids.gif.GifImageView;
 
 import static com.aaptrix.activitys.SplashScreen.SCHOOL_ID;
@@ -77,6 +96,9 @@ public class UpdateProfile extends AppCompatActivity {
     AppBarLayout appBarLayout;
     String strDob = "0", strGender = "0";
     String strName, strEmail, userId;
+    CircleImageView profile;
+    String userrType, userImg, imgUrl;
+    File image;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -99,6 +121,7 @@ public class UpdateProfile extends AppCompatActivity {
         userEmail = findViewById(R.id.user_email);
         userGender = findViewById(R.id.user_gender);
         save = findViewById(R.id.btn_verify);
+        profile = findViewById(R.id.user_profile);
 
         userEmail.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus)
@@ -127,11 +150,41 @@ public class UpdateProfile extends AppCompatActivity {
         strDob = settings.getString("userDob", "");
         strGender = settings.getString("userGender", "");
         userId = settings.getString("userID", "");
+        userrType = settings.getString("userrType", "");
+        userImg = settings.getString("userImg", "");
+        imgUrl = settings.getString("imageUrl", "");
 
         userName.setText(strName);
         userEmail.setText(strEmail);
 
         userDob.setText(strDob);
+
+        if (userImg.equals("0")) {
+            profile.setImageDrawable(getResources().getDrawable(R.drawable.user_place_hoder));
+        } else if (!TextUtils.isEmpty(userImg)) {
+            String url;
+            switch (userrType) {
+                case "Parent":
+                case "Student":
+                    url = imgUrl + settings.getString("userSchoolId", "") + "/users/students/profile/" + userImg;
+                    Picasso.with(this).load(url).error(R.drawable.user_place_hoder).into(profile);
+                    break;
+                case "Admin":
+                    url = imgUrl + settings.getString("userSchoolId", "") + "/users/admin/profile/" + userImg;
+                    Picasso.with(this).load(url).error(R.drawable.user_place_hoder).into(profile);
+                    break;
+                case "Staff":
+                    url = imgUrl + settings.getString("userSchoolId", "") + "/users/staff/profile/" + userImg;
+                    Picasso.with(this).load(url).error(R.drawable.user_place_hoder).into(profile);
+                    break;
+                case "Teacher":
+                    url = imgUrl + settings.getString("userSchoolId", "") + "/users/teachers/profile/" + userImg;
+                    Picasso.with(this).load(url).error(R.drawable.user_place_hoder).into(profile);
+                    break;
+            }
+        } else {
+            profile.setImageDrawable(getResources().getDrawable(R.drawable.user_place_hoder));
+        }
 
         String[] gender = {"Select Gender", "Male", "Female", "Other"};
 
@@ -168,6 +221,17 @@ public class UpdateProfile extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
+
+        profile.setOnClickListener(v -> {
+            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED) {
+                Intent photoPickerIntent = new Intent();
+                photoPickerIntent.setType("image/*");
+                photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(photoPickerIntent, 1);
+            } else {
+                isPermissionGranted();
             }
         });
 
@@ -229,6 +293,54 @@ public class UpdateProfile extends AppCompatActivity {
         save.setTextColor(Color.parseColor(selTextColor1));
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1)
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null && data.getData() != null) {
+                    String fileName = FileUtil.getFileName(this, data.getData());
+                    String file_extn = fileName.substring(fileName.lastIndexOf(".") + 1);
+                    try {
+                        if (file_extn.equals("jpg") || file_extn.equals("jpeg") || file_extn.equals("png")) {
+                            image = new Compressor(this)
+                                    .setQuality(75)
+                                    .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                                    .compressToFile(FileUtil.from(this, data.getData()));
+                            Picasso.with(this).load(image).into(profile);
+                        } else {
+                            FileNotFoundException fe = new FileNotFoundException();
+                            Toast.makeText(this, "File not in required format.", Toast.LENGTH_SHORT).show();
+                            throw fe;
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(this, "Unknown Error Occurred", Toast.LENGTH_SHORT).show();
+                }
+            }
+    }
+
+    public void isPermissionGranted() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     @SuppressLint("StaticFieldLeak")
     public class SendRequest extends AsyncTask<String, String, String> {
         Context ctx;
@@ -283,6 +395,7 @@ public class UpdateProfile extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject(result);
                 String msg = jsonObject.getString("msg");
+                String img = jsonObject.getString("tbl_users_img");
                 if (msg.contains("user information successfully updated!")) {
                     cardView.setVisibility(View.VISIBLE);
                     new CountDownTimer(4000, 1000) {
@@ -298,6 +411,9 @@ public class UpdateProfile extends AppCompatActivity {
                             sp.putString("userEmailId", useremail);
                             sp.putString("userDob", strDob);
                             sp.putString("userGender", strGender);
+                            if (image != null) {
+                                sp.putString("userImg", img);
+                            }
                             sp.apply();
                             Intent intent = new Intent(ctx, UserProfile.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

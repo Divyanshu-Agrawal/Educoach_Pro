@@ -485,11 +485,16 @@ public class LiveStreaming extends AppCompatActivity {
                             videosArray.add(array.get(i));
                         }
                     }
-                } if (userrType.equals("Teacher")) {
+                }
+                if (userrType.equals("Teacher")) {
                     String restricted = jsonRootObject.getString("RistrictedSubject");
-                    for (int i = 0; i < array.size(); i++) {
-                        if (!restricted.contains(array.get(i).getSubject())) {
-                            videosArray.add(array.get(i));
+                    if (restricted.equals("null")) {
+                        videosArray.addAll(array);
+                    } else {
+                        for (int i = 0; i < array.size(); i++) {
+                            if (restricted.contains(array.get(i).getSubject())) {
+                                videosArray.add(array.get(i));
+                            }
                         }
                     }
                 } else {
@@ -500,9 +505,11 @@ public class LiveStreaming extends AppCompatActivity {
             }
             if (videosArray.size() == 0) {
                 noVideos.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.GONE);
                 mSwipeRefreshLayout.setRefreshing(false);
             } else {
                 listItems("All Subjects", selBatch);
+                listView.setVisibility(View.VISIBLE);
             }
             super.onPostExecute(result);
         }
@@ -748,6 +755,18 @@ public class LiveStreaming extends AppCompatActivity {
                         for (String subject : subjects) {
                             if (!object.contains(subject)) {
                                 subject_array.add(subject);
+                            }
+                        }
+                    } else if (userrType.equals("Teacher")) {
+                        String object = jsonRootObject.getString("RistrictedSubject");
+                        subject_array.add("All Subjects");
+                        if (object.equals("null")) {
+                            subject_array.addAll(Arrays.asList(subjects));
+                        } else {
+                            for (String subject : subjects) {
+                                if (object.contains(subject)) {
+                                    subject_array.add(subject);
+                                }
                             }
                         }
                     } else {

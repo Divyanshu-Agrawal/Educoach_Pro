@@ -8,8 +8,8 @@ public final class BuildConfig {
   public static final String APPLICATION_ID = "com.aaptrix.npc";
   public static final String BUILD_TYPE = "debug";
   public static final String FLAVOR = "npc";
-  public static final int VERSION_CODE = 32;
-  public static final String VERSION_NAME = "v2.1.2";
+  public static final int VERSION_CODE = 34;
+  public static final String VERSION_NAME = "v2.1.4";
   // Fields from product flavor: npc
   public static final String SCHOOL_ID = "32";
   public static final String SCHOOL_NAME = "Nahta Professional Classes";

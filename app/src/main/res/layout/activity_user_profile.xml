@@ -230,7 +230,7 @@
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
                     android:paddingBottom="5dp"
-                    android:text="User Roll Number" />
+                    android:text="Roll Number" />
 
                 <TextView
                     android:id="@+id/user_roll"
@@ -243,31 +243,10 @@
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/teacher_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/user_roll"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="5dp"
-                    android:text="Class Teacher" />
-
-                <TextView
-                    android:id="@+id/class_teacher"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/teacher_title"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:textColor="@android:color/black"
-                    android:textSize="14sp" />
-
-                <TextView
                     android:id="@+id/id_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/class_teacher"
+                    android:layout_below="@id/user_roll"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:paddingStart="10dp"
                     android:visibility="gone"

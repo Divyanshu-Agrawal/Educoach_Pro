@@ -72,7 +72,7 @@ public class UserProfile extends AppCompatActivity {
     ImageView userProfile, editProfile;
     SharedPreferences sp;
     ProgressBar progressBar;
-    TextView gender, dob, email, number, type, name, section, roll, sectionTitle, rollTitle, classTecher, teacherTitle, schoolName;
+    TextView gender, dob, email, number, type, name, section, roll, sectionTitle, rollTitle, schoolName, typeTitle;
     RelativeLayout fullscrLayout;
     LinearLayout edit_layout;
     ImageView edit;
@@ -113,10 +113,9 @@ public class UserProfile extends AppCompatActivity {
         roll = findViewById(R.id.user_roll);
         sectionTitle = findViewById(R.id.section_title);
         rollTitle = findViewById(R.id.roll_title);
-        classTecher = findViewById(R.id.class_teacher);
-        teacherTitle = findViewById(R.id.teacher_title);
         idTitle = findViewById(R.id.id_title);
         androidId = findViewById(R.id.android_id);
+        typeTitle = findViewById(R.id.org_title);
         copy = findViewById(R.id.copy);
 
         String userImg = sp.getString("userImg", "");
@@ -138,6 +137,12 @@ public class UserProfile extends AppCompatActivity {
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
             });
+
+            type.setVisibility(View.VISIBLE);
+            typeTitle.setVisibility(View.VISIBLE);
+        } else {
+            typeTitle.setVisibility(View.GONE);
+            type.setVisibility(View.GONE);
         }
 
         schoolName.setText(school);
@@ -160,14 +165,11 @@ public class UserProfile extends AppCompatActivity {
         if (userType.equals("Student")) {
             section.setText(sp.getString("userSection", ""));
             roll.setText(sp.getString("userRollNumber", ""));
-            classTecher.setText(sp.getString("userTeacherName", ""));
         } else {
             section.setVisibility(View.GONE);
             sectionTitle.setVisibility(View.GONE);
             rollTitle.setVisibility(View.GONE);
             roll.setVisibility(View.GONE);
-            classTecher.setVisibility(View.GONE);
-            teacherTitle.setVisibility(View.GONE);
         }
 
         edit.setOnClickListener(v -> {
