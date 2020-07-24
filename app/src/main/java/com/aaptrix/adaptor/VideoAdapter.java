@@ -15,7 +15,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import com.aaptrix.databeans.VideosData;
 import com.aaptrix.R;
@@ -41,12 +45,12 @@ public class VideoAdapter extends ArrayAdapter<VideosData> {
     }
 
     private static class ViewHolder {
-        TextView title, subject, desc;
+        TextView title, subject, desc, startAt;
         ImageView imageView;
-        CardView live;
+        CardView live, start;
     }
 
-    @SuppressLint("ViewHolder")
+    @SuppressLint({"ViewHolder", "SetTextI18n"})
     @NonNull
     @Override
     public View getView(int position, View view, @NonNull ViewGroup parent) {
@@ -66,6 +70,8 @@ public class VideoAdapter extends ArrayAdapter<VideosData> {
             holder.subject = view.findViewById(R.id.video_subject);
             holder.desc = view.findViewById(R.id.video_desc);
             holder.live = view.findViewById(R.id.live_video_indicator);
+            holder.startAt = view.findViewById(R.id.start_at);
+            holder.start = view.findViewById(R.id.start_time);
 
             holder.subject.setBackgroundColor(Color.parseColor(drawer));
             holder.subject.setTextColor(Color.parseColor(text));
@@ -77,6 +83,24 @@ public class VideoAdapter extends ArrayAdapter<VideosData> {
                 }
             }
 
+            try {
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
+                String start = objects.get(position).getStart();
+                Date startdate = sdf.parse(start);
+                sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.getDefault());
+                assert startdate != null;
+                String date = sdf.format(startdate);
+                if (!start.equals("0000-00-00 00:00:00")) {
+                    if (calendar.getTime().before(startdate)) {
+                        holder.start.setVisibility(View.VISIBLE);
+                        holder.startAt.setText("Starts At : " + date);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             holder.title.setText(objects.get(position).getTitle());
             if (objects.get(position).getSubject().equals("0")) {
                 holder.subject.setText("All Subjects");
@@ -84,7 +108,7 @@ public class VideoAdapter extends ArrayAdapter<VideosData> {
                 if (!objects.get(position).getSubject().equals("Null"))
                     holder.subject.setText(objects.get(position).getSubject());
                 else
-                	holder.subject.setVisibility(View.GONE);
+                    holder.subject.setVisibility(View.GONE);
             }
 
             if (!objects.get(position).getDesc().equals("null")) {

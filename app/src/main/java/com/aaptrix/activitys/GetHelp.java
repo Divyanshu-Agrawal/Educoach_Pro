@@ -13,12 +13,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aaptrix.BuildConfig;
@@ -55,6 +57,7 @@ public class GetHelp extends AppCompatActivity {
     Button send;
     Toolbar toolbar;
     AppBarLayout appBarLayout;
+    TextView message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,7 @@ public class GetHelp extends AppCompatActivity {
         layout = findViewById(R.id.layout);
         userMsg = findViewById(R.id.user_msg);
         send = findViewById(R.id.btn_send);
+        message = findViewById(R.id.msg);
 
         userMsg.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus)
@@ -159,6 +163,7 @@ public class GetHelp extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            Log.e("res", result);
             if (result.contains("submitted")) {
                 cardView.setVisibility(View.VISIBLE);
                 new CountDownTimer(4000, 1000) {

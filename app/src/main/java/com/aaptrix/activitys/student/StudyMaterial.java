@@ -91,7 +91,7 @@ public class StudyMaterial extends AppCompatActivity {
     ArrayList<StudyMaterialData> studyMaterialArray = new ArrayList<>(), array = new ArrayList<>();
     StudyMaterialData data;
     ImageButton filter;
-    private String selSubject = "All Subjects";
+    private String selSubject = "All Subjects", disable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -489,7 +489,7 @@ public class StudyMaterial extends AppCompatActivity {
                             array.add(data);
                         }
                     }
-                    String disable = jsonRootObject.getString("DisableSubject");
+                    disable = jsonRootObject.getString("DisableSubject");
                     for (int i = 0; i < array.size(); i++) {
                         if (!disable.contains(array.get(i).getSubject())) {
                             studyMaterialArray.add(array.get(i));
@@ -513,7 +513,7 @@ public class StudyMaterial extends AppCompatActivity {
                 if (studyMaterialArray.size() > 0) {
                     no_material.setVisibility(View.GONE);
                     listView.setVisibility(View.VISIBLE);
-                    listItms(selSubject);
+                    listItms(selSubject, disable);
                 } else {
                     no_material.setVisibility(View.VISIBLE);
                     listView.setVisibility(View.GONE);
@@ -526,7 +526,7 @@ public class StudyMaterial extends AppCompatActivity {
 
     }
 
-    private void listItms(String subject) {
+    private void listItms(String subject, String disable) {
         ArrayList<StudyMaterialData> arrayList = new ArrayList<>();
         listView.setVisibility(View.VISIBLE);
         ArrayList<String> ids = new ArrayList<>();
@@ -571,7 +571,7 @@ public class StudyMaterial extends AppCompatActivity {
                 }
                 for (int i = 0; i < ids.size(); i++) {
                     for (int j = 0; j < studyMaterialArray.size(); j++) {
-                        if (ids.get(i).equals(studyMaterialArray.get(j).getId())) {
+                        if (ids.get(i).equals(studyMaterialArray.get(j).getId()) && !disable.contains(studyMaterialArray.get(j).getSubject())) {
                             arrayList.add(studyMaterialArray.get(j));
                             break;
                         }
@@ -782,7 +782,7 @@ public class StudyMaterial extends AppCompatActivity {
 
             popupMenu.setOnMenuItemClickListener(item1 -> {
                 selSubject = item1.getTitle().toString();
-                listItms(selSubject);
+                listItms(selSubject, disable);
                 return true;
             });
         });

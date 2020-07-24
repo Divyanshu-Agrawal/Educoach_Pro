@@ -57,6 +57,49 @@
                     android:layout_height="@dimen/_150sdp"
                     android:background="@color/black" />
 
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    app:cardBackgroundColor="@color/colorPrimary"
+                    android:layout_alignEnd="@id/videoImage"
+                    android:divider="@android:color/transparent"
+                    app:cardCornerRadius="10dp"
+                    android:id="@+id/start_time"
+                    app:cardElevation="3dp"
+                    android:visibility="gone"
+                    app:cardPreventCornerOverlap="false">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:background="@color/trans">
+
+                        <ImageView
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:src="@drawable/timer_icon"
+                            android:background="@color/trans"
+                            android:padding="4dp"
+                            android:tint="@color/white"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Start At : "
+                            android:visibility="visible"
+                            android:padding="5dp"
+                            android:gravity="center_vertical"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            android:id="@+id/start_at"/>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
             </RelativeLayout>
 
             <TextView

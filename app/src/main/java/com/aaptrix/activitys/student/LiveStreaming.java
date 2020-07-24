@@ -91,7 +91,7 @@ public class LiveStreaming extends AppCompatActivity {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     String userId, userSchoolId, userRoleId, userrType, userSection, url, userName, restricted;
     ImageButton filter;
-    private String selSubject = "All Subjects";
+    private String selSubject = "All Subjects", disable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -233,19 +233,18 @@ public class LiveStreaming extends AppCompatActivity {
 
             popupMenu.setOnMenuItemClickListener(item1 -> {
                 selSubject = item1.getTitle().toString();
-                listItems(selSubject, selBatch);
+                listItems(selSubject, disable);
                 return true;
             });
         });
 
         if (isInternetOn()) {
+            GetVideos getVideos = new GetVideos(this);
             if (userrType.equals("Student")) {
-                GetVideos getVideos = new GetVideos(this);
                 getVideos.execute(userSchoolId, userSection, userrType);
                 selBatch = userSection;
                 batch_spinner.setVisibility(View.GONE);
             } else {
-                GetVideos getVideos = new GetVideos(this);
                 getVideos.execute(userSchoolId, "All", userrType);
             }
         } else {
@@ -258,13 +257,12 @@ public class LiveStreaming extends AppCompatActivity {
                 listView.setEnabled(false);
                 array.clear();
                 videosArray.clear();
+                GetVideos getVideos = new GetVideos(this);
                 if (userrType.equals("Student")) {
-                    GetVideos getVideos = new GetVideos(this);
                     getVideos.execute(userSchoolId, userSection, userrType);
                     selBatch = userSection;
                     batch_spinner.setVisibility(View.GONE);
                 } else {
-                    GetVideos getVideos = new GetVideos(this);
                     getVideos.execute(userSchoolId, "All", userrType);
                 }
             } else {
@@ -372,12 +370,14 @@ public class LiveStreaming extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (batch_array[i].equals("All Batches")) {
                     selBatch = "All Batches";
-                    listItems(selSubject, "All Batches");
+                    GetVideos getVideos = new GetVideos(LiveStreaming.this);
+                    getVideos.execute(userSchoolId, "All", userrType);
                     GetSubject subject = new GetSubject(LiveStreaming.this);
                     subject.execute(userSchoolId, "All");
                 } else {
                     selBatch = batch_array[i];
-                    listItems(selSubject, selBatch);
+                    GetVideos getVideos = new GetVideos(LiveStreaming.this);
+                    getVideos.execute(userSchoolId, selBatch, userrType);
                     String section = "[{\"userName\":\"" + selBatch + "\"}]";
                     GetSubject subject = new GetSubject(LiveStreaming.this);
                     subject.execute(userSchoolId, section);
@@ -479,7 +479,7 @@ public class LiveStreaming extends AppCompatActivity {
                     }
                 }
                 if (userrType.equals("Student")) {
-                    String disable = jsonRootObject.getString("DisableSubject");
+                    disable = jsonRootObject.getString("DisableSubject");
                     for (int i = 0; i < array.size(); i++) {
                         if (!disable.contains(array.get(i).getSubject())) {
                             videosArray.add(array.get(i));
@@ -508,83 +508,45 @@ public class LiveStreaming extends AppCompatActivity {
                 listView.setVisibility(View.GONE);
                 mSwipeRefreshLayout.setRefreshing(false);
             } else {
-                listItems("All Subjects", selBatch);
+                listItems("All Subjects", disable);
                 listView.setVisibility(View.VISIBLE);
             }
             super.onPostExecute(result);
         }
     }
 
-    private void listItems(String subject, String batch) {
+    private void listItems(String subject, String disable) {
 
         ArrayList<VideosData> arrayList = new ArrayList<>();
 
         ArrayList<String> ids = new ArrayList<>();
         if (!userrType.equals("Student")) {
-            if (batch.equals("All Batches")) {
-                if (subject.equals("All Subjects")) {
-                    for (int i = 0; i < videosArray.size(); i++) {
-                        if (!ids.contains(videosArray.get(i).getId())) {
-                            ids.add(videosArray.get(i).getId());
-                        }
+            if (subject.equals("All Subjects")) {
+                for (int i = 0; i < videosArray.size(); i++) {
+                    if (!ids.contains(videosArray.get(i).getId())) {
+                        ids.add(videosArray.get(i).getId());
                     }
-                    for (int i = 0; i < ids.size(); i++) {
-                        for (int j = 0; j < videosArray.size(); j++) {
-                            if (ids.get(i).equals(videosArray.get(j).getId())) {
-                                arrayList.add(videosArray.get(j));
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    for (int i = 0; i < videosArray.size(); i++) {
-                        if (!ids.contains(videosArray.get(i).getId())) {
-                            ids.add(videosArray.get(i).getId());
-                        }
-                    }
-                    for (int i = 0; i < ids.size(); i++) {
-                        for (int j = 0; j < videosArray.size(); j++) {
-                            if (ids.get(i).equals(videosArray.get(j).getId())) {
-                                if (videosArray.get(j).getSubject().contentEquals(subject) || videosArray.get(j).getSubject().equals("0")) {
-                                    arrayList.add(videosArray.get(j));
-                                    break;
-                                }
-                            }
+                }
+                for (int i = 0; i < ids.size(); i++) {
+                    for (int j = 0; j < videosArray.size(); j++) {
+                        if (ids.get(i).equals(videosArray.get(j).getId())) {
+                            arrayList.add(videosArray.get(j));
+                            break;
                         }
                     }
                 }
             } else {
-                if (subject.equals("All Subjects")) {
-                    for (int i = 0; i < videosArray.size(); i++) {
-                        if (!ids.contains(videosArray.get(i).getId())) {
-                            ids.add(videosArray.get(i).getId());
-                        }
+                for (int i = 0; i < videosArray.size(); i++) {
+                    if (!ids.contains(videosArray.get(i).getId())) {
+                        ids.add(videosArray.get(i).getId());
                     }
-                    for (int i = 0; i < ids.size(); i++) {
-                        for (int j = 0; j < videosArray.size(); j++) {
-                            if (videosArray.get(j).getBatch().equals(batch)) {
-                                if (ids.get(i).equals(videosArray.get(j).getId())) {
-                                    arrayList.add(videosArray.get(j));
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    for (int i = 0; i < videosArray.size(); i++) {
-                        if (!ids.contains(videosArray.get(i).getId())) {
-                            ids.add(videosArray.get(i).getId());
-                        }
-                    }
-                    for (int i = 0; i < ids.size(); i++) {
-                        for (int j = 0; j < videosArray.size(); j++) {
-                            if (videosArray.get(j).getBatch().equals(batch)) {
-                                if (ids.get(i).equals(videosArray.get(j).getId())) {
-                                    if (videosArray.get(j).getSubject().contentEquals(subject) || videosArray.get(j).getSubject().equals("0")) {
-                                        arrayList.add(videosArray.get(j));
-                                        break;
-                                    }
-                                }
+                }
+                for (int i = 0; i < ids.size(); i++) {
+                    for (int j = 0; j < videosArray.size(); j++) {
+                        if (ids.get(i).equals(videosArray.get(j).getId())) {
+                            if (videosArray.get(j).getSubject().contentEquals(subject) || videosArray.get(j).getSubject().equals("0")) {
+                                arrayList.add(videosArray.get(j));
+                                break;
                             }
                         }
                     }
@@ -599,7 +561,7 @@ public class LiveStreaming extends AppCompatActivity {
                 }
                 for (int i = 0; i < ids.size(); i++) {
                     for (int j = 0; j < videosArray.size(); j++) {
-                        if (ids.get(i).equals(videosArray.get(j).getId())) {
+                        if (ids.get(i).equals(videosArray.get(j).getId()) && !disable.contains(videosArray.get(j).getSubject())) {
                             arrayList.add(videosArray.get(j));
                             break;
                         }

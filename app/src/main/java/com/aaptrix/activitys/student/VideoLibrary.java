@@ -100,7 +100,7 @@ public class VideoLibrary extends AppCompatActivity {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     String userId, userSchoolId, userRoleId, userrType, userSection, url, userName, restricted;
     ImageButton filter;
-    private String selSubject = "All Subjects";
+    private String selSubject = "All Subjects", disable;
     LinearLayout liveVideo;
 
     @Override
@@ -261,18 +261,17 @@ public class VideoLibrary extends AppCompatActivity {
 
             popupMenu.setOnMenuItemClickListener(item1 -> {
                 selSubject = item1.getTitle().toString();
-                listItems(selSubject);
+                listItems(selSubject, disable);
                 return true;
             });
         });
 
         if (isInternetOn()) {
+            GetVideos getVideos = new GetVideos(this);
             if (userrType.equals("Student")) {
-                GetVideos getVideos = new GetVideos(this);
                 getVideos.execute(userSchoolId, userSection, userrType);
                 batch_spinner.setVisibility(View.GONE);
             } else {
-                GetVideos getVideos = new GetVideos(this);
                 getVideos.execute(userSchoolId, "All", userrType);
             }
         } else {
@@ -504,31 +503,23 @@ public class VideoLibrary extends AppCompatActivity {
                     JSONArray jsonArray = jsonRootObject.getJSONArray("result");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String start = jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time");
                         String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
-                        Date startdate = sdf.parse(start);
                         Date enddate = sdf.parse(end);
-                        if (!start.equals("0000-00-00 00:00:00") || !end.equals("0000-00-00 00:00:00")) {
-                            if (calendar.getTime().equals(startdate) || (calendar.getTime().after(startdate) && calendar.getTime().before(enddate))) {
-                                videosData = new VideosData();
-                                videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
-                                videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
-                                videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
-                                videosData.setSubject(jsonObject.getString("subject_name"));
-                                videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
-                                videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
-                                videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
+                        videosData = new VideosData();
+                        videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
+                        videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
+                        videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
+                        videosData.setSubject(jsonObject.getString("subject_name"));
+                        videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
+                        videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
+                        videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
+                        videosData.setStart(jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time"));
+                        videosData.setEnd(jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time"));
+                        if (!end.equals("0000-00-00 00:00:00")) {
+                            if (calendar.getTime().before(enddate)) {
                                 array.add(videosData);
                             }
                         } else {
-                            videosData = new VideosData();
-                            videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
-                            videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
-                            videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
-                            videosData.setSubject(jsonObject.getString("subject_name"));
-                            videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
-                            videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
-                            videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
                             array.add(videosData);
                         }
                     }
@@ -537,66 +528,50 @@ public class VideoLibrary extends AppCompatActivity {
                     JSONArray jsonArray = jsonRootObject.getJSONArray("instituteVideos");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String start = jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time");
                         String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
-                        Date startdate = sdf.parse(start);
                         Date enddate = sdf.parse(end);
-                        if (!start.equals("0000-00-00 00:00:00") || !end.equals("0000-00-00 00:00:00")) {
-                            if (calendar.getTime().equals(startdate) || (calendar.getTime().after(startdate) && calendar.getTime().before(enddate))) {
-                                videosData = new VideosData();
-                                videosData.setId(jsonObject.getString("tbl_school_institutevideo_id"));
-                                videosData.setTitle(jsonObject.getString("tbl_school_institutevideo_title"));
-                                videosData.setUrl(url + jsonObject.getString("tbl_school_institutevideo_video"));
-                                videosData.setDesc(jsonObject.getString("tbl_school_institutevideo_desc"));
-                                videosData.setSubject(jsonObject.getString("subject_name"));
-                                videosData.setDate(jsonObject.getString("tbl_school_institutevideo_date"));
-                                videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
+                        videosData = new VideosData();
+                        videosData.setId(jsonObject.getString("tbl_school_institutevideo_id"));
+                        videosData.setTitle(jsonObject.getString("tbl_school_institutevideo_title"));
+                        videosData.setUrl(url + jsonObject.getString("tbl_school_institutevideo_video"));
+                        videosData.setDesc(jsonObject.getString("tbl_school_institutevideo_desc"));
+                        videosData.setSubject(jsonObject.getString("subject_name"));
+                        videosData.setDate(jsonObject.getString("tbl_school_institutevideo_date"));
+                        videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
+                        videosData.setStart(jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time"));
+                        videosData.setEnd(jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time"));
+                        if (!end.equals("0000-00-00 00:00:00")) {
+                            if (calendar.getTime().before(enddate)) {
                                 array.add(videosData);
                             }
                         } else {
-                            videosData = new VideosData();
-                            videosData.setId(jsonObject.getString("tbl_school_institutevideo_id"));
-                            videosData.setTitle(jsonObject.getString("tbl_school_institutevideo_title"));
-                            videosData.setUrl(url + jsonObject.getString("tbl_school_institutevideo_video"));
-                            videosData.setDesc(jsonObject.getString("tbl_school_institutevideo_desc"));
-                            videosData.setSubject(jsonObject.getString("subject_name"));
-                            videosData.setDate(jsonObject.getString("tbl_school_institutevideo_date"));
-                            videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
                             array.add(videosData);
                         }
                     }
                 }
                 if (userrType.equals("Student")) {
-                    String disable = jsonRootObject.getString("DisableSubject");
+                    disable = jsonRootObject.getString("DisableSubject");
                     if (!result.contains("\"studyVideosStudent\":null")) {
                         JSONArray jsonArray = jsonRootObject.getJSONArray("studyVideosStudent");
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            String start = jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time");
                             String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
-                            Date startdate = sdf.parse(start);
                             Date enddate = sdf.parse(end);
-                            if (!start.equals("0000-00-00 00:00:00") || !end.equals("0000-00-00 00:00:00")) {
-                                if (calendar.getTime().equals(startdate) || (calendar.getTime().after(startdate) && calendar.getTime().before(enddate))) {
-                                    videosData = new VideosData();
-                                    videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
-                                    videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
-                                    videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
-                                    videosData.setSubject(jsonObject.getString("subject_name"));
-                                    videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
-                                    videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
-                                    videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
+                            videosData = new VideosData();
+                            videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
+                            videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
+                            videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
+                            videosData.setSubject(jsonObject.getString("subject_name"));
+                            videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
+                            videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
+                            videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
+                            videosData.setStart(jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time"));
+                            videosData.setEnd(jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time"));
+                            if (!end.equals("0000-00-00 00:00:00")) {
+                                if (calendar.getTime().before(enddate)) {
                                     array.add(videosData);
                                 }
                             } else {
-                                videosData = new VideosData();
-                                videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
-                                videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
-                                videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
-                                videosData.setSubject(jsonObject.getString("subject_name"));
-                                videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
-                                videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
-                                videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
                                 array.add(videosData);
                             }
                         }
@@ -606,7 +581,8 @@ public class VideoLibrary extends AppCompatActivity {
                             videosArray.add(array.get(i));
                         }
                     }
-                } if (userrType.equals("Teacher")) {
+                }
+                if (userrType.equals("Teacher")) {
                     String restricted = jsonRootObject.getString("RistrictedSubject");
                     if (restricted.equals("null")) {
                         videosArray.addAll(array);
@@ -628,14 +604,14 @@ public class VideoLibrary extends AppCompatActivity {
                 listView.setVisibility(View.GONE);
                 mSwipeRefreshLayout.setRefreshing(false);
             } else {
-                listItems("All Subjects");
+                listItems("All Subjects", disable);
                 listView.setVisibility(View.VISIBLE);
             }
             super.onPostExecute(result);
         }
     }
 
-    private void listItems(String subject) {
+    private void listItems(String subject, String disable) {
 
         ArrayList<VideosData> arrayList = new ArrayList<>();
 
@@ -681,7 +657,7 @@ public class VideoLibrary extends AppCompatActivity {
                 }
                 for (int i = 0; i < ids.size(); i++) {
                     for (int j = 0; j < videosArray.size(); j++) {
-                        if (ids.get(i).equals(videosArray.get(j).getId())) {
+                        if (ids.get(i).equals(videosArray.get(j).getId()) && !disable.contains(videosArray.get(j).getSubject())) {
                             arrayList.add(videosArray.get(j));
                             break;
                         }
@@ -733,12 +709,28 @@ public class VideoLibrary extends AppCompatActivity {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             if (isInternetOn()) {
-                Intent intent = new Intent(this, VideoDetails.class);
-                intent.putExtra("title", arrayList.get(position).getTitle());
-                intent.putExtra("url", arrayList.get(position).getUrl());
-                intent.putExtra("id", arrayList.get(position).getId());
-                intent.putExtra("desc", arrayList.get(position).getDesc());
-                startActivity(intent);
+                try {
+                    Calendar calendar = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
+                    String start = arrayList.get(position).getStart();
+                    Date startdate = sdf.parse(start);
+                    Intent intent = new Intent(this, VideoDetails.class);
+                    intent.putExtra("title", arrayList.get(position).getTitle());
+                    intent.putExtra("url", arrayList.get(position).getUrl());
+                    intent.putExtra("id", arrayList.get(position).getId());
+                    intent.putExtra("desc", arrayList.get(position).getDesc());
+                    if (!start.equals("0000-00-00 00:00:00")) {
+                        if (calendar.getTime().equals(startdate) || (calendar.getTime().after(startdate))) {
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(this, "Video will start on " + start, Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        startActivity(intent);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } else {
                 Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
             }
@@ -777,7 +769,8 @@ public class VideoLibrary extends AppCompatActivity {
                     break;
                 }
             }
-        } catch (JSONException e) {
+        } catch (
+                JSONException e) {
             e.printStackTrace();
         }
     }
@@ -956,6 +949,7 @@ public class VideoLibrary extends AppCompatActivity {
                 Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();
             }
         }
+
     }
 
     public final boolean isInternetOn() {
