@@ -75,7 +75,6 @@
                 android:layout_height="@dimen/_250sdp"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:background="@drawable/et_background_design"
-                android:fontFamily="ROBOTO-REGULAR.TTF"
                 android:hint="Enter Message"
                 android:inputType="textCapSentences"
                 android:gravity="start"
@@ -96,7 +95,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="@color/colorPrimaryDark"
-        android:fontFamily="ROBOTO-REGULAR.TTF"
         android:text="Send"
         android:textAllCaps="false"
         android:textColor="@color/white"
@@ -147,7 +145,7 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:id="@+id/msg"
-                    android:text="Successful"
+                    android:text="Submitted Successfully"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
