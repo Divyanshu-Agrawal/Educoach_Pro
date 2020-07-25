@@ -83,22 +83,24 @@ public class VideoAdapter extends ArrayAdapter<VideosData> {
                 }
             }
 
-            try {
-                Calendar calendar = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
-                String start = objects.get(position).getStart();
-                Date startdate = sdf.parse(start);
-                sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.getDefault());
-                assert startdate != null;
-                String date = sdf.format(startdate);
-                if (!start.equals("0000-00-00 00:00:00")) {
-                    if (calendar.getTime().before(startdate)) {
-                        holder.start.setVisibility(View.VISIBLE);
-                        holder.startAt.setText("Starts At : " + date);
+            if (type.equals("video")) {
+                try {
+                    Calendar calendar = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
+                    String start = objects.get(position).getStart();
+                    Date startdate = sdf.parse(start);
+                    sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.getDefault());
+                    assert startdate != null;
+                    String date = sdf.format(startdate);
+                    if (!start.equals("0000-00-00 00:00:00")) {
+                        if (calendar.getTime().before(startdate)) {
+                            holder.start.setVisibility(View.VISIBLE);
+                            holder.startAt.setText("Starts At : " + date);
+                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
 
             holder.title.setText(objects.get(position).getTitle());

@@ -210,15 +210,6 @@ public class LiveStreaming extends AppCompatActivity {
             }
         });
 
-        if (userrType.equals("Student")) {
-            String section = "[{\"userName\":\"" + userSection + "\"}]";
-            GetSubject subject = new GetSubject(this);
-            subject.execute(userSchoolId, section);
-        } else {
-            GetSubject subject = new GetSubject(this);
-            subject.execute(userSchoolId, "All");
-        }
-
         filter.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(this, v);
             popupMenu.getMenuInflater().inflate(R.menu.filter_menu, popupMenu.getMenu());
@@ -249,6 +240,15 @@ public class LiveStreaming extends AppCompatActivity {
             }
         } else {
             Toast.makeText(this, "Please connect to internet", Toast.LENGTH_SHORT).show();
+        }
+
+        if (userrType.equals("Student")) {
+            String section = "[{\"userName\":\"" + userSection + "\"}]";
+            GetSubject subject = new GetSubject(this);
+            subject.execute(userSchoolId, section);
+        } else {
+            GetSubject subject = new GetSubject(this);
+            subject.execute(userSchoolId, "All");
         }
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
@@ -402,6 +402,8 @@ public class LiveStreaming extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             videosArray.clear();
+            array.clear();
+            mSwipeRefreshLayout.setRefreshing(true);
             super.onPreExecute();
         }
 
@@ -411,6 +413,8 @@ public class LiveStreaming extends AppCompatActivity {
             String schoolId = params[0];
             String sectionName = params[1];
             String userType = params[2];
+
+            Log.e("user", userId);
             String data;
 
             try {
@@ -502,6 +506,7 @@ public class LiveStreaming extends AppCompatActivity {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                mSwipeRefreshLayout.setRefreshing(false);
             }
             if (videosArray.size() == 0) {
                 noVideos.setVisibility(View.VISIBLE);
@@ -516,7 +521,7 @@ public class LiveStreaming extends AppCompatActivity {
     }
 
     private void listItems(String subject, String disable) {
-
+        mSwipeRefreshLayout.setRefreshing(false);
         ArrayList<VideosData> arrayList = new ArrayList<>();
 
         ArrayList<String> ids = new ArrayList<>();
