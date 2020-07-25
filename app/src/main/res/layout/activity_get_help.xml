@@ -48,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
                 android:gravity="center"
                 android:weightSum="1">
                 <TextView
@@ -70,12 +71,45 @@
             </LinearLayout>
 
             <EditText
+                android:id="@+id/user_name"
+                android:layout_width="@dimen/_280sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/et_background_design"
+                android:hint="Enter Name*"
+                android:inputType="textCapWords"
+                android:paddingStart="@dimen/siz10"
+                android:paddingEnd="10dip"
+                android:visibility="gone"
+                android:textColor="@color/black"
+                android:textColorHint="@color/text_gray"
+                android:textSize="@dimen/siz14"
+                tools:ignore="Autofill,HardcodedText" />
+
+            <EditText
+                android:id="@+id/user_phone"
+                android:layout_width="@dimen/_280sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/et_background_design"
+                android:hint="Enter Phone Number*"
+                android:inputType="phone"
+                android:maxLength="10"
+                android:paddingStart="@dimen/siz10"
+                android:paddingEnd="10dip"
+                android:visibility="gone"
+                android:textColor="@color/black"
+                android:textColorHint="@color/text_gray"
+                android:textSize="@dimen/siz14"
+                tools:ignore="Autofill,HardcodedText" />
+
+            <EditText
                 android:id="@+id/user_msg"
                 android:layout_width="@dimen/_280sdp"
                 android:layout_height="@dimen/_250sdp"
-                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:background="@drawable/et_background_design"
-                android:hint="Enter Message"
+                android:hint="Enter Message*"
                 android:inputType="textCapSentences"
                 android:gravity="start"
                 android:padding="10dip"

@@ -43,6 +43,7 @@ import cz.msebera.android.httpclient.impl.client.HttpClients;
 import cz.msebera.android.httpclient.util.EntityUtils;
 import pl.droidsonroids.gif.GifImageView;
 
+import static com.aaptrix.activitys.SplashScreen.TNC;
 import static com.aaptrix.tools.HttpUrl.HELP;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
 import static cz.msebera.android.httpclient.conn.ssl.SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
@@ -53,7 +54,7 @@ public class GetHelp extends AppCompatActivity {
     CardView cardView;
     GifImageView taskStatus;
     RelativeLayout layout;
-    EditText userMsg;
+    EditText userMsg, name, phone;
     Button send;
     Toolbar toolbar;
     AppBarLayout appBarLayout;
@@ -77,8 +78,20 @@ public class GetHelp extends AppCompatActivity {
         userMsg = findViewById(R.id.user_msg);
         send = findViewById(R.id.btn_send);
         message = findViewById(R.id.msg);
+        name = findViewById(R.id.user_name);
+        phone = findViewById(R.id.user_phone);
 
         userMsg.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus)
+                hideKeyboard(v);
+        });
+
+        name.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus)
+                hideKeyboard(v);
+        });
+
+        phone.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus)
                 hideKeyboard(v);
         });
@@ -89,16 +102,39 @@ public class GetHelp extends AppCompatActivity {
 
         layout.setOnTouchListener((v, event) -> false);
 
+        SharedPreferences sp = getSharedPreferences(PREFS_NAME, 0);
+        String userType = sp.getString("userrType", "");
+        String username = sp.getString("userName", "");
+        String userphone = sp.getString("userPhone", "");
+
         send.setOnClickListener(v -> {
             mp.start();
-            if (TextUtils.isEmpty(userMsg.getText().toString())) {
-                userMsg.requestFocus();
-                userMsg.setError("Please Enter Message");
+            if (userType.equals("Guest")) {
+                if (TextUtils.isEmpty(name.getText().toString())) {
+                    name.requestFocus();
+                    name.setError("Please Enter Name");
+                } else if (TextUtils.isEmpty(phone.getText().toString())) {
+                    phone.requestFocus();
+                    phone.setError("Please Enter Phone Number");
+                } else if (phone.getText().toString().length() != 10) {
+                    phone.requestFocus();
+                    phone.setError("Please Enter Correct Phone Number");
+                } else {
+                    layout.setVisibility(View.VISIBLE);
+                    layout.bringToFront();
+                    SendRequest request = new SendRequest(this);
+                    request.execute(userMsg.getText().toString(), name.getText().toString(), phone.getText().toString());
+                }
             } else {
-                layout.setVisibility(View.VISIBLE);
-                layout.bringToFront();
-                SendRequest request = new SendRequest(this);
-                request.execute(userMsg.getText().toString());
+                if (TextUtils.isEmpty(userMsg.getText().toString())) {
+                    userMsg.requestFocus();
+                    userMsg.setError("Please Enter Message");
+                } else {
+                    layout.setVisibility(View.VISIBLE);
+                    layout.bringToFront();
+                    SendRequest request = new SendRequest(this);
+                    request.execute(userMsg.getText().toString(), username, userphone);
+                }
             }
         });
     }
@@ -122,10 +158,10 @@ public class GetHelp extends AppCompatActivity {
 
             SharedPreferences sp = ctx.getSharedPreferences(PREFS_NAME, 0);
 
-            String username = sp.getString("userName", "");
-            String userphone = sp.getString("userPhone", "");
-            String instName = sp.getString("userSchoolName", "");
             String userMsg = params[0];
+            String username = params[1];
+            String userphone = params[2];
+            String instName = sp.getString("userSchoolName", "");
             String appNm = ctx.getResources().getString(R.string.app_name);
             String sdk = android.os.Build.VERSION.SDK;
             String device = android.os.Build.DEVICE;
@@ -146,10 +182,11 @@ public class GetHelp extends AppCompatActivity {
                 entityBuilder.addTextBody("user_nm", username);
                 entityBuilder.addTextBody("user_mob_no", userphone);
                 entityBuilder.addTextBody("message", "[Help] : " +
-                        userMsg + " Institute Name : " + instName + " Version : " + BuildConfig.VERSION_NAME +
-                        " Android : " + sdk + " Product : " + product + " Device : " + device + " Model : " + model);
+                        userMsg + " Institute Name : " + instName);
                 entityBuilder.addTextBody("institute_nm", instName);
                 entityBuilder.addTextBody("app_nm", appNm);
+                entityBuilder.addTextBody("app_info", "Version : " + BuildConfig.VERSION_NAME +
+                        " Android : " + sdk + " Product : " + product + " Device : " + device + " Model : " + model);
                 HttpEntity entity = entityBuilder.build();
                 httppost.setEntity(entity);
                 HttpResponse response = httpclient.execute(httppost);
