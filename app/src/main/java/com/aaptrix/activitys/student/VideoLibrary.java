@@ -723,7 +723,8 @@ public class VideoLibrary extends AppCompatActivity {
                         if (calendar.getTime().equals(startdate) || (calendar.getTime().after(startdate))) {
                             startActivity(intent);
                         } else {
-                            Toast.makeText(this, "Video will start on " + start, Toast.LENGTH_SHORT).show();
+                            sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+                            Toast.makeText(this, "Starts at " + sdf.format(startdate), Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         startActivity(intent);

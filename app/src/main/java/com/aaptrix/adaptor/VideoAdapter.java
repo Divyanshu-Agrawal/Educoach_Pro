@@ -89,7 +89,7 @@ public class VideoAdapter extends ArrayAdapter<VideosData> {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
                     String start = objects.get(position).getStart();
                     Date startdate = sdf.parse(start);
-                    sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.getDefault());
+                    sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
                     assert startdate != null;
                     String date = sdf.format(startdate);
                     if (!start.equals("0000-00-00 00:00:00")) {
