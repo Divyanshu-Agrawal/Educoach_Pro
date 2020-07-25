@@ -186,12 +186,11 @@ public class GetHelp extends AppCompatActivity {
                 entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
                 entityBuilder.addTextBody("user_nm", username);
                 entityBuilder.addTextBody("user_mob_no", userphone);
-                entityBuilder.addTextBody("message", "[Help] : " +
-                        userMsg + " Institute Name : " + instName);
+                entityBuilder.addTextBody("message", "[Help] : " + userMsg);
                 entityBuilder.addTextBody("institute_nm", instName);
                 entityBuilder.addTextBody("app_nm", appNm);
                 entityBuilder.addTextBody("app_info", "Version : " + BuildConfig.VERSION_NAME +
-                        " Android : " + sdk + " Product : " + product + " Device : " + device + " Model : " + model);
+                        " Android : " + sdk + " Product : " + product + " Device : " + device + " Model : " + model + " Package : " + getPackageName());
                 HttpEntity entity = entityBuilder.build();
                 httppost.setEntity(entity);
                 HttpResponse response = httpclient.execute(httppost);
