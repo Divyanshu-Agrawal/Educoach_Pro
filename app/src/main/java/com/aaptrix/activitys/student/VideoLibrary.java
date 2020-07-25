@@ -52,7 +52,6 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -714,6 +713,8 @@ public class VideoLibrary extends AppCompatActivity {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
                     String start = arrayList.get(position).getStart();
                     Date startdate = sdf.parse(start);
+                    sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    Date date = sdf.parse(start);
                     Intent intent = new Intent(this, VideoDetails.class);
                     intent.putExtra("title", arrayList.get(position).getTitle());
                     intent.putExtra("url", arrayList.get(position).getUrl());
@@ -722,6 +723,9 @@ public class VideoLibrary extends AppCompatActivity {
                     if (!start.equals("0000-00-00 00:00:00")) {
                         if (calendar.getTime().equals(startdate) || (calendar.getTime().after(startdate))) {
                             startActivity(intent);
+                        } else if (calendar.getTime().before(date)) {
+                            sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm aa", Locale.getDefault());
+                            Toast.makeText(this, "Starts at " + sdf.format(startdate), Toast.LENGTH_SHORT).show();
                         } else {
                             sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
                             Toast.makeText(this, "Starts at " + sdf.format(startdate), Toast.LENGTH_SHORT).show();

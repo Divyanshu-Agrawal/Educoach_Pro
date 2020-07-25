@@ -200,7 +200,6 @@ public class AddNewVideo extends AppCompatActivity {
         save.setBackgroundColor(Color.parseColor(selToolColor));
         save.setTextColor(Color.parseColor(selTextColor1));
         visibleTime.setEnabled(false);
-        visibleFromTime.setEnabled(false);
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
@@ -242,7 +241,6 @@ public class AddNewVideo extends AppCompatActivity {
                 visibleFrom.setText(sdf.format(mcurrentDate.getTime()));
                 sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                 strStart = sdf.format(mcurrentDate.getTime());
-                visibleFromTime.setEnabled(true);
                 calendar.setTime(mcurrentDate.getTime());
             }, mYear, mMonth, mDay);
             mDatePicker.updateDate(mYear, mMonth, mDay);
@@ -257,11 +255,15 @@ public class AddNewVideo extends AppCompatActivity {
             TimePickerDialog mTimePicker;
             mTimePicker = new TimePickerDialog(this, (timePicker, selectedHour, selectedMinute) -> {
                 String min = String.valueOf(selectedMinute);
+                String hr = String.valueOf(selectedHour);
                 if (min.length() == 1) {
                     min = "0" + selectedMinute;
                 }
-                strTime = selectedHour + ":" + min;
-                visibleTime.setText(selectedHour + ":" + min);
+                if (hr.length() == 1) {
+                    hr = "0" + selectedHour;
+                }
+                strTime = hr + ":" + min;
+                visibleTime.setText(hr + ":" + min);
             }, hour, minute, true);
             mTimePicker.setTitle("Select Time");
             mTimePicker.show();
@@ -273,8 +275,16 @@ public class AddNewVideo extends AppCompatActivity {
             int minute = mcurrentTime.get(Calendar.MINUTE);
             TimePickerDialog mTimePicker;
             mTimePicker = new TimePickerDialog(this, (timePicker, selectedHour, selectedMinute) -> {
-                strstartTime = selectedHour + ":" + selectedMinute;
-                visibleFromTime.setText(selectedHour + ":" + selectedMinute);
+                String min = String.valueOf(selectedMinute);
+                String hr = String.valueOf(selectedHour);
+                if (min.length() == 1) {
+                    min = "0" + selectedMinute;
+                }
+                if (hr.length() == 1) {
+                    hr = "0" + selectedHour;
+                }
+                strstartTime = hr + ":" + min;
+                visibleFromTime.setText(hr + ":" + min);
             }, hour, minute, true);
             mTimePicker.setTitle("Select Time");
             mTimePicker.updateTime(hour, minute);

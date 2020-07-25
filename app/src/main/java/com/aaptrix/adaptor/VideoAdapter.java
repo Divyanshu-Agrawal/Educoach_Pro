@@ -89,13 +89,25 @@ public class VideoAdapter extends ArrayAdapter<VideosData> {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
                     String start = objects.get(position).getStart();
                     Date startdate = sdf.parse(start);
-                    sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
                     assert startdate != null;
-                    String date = sdf.format(startdate);
+                    sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    Date d = sdf.parse(start);
+                    String cal = sdf.format(calendar.getTime());
                     if (!start.equals("0000-00-00 00:00:00")) {
-                        if (calendar.getTime().before(startdate)) {
-                            holder.start.setVisibility(View.VISIBLE);
-                            holder.startAt.setText("Starts At : " + date);
+                        if (cal.equals(sdf.format(d))) {
+                            if (calendar.getTime().before(startdate)) {
+                                sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+                                String date = sdf.format(startdate);
+                                holder.start.setVisibility(View.VISIBLE);
+                                holder.startAt.setText("Starts At : " + date);
+                            }
+                        } else {
+                            if (calendar.getTime().before(startdate)) {
+                                sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm aa", Locale.getDefault());
+                                String date = sdf.format(startdate);
+                                holder.start.setVisibility(View.VISIBLE);
+                                holder.startAt.setText("Starts At : " + date);
+                            }
                         }
                     }
                 } catch (Exception e) {
