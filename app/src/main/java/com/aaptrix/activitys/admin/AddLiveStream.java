@@ -107,7 +107,7 @@ public class AddLiveStream extends AppCompatActivity {
     String[] course_array = {"Select Course"};
     String[] course_id = {"0"};
     BatchListAdaptor batchListAdaptor;
-    String selsubject = "Select Subject";
+    String selsubject = "Select Subject", strCourse;
     AlertDialog.Builder alert;
     AlertDialog alertDialog;
     private ArrayList<DataBeanStudent> studentArray = new ArrayList<>();
@@ -188,6 +188,10 @@ public class AddLiveStream extends AppCompatActivity {
         userrType = settings.getString("userrType", "");
         userName = settings.getString("userName", "");
         restricted = settings.getString("restricted", "");
+
+        ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(this, R.layout.spinner_list_item1, subjects);
+        dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
+        subject_spinner.setAdapter(dataAdapter1);
 
         GetCourse getCourse = new GetCourse(this);
         getCourse.execute(userSchoolId);
@@ -350,6 +354,7 @@ public class AddLiveStream extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 ((TextView) adapterView.getChildAt(0)).setTextColor(getResources().getColor(R.color.text_gray));
                 if (!course_id[i].equals("0")) {
+                    strCourse = course_id[i];
                     GetAllBatches getAllBatches = new GetAllBatches(AddLiveStream.this);
                     getAllBatches.execute(course_id[i]);
                 }
@@ -584,7 +589,6 @@ public class AddLiveStream extends AppCompatActivity {
                     }
                     if (userrType.equals("Teacher")) {
                         String object = jsonRootObject.getString("RistrictedSubject");
-                        subject_array.add("Select Subject");
                         if (object.equals("null")) {
                             subject_array.addAll(Arrays.asList(subjects));
                         } else {
@@ -594,6 +598,8 @@ public class AddLiveStream extends AppCompatActivity {
                                 }
                             }
                         }
+                    } else {
+                        subject_array.addAll(Arrays.asList(subjects));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -668,10 +674,11 @@ public class AddLiveStream extends AppCompatActivity {
                 entityBuilder.addTextBody("schoolId", school_id);
                 entityBuilder.addTextBody("userId", userId);
                 entityBuilder.addTextBody("userType", userType);
+                entityBuilder.addTextBody("tbl_course_group_id", strCourse);
                 entityBuilder.addTextBody("description", desc);
                 entityBuilder.addTextBody("comments_enable_disable", strComment);
                 entityBuilder.addTextBody("streaming_on_off", strStream);
-                entityBuilder.addTextBody("subject_nm", subject);
+                entityBuilder.addTextBody("subject_name", subject);
                 HttpEntity entity = entityBuilder.build();
                 httppost.setEntity(entity);
                 HttpResponse response = httpclient.execute(httppost);

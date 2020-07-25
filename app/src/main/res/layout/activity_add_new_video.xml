@@ -38,7 +38,6 @@
                     android:id="@+id/tool_title"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:fontFamily="ROBOTO-REGULAR.TTF"
                     android:gravity="start|center"
                     android:text="Add New Video"
                     android:textAllCaps="false"
@@ -71,7 +70,6 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
-                    android:fontFamily="ROBOTO-REGULAR.TTF"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:text="Video Title*"
@@ -86,7 +84,6 @@
                     android:layout_marginTop="@dimen/_1sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:backgroundTint="@color/text_gray"
-                    android:fontFamily="ROBOTO-REGULAR.TTF"
                     android:gravity="start"
                     android:hint="Enter Video Title Here"
                     android:inputType="text"
@@ -102,10 +99,9 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
-                    android:fontFamily="ROBOTO-REGULAR.TTF"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
-                    android:text="Video Batch &amp; Subject*"
+                    android:text="Video Course*"
                     android:textColor="@color/black"
                     android:textSize="@dimen/siz12" />
 
@@ -125,29 +121,65 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_30sdp"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_5sdp"
                         android:orientation="horizontal">
 
-                        <EditText
-                            android:id="@+id/batch_spinner"
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:backgroundTint="@color/text_gray"
-                            android:focusable="false"
-                            android:gravity="start"
-                            android:hint="Select Batch"
-                            android:padding="5dp"
-                            android:textColor="@color/text_gray"
-                            android:textCursorDrawable="@drawable/cursor_color1" />
+                            android:layout_marginTop="@dimen/_1sdp"
+                            android:orientation="vertical">
 
-                        <Spinner
-                            android:id="@+id/subject_spinner"
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingStart="5dp"
+                                android:paddingEnd="5dp"
+                                android:text="Video Batch*"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/siz12" />
+
+                            <EditText
+                                android:id="@+id/batch_spinner"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_30sdp"
+                                android:backgroundTint="@color/text_gray"
+                                android:focusable="false"
+                                android:gravity="start"
+                                android:layout_marginTop="@dimen/_1sdp"
+                                android:hint="Select Batch"
+                                android:padding="5dp"
+                                android:textColor="@color/text_gray"
+                                android:textCursorDrawable="@drawable/cursor_color1" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="@dimen/_10sdp"
-                            android:layout_weight="1" />
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingStart="5dp"
+                                android:paddingEnd="5dp"
+                                android:text="Video Subject*"
+                                android:textColor="@color/black"
+                                android:layout_marginStart="@dimen/_10sdp"
+                                android:textSize="@dimen/siz12" />
+
+                            <Spinner
+                                android:id="@+id/subject_spinner"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_30sdp"
+                                android:layout_marginTop="@dimen/_1sdp"
+                                android:layout_marginStart="@dimen/_10sdp"/>
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -160,10 +192,9 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
-                    android:fontFamily="ROBOTO-REGULAR.TTF"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
-                    android:text="Video Description*"
+                    android:text="Video Description"
                     android:textColor="@color/black"
                     android:textSize="@dimen/siz12" />
 
@@ -189,7 +220,6 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
-                    android:fontFamily="ROBOTO-REGULAR.TTF"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:text="Visible From Date &amp; Time"
@@ -239,10 +269,9 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
-                    android:fontFamily="ROBOTO-REGULAR.TTF"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
-                    android:text="Visible Till Date &amp; Time"
+                    android:text="Visible Till Date &amp; Time (Leave empty to not restrict it.)"
                     android:textColor="@color/black"
                     android:textSize="@dimen/siz12" />
 
@@ -290,7 +319,6 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
-                    android:fontFamily="ROBOTO-REGULAR.TTF"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:text="Video URL*"
@@ -305,7 +333,6 @@
                     android:layout_marginTop="@dimen/_1sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:backgroundTint="@color/text_gray"
-                    android:fontFamily="ROBOTO-REGULAR.TTF"
                     android:gravity="start"
                     android:hint="Enter Video URL Here"
                     android:inputType="textUri"

@@ -107,6 +107,11 @@ public class GetHelp extends AppCompatActivity {
         String username = sp.getString("userName", "");
         String userphone = sp.getString("userPhone", "");
 
+        if (userType.equals("Guest")) {
+            name.setVisibility(View.VISIBLE);
+            phone.setVisibility(View.VISIBLE);
+        }
+
         send.setOnClickListener(v -> {
             mp.start();
             if (userType.equals("Guest")) {

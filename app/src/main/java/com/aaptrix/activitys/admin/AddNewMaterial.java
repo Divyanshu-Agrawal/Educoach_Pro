@@ -113,8 +113,8 @@ public class AddNewMaterial extends AppCompatActivity {
     MediaPlayer mp;
     CardView cardView;
     RelativeLayout layout;
-    CheckBox showToGuest, download;
-    String strShowToGuest = "0", strDownload = "1";
+    CheckBox download;
+    String strDownload = "1";
     GifImageView taskStatus;
     Spinner subject_spinner, course_spinner;
     String[] subjects = {"Select Subject"};
@@ -122,7 +122,7 @@ public class AddNewMaterial extends AppCompatActivity {
     String[] course_array = {"Select Course"};
     String[] course_id = {"0"};
     BatchListAdaptor batchListAdaptor;
-    String selsubject = "Select Subject";
+    String selsubject = "Select Subject", strCourse;
     AlertDialog.Builder alert;
     AlertDialog alertDialog;
     private ArrayList<DataBeanStudent> studentArray = new ArrayList<>();
@@ -133,7 +133,6 @@ public class AddNewMaterial extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_material);
         addImage = findViewById(R.id.sel_image);
         toolbar = findViewById(R.id.toolbar);
-        showToGuest = findViewById(R.id.show_to_guest);
         download = findViewById(R.id.download_permission);
         appBarLayout = findViewById(R.id.appBarLayout);
         setSupportActionBar(toolbar);
@@ -169,6 +168,10 @@ public class AddNewMaterial extends AppCompatActivity {
         GetCourse getCourse = new GetCourse(this);
         getCourse.execute(userSchoolId);
 
+        ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(this, R.layout.spinner_list_item1, subjects);
+        dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
+        subject_spinner.setAdapter(dataAdapter1);
+
         appBarLayout.setBackgroundColor(Color.parseColor(selToolColor));
         save.setBackgroundColor(Color.parseColor(selToolColor));
         save.setTextColor(Color.parseColor(selTextColor1));
@@ -191,13 +194,6 @@ public class AddNewMaterial extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.parseColor(selStatusColor));
         }
-
-        showToGuest.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked)
-                strShowToGuest = "1";
-            else
-                strShowToGuest = "0";
-        });
 
         download.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -442,6 +438,7 @@ public class AddNewMaterial extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 ((TextView) adapterView.getChildAt(0)).setTextColor(getResources().getColor(R.color.text_gray));
                 if (!course_id[i].equals("0")) {
+                    strCourse = course_id[i];
                     GetAllBatches getAllBatches = new GetAllBatches(AddNewMaterial.this);
                     getAllBatches.execute(course_id[i]);
                 }
@@ -676,7 +673,6 @@ public class AddNewMaterial extends AppCompatActivity {
                     }
                     if (userrType.equals("Teacher")) {
                         String object = jsonRootObject.getString("RistrictedSubject");
-                        subject_array.add("Select Subject");
                         if (object.equals("null")) {
                             subject_array.addAll(Arrays.asList(subjects));
                         } else {
@@ -686,6 +682,8 @@ public class AddNewMaterial extends AppCompatActivity {
                                 }
                             }
                         }
+                    } else {
+                        subject_array.addAll(Arrays.asList(subjects));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -789,9 +787,9 @@ public class AddNewMaterial extends AppCompatActivity {
                     entityBuilder.addTextBody("userSection", userSection);
                     entityBuilder.addTextBody("userId", userId);
                     entityBuilder.addTextBody("download_permission", strDownload);
-                    entityBuilder.addTextBody("show_to_guest", strShowToGuest);
                     entityBuilder.addTextBody("userType", userType);
-                    entityBuilder.addTextBody("subject_nm", subject);
+                    entityBuilder.addTextBody("tbl_course_group_id", strCourse);
+                    entityBuilder.addTextBody("subject_name", subject);
                     HttpEntity entity = entityBuilder.build();
                     httppost.setEntity(entity);
                     HttpResponse response = httpclient.execute(httppost);

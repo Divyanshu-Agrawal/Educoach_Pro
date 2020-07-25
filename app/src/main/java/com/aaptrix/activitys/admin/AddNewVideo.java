@@ -112,7 +112,7 @@ public class AddNewVideo extends AppCompatActivity {
     String[] course_array = {"Select Course"};
     String[] course_id = {"0"};
     BatchListAdaptor batchListAdaptor;
-    String selsubject = "Select Subject", strDate = "0000-00-00", strTime = "00:00:00", strStart = "0000-00-00", strstartTime = "00:00:00";
+    String selsubject = "Select Subject", strDate = "0000-00-00", strTime = "00:00:00", strStart = "0000-00-00", strstartTime = "00:00:00", strCourse;
     AlertDialog.Builder alert;
     EditText visibleDate, visibleTime, visibleFrom, visibleFromTime;
     AlertDialog alertDialog;
@@ -169,6 +169,10 @@ public class AddNewVideo extends AppCompatActivity {
 
         layout.setOnTouchListener((v, event) -> false);
 
+        ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(this, R.layout.spinner_list_item1, subjects);
+        dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
+        subject_spinner.setAdapter(dataAdapter1);
+
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
         selToolColor = settingsColor.getString("tool", "");
         selStatusColor = settingsColor.getString("status", "");
@@ -199,6 +203,10 @@ public class AddNewVideo extends AppCompatActivity {
         visibleFromTime.setEnabled(false);
 
         Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        visibleFrom.setText(format.format(calendar.getTime()));
+        format = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        visibleFromTime.setText(format.format(calendar.getTime()));
 
         visibleDate.setOnClickListener(v -> {
             final Calendar mcurrentDate = Calendar.getInstance();
@@ -237,6 +245,7 @@ public class AddNewVideo extends AppCompatActivity {
                 visibleFromTime.setEnabled(true);
                 calendar.setTime(mcurrentDate.getTime());
             }, mYear, mMonth, mDay);
+            mDatePicker.updateDate(mYear, mMonth, mDay);
             mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
             mDatePicker.show();
         });
@@ -264,6 +273,7 @@ public class AddNewVideo extends AppCompatActivity {
                 visibleFromTime.setText(selectedHour + ":" + selectedMinute);
             }, hour, minute, true);
             mTimePicker.setTitle("Select Time");
+            mTimePicker.updateTime(hour, minute);
             mTimePicker.show();
         });
 
@@ -404,6 +414,7 @@ public class AddNewVideo extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 ((TextView) adapterView.getChildAt(0)).setTextColor(getResources().getColor(R.color.text_gray));
                 if (!course_id[i].equals("0")) {
+                    strCourse = course_id[i];
                     GetAllBatches getAllBatches = new GetAllBatches(AddNewVideo.this);
                     getAllBatches.execute(course_id[i]);
                 }
@@ -621,6 +632,7 @@ public class AddNewVideo extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            Log.e("sub", result);
             if (result.equals("{\"SubjectList\":null}")) {
                 String[] subject_array = {"Select Subject"};
                 ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(ctx, R.layout.spinner_list_item1, subject_array);
@@ -638,7 +650,6 @@ public class AddNewVideo extends AppCompatActivity {
                     }
                     if (userrType.equals("Teacher")) {
                         String object = jsonRootObject.getString("RistrictedSubject");
-                        subject_array.add("Select Subject");
                         if (object.equals("null")) {
                             subject_array.addAll(Arrays.asList(subjects));
                         } else {
@@ -648,6 +659,8 @@ public class AddNewVideo extends AppCompatActivity {
                                 }
                             }
                         }
+                    } else {
+                        subject_array.addAll(Arrays.asList(subjects));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -733,7 +746,8 @@ public class AddNewVideo extends AppCompatActivity {
                 entityBuilder.addTextBody("userId", userId);
                 entityBuilder.addTextBody("userType", userType);
                 entityBuilder.addTextBody("description", desc);
-                entityBuilder.addTextBody("subject_nm", subject);
+                entityBuilder.addTextBody("subject_name", subject);
+                entityBuilder.addTextBody("tbl_course_group_id", strCourse);
                 entityBuilder.addTextBody("visible_till", strDate);
                 entityBuilder.addTextBody("visible_till_time", strTime);
                 entityBuilder.addTextBody("visible_start_date", strStart);
