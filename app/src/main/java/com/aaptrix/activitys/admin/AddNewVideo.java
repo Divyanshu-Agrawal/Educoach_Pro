@@ -256,8 +256,12 @@ public class AddNewVideo extends AppCompatActivity {
             int minute = mcurrentTime.get(Calendar.MINUTE);
             TimePickerDialog mTimePicker;
             mTimePicker = new TimePickerDialog(this, (timePicker, selectedHour, selectedMinute) -> {
-                strTime = selectedHour + ":" + selectedMinute;
-                visibleTime.setText(selectedHour + ":" + selectedMinute);
+                String min = String.valueOf(selectedMinute);
+                if (min.length() == 1) {
+                    min = "0" + selectedMinute;
+                }
+                strTime = selectedHour + ":" + min;
+                visibleTime.setText(selectedHour + ":" + min);
             }, hour, minute, true);
             mTimePicker.setTitle("Select Time");
             mTimePicker.show();
@@ -728,6 +732,11 @@ public class AddNewVideo extends AppCompatActivity {
             String desc = params[6];
             String subject = params[7];
 
+            Log.e("batch", studentArray1);
+            Log.e("sub", subject);
+            Log.e("course", strCourse);
+            Log.e("user id", userId);
+
             try {
                 SSLContext sslContext = SSLContexts.custom().useTLS().build();
                 SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
@@ -765,6 +774,7 @@ public class AddNewVideo extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            Log.e("res", result);
             if (result.contains("submitted")) {
                 cardView.setVisibility(View.VISIBLE);
                 new CountDownTimer(4000, 1000) {
