@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,7 +126,7 @@ public class VideoAdapter extends ArrayAdapter<VideosData> {
                     holder.subject.setVisibility(View.GONE);
             }
 
-            if (!objects.get(position).getDesc().equals("null")) {
+            if (objects.get(position).getDesc().length() > 1 && !objects.get(position).getDesc().equals("null")) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     holder.desc.setText(Html.fromHtml(objects.get(position).getDesc(), Html.FROM_HTML_MODE_COMPACT));
                 } else {

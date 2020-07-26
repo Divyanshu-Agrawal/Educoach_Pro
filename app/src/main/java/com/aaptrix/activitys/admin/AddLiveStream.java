@@ -579,6 +579,7 @@ public class AddLiveStream extends AppCompatActivity {
                 subject_spinner.setAdapter(dataAdapter1);
             } else {
                 try {
+                    subject_array.clear();
                     JSONObject jsonRootObject = new JSONObject(result);
                     JSONArray jsonArray = jsonRootObject.getJSONArray("SubjectList");
                     subjects = new String[jsonArray.length() + 1];
@@ -656,6 +657,9 @@ public class AddLiveStream extends AppCompatActivity {
             String userType = params[5];
             String desc = params[6];
             String subject = params[7];
+
+            Log.e("sub", subject);
+            Log.e("section", studentArray1);
 
             try {
                 SSLContext sslContext = SSLContexts.custom().useTLS().build();

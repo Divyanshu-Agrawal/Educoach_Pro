@@ -343,6 +343,9 @@ public class GenerateLead extends AppCompatActivity {
             String userName = params[0];
             String phone = params[1];
 
+            Log.e("correct", correct+"");
+            Log.e("time", time);
+
             try {
                 SSLContext sslContext = SSLContexts.custom().useTLS().build();
                 SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
@@ -360,7 +363,7 @@ public class GenerateLead extends AppCompatActivity {
                 entityBuilder.addTextBody("tbl_exam_id", examId);
                 entityBuilder.addTextBody("course", course);
                 entityBuilder.addTextBody("total_questions", totalQues);
-                entityBuilder.addTextBody("attempt_questions", correct + "");
+                entityBuilder.addTextBody("attempt_question", correct + "");
                 entityBuilder.addTextBody("wrong_questions", wrong + "");
                 entityBuilder.addTextBody("notattempt_questions", notAttempt + "");
                 entityBuilder.addTextBody("total_timing", time);

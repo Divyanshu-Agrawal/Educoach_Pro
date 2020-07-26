@@ -87,7 +87,7 @@ public class LiveStreaming extends AppCompatActivity {
     ImageView addVideo;
     String[] batch_array = {"All Batches"};
     Spinner batch_spinner;
-    String selBatch = "All Batches";
+    String selBatch = "All";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     String userId, userSchoolId, userRoleId, userrType, userSection, url, userName, restricted;
     ImageButton filter;
@@ -263,7 +263,7 @@ public class LiveStreaming extends AppCompatActivity {
                     selBatch = userSection;
                     batch_spinner.setVisibility(View.GONE);
                 } else {
-                    getVideos.execute(userSchoolId, "All", userrType);
+                    getVideos.execute(userSchoolId, selBatch, userrType);
                 }
             } else {
                 Toast.makeText(this, "No network Please connect with network for update", Toast.LENGTH_SHORT).show();
@@ -338,7 +338,7 @@ public class LiveStreaming extends AppCompatActivity {
                     JSONObject jo = new JSONObject(result);
                     JSONArray ja = jo.getJSONArray("result");
                     batch_array = new String[ja.length() + 1];
-                    selBatch = "All Batches";
+                    selBatch = "All";
                     batch_array[0] = "All Batches";
                     for (int i = 0; i < ja.length(); i++) {
                         jo = ja.getJSONObject(i);
@@ -369,7 +369,7 @@ public class LiveStreaming extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (batch_array[i].equals("All Batches")) {
-                    selBatch = "All Batches";
+                    selBatch = "All";
                     GetVideos getVideos = new GetVideos(LiveStreaming.this);
                     getVideos.execute(userSchoolId, "All", userrType);
                     GetSubject subject = new GetSubject(LiveStreaming.this);
@@ -709,6 +709,7 @@ public class LiveStreaming extends AppCompatActivity {
             } else {
                 try {
                     subject_array.clear();
+                    subject_array.add("All Subjects");
                     JSONObject jsonRootObject = new JSONObject(result);
                     JSONArray jsonArray = jsonRootObject.getJSONArray("SubjectList");
                     subjects = new String[jsonArray.length()];
@@ -718,7 +719,6 @@ public class LiveStreaming extends AppCompatActivity {
                     }
                     if (userrType.equals("Student")) {
                         String object = jsonRootObject.getString("DisableSubject");
-                        subject_array.add("All Subjects");
                         for (String subject : subjects) {
                             if (!object.contains(subject)) {
                                 subject_array.add(subject);
@@ -726,7 +726,6 @@ public class LiveStreaming extends AppCompatActivity {
                         }
                     } else if (userrType.equals("Teacher")) {
                         String object = jsonRootObject.getString("RistrictedSubject");
-                        subject_array.add("All Subjects");
                         if (object.equals("null")) {
                             subject_array.addAll(Arrays.asList(subjects));
                         } else {
@@ -737,7 +736,6 @@ public class LiveStreaming extends AppCompatActivity {
                             }
                         }
                     } else {
-                        subject_array.add("All Subjects");
                         subject_array.addAll(Arrays.asList(subjects));
                     }
                 } catch (JSONException e) {

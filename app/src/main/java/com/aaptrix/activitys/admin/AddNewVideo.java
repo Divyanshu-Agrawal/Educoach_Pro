@@ -654,6 +654,7 @@ public class AddNewVideo extends AppCompatActivity {
                 subject_spinner.setAdapter(dataAdapter1);
             } else {
                 try {
+                    subject_array.clear();
                     JSONObject jsonRootObject = new JSONObject(result);
                     JSONArray jsonArray = jsonRootObject.getJSONArray("SubjectList");
                     subjects = new String[jsonArray.length() + 1];

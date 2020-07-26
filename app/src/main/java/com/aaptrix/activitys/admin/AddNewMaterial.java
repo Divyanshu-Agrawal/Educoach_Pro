@@ -663,6 +663,7 @@ public class AddNewMaterial extends AppCompatActivity {
                 subject_spinner.setAdapter(dataAdapter1);
             } else {
                 try {
+                    subject_array.clear();
                     JSONObject jsonRootObject = new JSONObject(result);
                     JSONArray jsonArray = jsonRootObject.getJSONArray("SubjectList");
                     subjects = new String[jsonArray.length() + 1];
@@ -725,7 +726,7 @@ public class AddNewMaterial extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            Toast.makeText(ctx, "Please wait, adding activity entry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ctx, "Please wait, adding study material", Toast.LENGTH_SHORT).show();
             super.onPreExecute();
 
         }
@@ -765,10 +766,12 @@ public class AddNewMaterial extends AppCompatActivity {
                         String result = EntityUtils.toString(httpEntity);
                         JSONObject jsonObject = new JSONObject(result);
                         fileNames.add("\"" + jsonObject.getString("imageNm") + "\"");
+                        Log.e("file", jsonObject.getString("imageNm"));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
+                Log.e("file name", fileNames.toString());
                 try {
                     SSLContext sslContext = SSLContexts.custom().useTLS().build();
                     SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(

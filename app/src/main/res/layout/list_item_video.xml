@@ -55,6 +55,8 @@
                     android:id="@+id/videoImage"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_150sdp"
+                    android:layout_margin="@dimen/siz5"
+                    android:padding="7dp"
                     android:background="@color/black" />
 
                 <androidx.cardview.widget.CardView
@@ -108,26 +110,24 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/preview"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
                 android:gravity="center_vertical"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/siz16"
+                android:layout_marginRight="@dimen/siz10"
+                android:layout_marginLeft="@dimen/siz10"
+                android:textColor="@color/text_gray"
+                android:layout_marginBottom="@dimen/siz2"/>
 
             <TextView
                 android:id="@+id/video_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/light_gray1"
+                android:textSize="@dimen/siz14"
                 android:layout_below="@id/video_title"
-                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="@dimen/siz10"
                 android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:maxLines="2"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textColor="@color/black"
-                android:textSize="12sp" />
+                android:layout_marginRight="@dimen/siz10"
+                android:maxLines="2" />
 
             <TextView
                 android:id="@+id/video_subject"
@@ -137,8 +137,9 @@
                 android:background="@color/navi_black"
                 android:gravity="center"
                 android:padding="2dp"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
         </RelativeLayout>
 

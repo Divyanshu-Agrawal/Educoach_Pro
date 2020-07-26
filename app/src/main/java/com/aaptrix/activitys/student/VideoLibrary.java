@@ -95,7 +95,7 @@ public class VideoLibrary extends AppCompatActivity {
     ImageView addVideo;
     String[] batch_array = {"All Batches"};
     Spinner batch_spinner;
-    String selBatch = "All Batches";
+    String selBatch = "All";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     String userId, userSchoolId, userRoleId, userrType, userSection, url, userName, restricted;
     ImageButton filter;
@@ -290,7 +290,7 @@ public class VideoLibrary extends AppCompatActivity {
                     batch_spinner.setVisibility(View.GONE);
                 } else {
                     GetVideos getVideos = new GetVideos(this);
-                    getVideos.execute(userSchoolId, "All", userrType);
+                    getVideos.execute(userSchoolId, selBatch, userrType);
                 }
             } else {
                 Toast.makeText(this, "No network Please connect with network for update", Toast.LENGTH_SHORT).show();
@@ -365,7 +365,7 @@ public class VideoLibrary extends AppCompatActivity {
                     JSONObject jo = new JSONObject(result);
                     JSONArray ja = jo.getJSONArray("result");
                     batch_array = new String[ja.length() + 1];
-                    selBatch = "All Batches";
+                    selBatch = "All";
                     batch_array[0] = "All Batches";
                     for (int i = 0; i < ja.length(); i++) {
                         jo = ja.getJSONObject(i);
@@ -396,7 +396,7 @@ public class VideoLibrary extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (batch_array[i].equals("All Batches")) {
-                    selBatch = "All Batches";
+                    selBatch = "All";
                     GetVideos getVideos = new GetVideos(VideoLibrary.this);
                     getVideos.execute(userSchoolId, "All", userrType);
                     GetSubject subject = new GetSubject(VideoLibrary.this);
@@ -445,6 +445,7 @@ public class VideoLibrary extends AppCompatActivity {
 
             Log.e("user id", userId);
             Log.e("user batch", sectionName);
+            Log.e("restricted", restricted);
 
             try {
 
@@ -720,6 +721,7 @@ public class VideoLibrary extends AppCompatActivity {
                     intent.putExtra("url", arrayList.get(position).getUrl());
                     intent.putExtra("id", arrayList.get(position).getId());
                     intent.putExtra("desc", arrayList.get(position).getDesc());
+                    intent.putExtra("endDate", arrayList.get(position).getEnd());
                     if (!start.equals("0000-00-00 00:00:00")) {
                         if (calendar.getTime().equals(startdate) || (calendar.getTime().after(startdate))) {
                             startActivity(intent);

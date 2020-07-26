@@ -75,12 +75,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 public class VideoDetails extends AppCompatActivity {
 
-    String strTitle, url, id, strDesc;
-    TextView title, desc;
+    String strTitle, url, id, strDesc, strEnd;
+    TextView title, desc, endDate;
     AppBarLayout appBarLayout;
     String selToolColor, selStatusColor, selTextColor1, userrType, userSchoolId, rollNo;
     TextView tool_title;
@@ -129,6 +132,7 @@ public class VideoDetails extends AppCompatActivity {
         notice.bringToFront();
         yt_layout = findViewById(R.id.relative);
         exo_layout = findViewById(R.id.rel_layout);
+        endDate = findViewById(R.id.end_date);
 
         LoadControl loadControl = new DefaultLoadControl.Builder()
                 .setAllocator(new DefaultAllocator(true, 16))
@@ -163,6 +167,19 @@ public class VideoDetails extends AppCompatActivity {
         url = getIntent().getStringExtra("url");
         id = getIntent().getStringExtra("id");
         strDesc = getIntent().getStringExtra("desc");
+        strEnd = getIntent().getStringExtra("endDate");
+
+        if (!strEnd.equals("0000-00-00 00:00:00")) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
+                Date end = sdf.parse(strEnd);
+                sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm aa", Locale.getDefault());
+                endDate.setVisibility(View.VISIBLE);
+                endDate.setText("Visible Till : " + sdf.format(end));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         if (!strDesc.equals("null")) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

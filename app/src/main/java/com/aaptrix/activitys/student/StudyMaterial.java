@@ -85,7 +85,7 @@ public class StudyMaterial extends AppCompatActivity {
     String skip;
     String[] batch_array = {"All Batches"};
     Spinner batch_spinner;
-    String selBatch = "All Batches";
+    String selBatch = "All";
     String[] subjects;
     ArrayList<String> subject_array = new ArrayList<>();
     ArrayList<StudyMaterialData> studyMaterialArray = new ArrayList<>(), array = new ArrayList<>();
@@ -134,7 +134,7 @@ public class StudyMaterial extends AppCompatActivity {
                         JSONObject jo = new JSONObject(json);
                         JSONArray ja = jo.getJSONArray("result");
                         batch_array = new String[ja.length() + 1];
-                        selBatch = "All Batches";
+                        selBatch = "All";
                         batch_array[0] = "All Batches";
                         for (int i = 0; i < ja.length(); i++) {
                             jo = ja.getJSONObject(i);
@@ -237,7 +237,7 @@ public class StudyMaterial extends AppCompatActivity {
                     batch_spinner.setVisibility(View.GONE);
                 } else {
                     GetMaterial getMaterial = new GetMaterial(this);
-                    getMaterial.execute(userSchoolId, "All", userrType, "0");
+                    getMaterial.execute(userSchoolId, selBatch, userrType, "0");
                 }
             } else {
                 Toast.makeText(this, "No network Please connect with network for update", Toast.LENGTH_SHORT).show();
@@ -332,7 +332,7 @@ public class StudyMaterial extends AppCompatActivity {
                     JSONObject jo = new JSONObject(result);
                     JSONArray ja = jo.getJSONArray("result");
                     batch_array = new String[ja.length() + 1];
-                    selBatch = "All Batches";
+                    selBatch = "All";
                     batch_array[0] = "All Batches";
                     for (int i = 0; i < ja.length(); i++) {
                         jo = ja.getJSONObject(i);
@@ -363,7 +363,7 @@ public class StudyMaterial extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (batch_array[i].equals("All Batches")) {
-                    selBatch = "All Batches";
+                    selBatch = "All";
                     GetMaterial getMaterial = new GetMaterial(StudyMaterial.this);
                     getMaterial.execute(userSchoolId, "All", userrType, "0");
                     GetSubject subject = new GetSubject(StudyMaterial.this);
@@ -424,7 +424,8 @@ public class StudyMaterial extends AppCompatActivity {
                         URLEncoder.encode("userSection", "UTF-8") + "=" + URLEncoder.encode(userSection, "UTF-8") + "&" +
                         URLEncoder.encode("userrType", "UTF-8") + "=" + URLEncoder.encode(userrType, "UTF-8") + "&" +
                         URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
-                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8");
+                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8") + "&" +
+                        URLEncoder.encode("restricted_access", "UTF-8") + "=" + URLEncoder.encode(restricted, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);
@@ -691,7 +692,8 @@ public class StudyMaterial extends AppCompatActivity {
                 data = URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
                         URLEncoder.encode("batchArray", "UTF-8") + "=" + URLEncoder.encode(batchArray, "UTF-8") + "&" +
                         URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
-                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8");
+                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8") + "&" +
+                        URLEncoder.encode("restricted_access", "UTF-8") + "=" + URLEncoder.encode(restricted, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);
