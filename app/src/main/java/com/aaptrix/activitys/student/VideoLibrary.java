@@ -496,6 +496,8 @@ public class VideoLibrary extends AppCompatActivity {
             mSwipeRefreshLayout.setRefreshing(false);
             listView.setEnabled(true);
             try {
+                array.clear();
+                videosArray.clear();
                 Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
                 JSONObject jsonRootObject = new JSONObject(result);
@@ -606,6 +608,7 @@ public class VideoLibrary extends AppCompatActivity {
             } else {
                 listItems("All Subjects", disable);
                 listView.setVisibility(View.VISIBLE);
+                noVideos.setVisibility(View.GONE);
             }
             super.onPostExecute(result);
         }

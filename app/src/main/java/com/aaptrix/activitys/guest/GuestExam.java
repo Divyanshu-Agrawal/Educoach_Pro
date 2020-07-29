@@ -63,7 +63,7 @@ public class GuestExam extends AppCompatActivity {
     private TextView noExam;
     String[] batch_array;
     Spinner batch_spinner;
-    String selBatch = "All", schoolId;
+    String schoolId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

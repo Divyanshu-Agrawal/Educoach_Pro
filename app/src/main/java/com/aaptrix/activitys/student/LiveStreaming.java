@@ -464,6 +464,8 @@ public class LiveStreaming extends AppCompatActivity {
         protected void onPostExecute(String result) {
             Log.e("res", result);
             try {
+                array.clear();
+                videosArray.clear();
                 JSONObject jsonRootObject = new JSONObject(result);
                 if (!result.contains("\"result\":null")) {
                     JSONArray jsonArray = jsonRootObject.getJSONArray("result");

@@ -85,8 +85,8 @@ android {
                     appIcon: "@mipmap/ic_launcher",
                     appIconRound: "@mipmap/ic_launcher_round"
             ]
-            versionCode 7
-            versionName "v1.0.5"
+            versionCode 8
+            versionName "v1.0.6"
             signingConfig signingConfigs.demo
         }
 
@@ -101,8 +101,8 @@ android {
                     appIcon: "@mipmap/ic_launcher",
                     appIconRound: "@mipmap/ic_launcher_round"
             ]
-            versionCode 35
-            versionName "v2.1.5"
+            versionCode 36
+            versionName "v2.1.6"
             signingConfig signingConfigs.npc
         }
 

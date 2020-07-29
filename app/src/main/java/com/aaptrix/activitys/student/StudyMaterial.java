@@ -458,6 +458,8 @@ public class StudyMaterial extends AppCompatActivity {
             mSwipeRefreshLayout.setRefreshing(false);
             listView.setEnabled(true);
             try {
+                array.clear();
+                studyMaterialArray.clear();
                 JSONObject jsonRootObject = new JSONObject(result);
                 if (!result.contains("\"result\":null")) {
                     JSONArray jsonArray = jsonRootObject.getJSONArray("result");
