@@ -351,6 +351,60 @@
                             android:background="@color/bg_gray" />
 
                         <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="8"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_30sdp"
+                                android:layout_weight="1"
+                                android:src="@drawable/whatsapp_icon"
+                                android:id="@+id/view_whatsapp"
+                                android:padding="5dp"/>
+
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_30sdp"
+                                android:layout_weight="1"
+                                android:id="@+id/view_facebook"
+                                android:src="@drawable/facebook_icon"
+                                android:padding="5dp"/>
+
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_30sdp"
+                                android:layout_weight="1"
+                                android:id="@+id/view_twitter"
+                                android:src="@drawable/twitter_icon"
+                                android:padding="5dp"/>
+
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_30sdp"
+                                android:layout_weight="1"
+                                android:id="@+id/view_instagram"
+                                android:src="@drawable/instagram"
+                                android:padding="8dp"/>
+
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_30sdp"
+                                android:layout_weight="1"
+                                android:id="@+id/view_pinteresr"
+                                android:src="@drawable/pinterest"
+                                android:padding="8dp"/>
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp"
+                            android:background="@color/bg_gray" />
+
+                        <LinearLayout
                             android:id="@+id/mapLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

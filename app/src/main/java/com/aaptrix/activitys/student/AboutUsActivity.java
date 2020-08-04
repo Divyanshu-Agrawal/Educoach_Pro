@@ -105,6 +105,7 @@ public class AboutUsActivity extends AppCompatActivity implements BaseSliderView
     SharedPreferences sp;
     LinearLayout share;
     TextView cusineTitle, facilities;
+    ImageView whatsapp, instagram, facebook, pinterest, twitter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +122,11 @@ public class AboutUsActivity extends AppCompatActivity implements BaseSliderView
         cusineTitle = findViewById(R.id.cuisine_title);
         seperater = findViewById(R.id.seperater);
         sp = this.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        whatsapp = findViewById(R.id.view_whatsapp);
+        facebook = findViewById(R.id.view_facebook);
+        instagram = findViewById(R.id.view_instagram);
+        twitter = findViewById(R.id.view_twitter);
+        pinterest = findViewById(R.id.view_pinteresr);
 
         facilities.setText("Courses Offered");
 
