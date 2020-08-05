@@ -66,11 +66,7 @@ public class GalleryDetailAdapter extends ArrayAdapter<String> {
 
 	@Override
 	public int getViewTypeCount() {
-		if (getCount() < 1) {
-			return 1;
-		} else {
-			return getCount();
-		}
+		return Math.max(getCount(), 1);
 	}
 	@Override
 	public int getItemViewType(int position) {

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aaptrix.R;
+import com.aaptrix.adaptor.GalleryDetailAdapter;
 import com.aaptrix.databeans.VideosData;
 import com.google.android.material.appbar.AppBarLayout;
 import com.squareup.picasso.Picasso;
@@ -493,8 +496,57 @@ public class StudentVideo extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                setSubject();
                 super.onPostExecute(result);
             }
+        }
+    }
+
+    private void setSubject() {
+        SubjectAdapter adapter = new SubjectAdapter(this, R.layout.list_subject, subject_array);
+    }
+
+    static class SubjectAdapter extends ArrayAdapter<String> {
+
+        private ArrayList<String> objects;
+        private Activity context;
+        private int resource;
+
+        public SubjectAdapter(Activity context, int resource, ArrayList<String> objects) {
+            super(context, resource, objects);
+            this.objects = objects;
+            this.context = context;
+            this.resource = resource;
+        }
+
+        private static class ViewHolder {
+            TextView subject;
+        }
+
+        @SuppressLint("ViewHolder")
+        @NonNull
+        @Override
+        public View getView(int position, View view, @NonNull ViewGroup parent) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            assert inflater != null;
+            view = inflater.inflate(resource, null);
+            ViewHolder holder = new ViewHolder();
+            holder.subject = view.findViewById(R.id.subject);
+            view.setTag(holder);
+
+            if (objects != null) {
+                holder.subject.setText(objects.get(position));
+            }
+            return view;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return Math.max(getCount(), 1);
+        }
+        @Override
+        public int getItemViewType(int position) {
+            return position;
         }
     }
 
