@@ -22,6 +22,7 @@ import com.aaptrix.activitys.student.GalleryActivity;
 import com.aaptrix.activitys.student.HomeworkActivity;
 import com.aaptrix.activitys.student.PublicationActivity;
 import com.aaptrix.activitys.student.StudentTimeTableActivity;
+import com.aaptrix.activitys.student.StudentVideo;
 import com.aaptrix.activitys.student.StudyMaterial;
 import com.aaptrix.activitys.student.VideoLibrary;
 import com.aaptrix.activitys.teacher.SchoolCalenderActivity;
@@ -76,15 +77,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             nb.setSmallIcon(R.drawable.notification_icon);
             nb.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
             nb.setLights(Color.RED, 3000, 3000);
-//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//                int importance = NotificationManager.IMPORTANCE_HIGH;
-//                NotificationChannel notificationChannel = new NotificationChannel("00", "App Notification", importance);
-//                notificationChannel.enableLights(true);
-//                notificationChannel.setLightColor(Color.RED);
-//                notificationChannel.enableVibration(true);
-//                notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400});
-//                nb.setChannelId("00");
-//                notificationManager.createNotificationChannel(notificationChannel);
 //            }
 
             Intent intent;
@@ -120,7 +112,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
                 break;
                 case "Study Video": {
-                    intent = new Intent(this, VideoLibrary.class);
+                    if (userType.equals("Student")) {
+                        intent = new Intent(this, StudentVideo.class);
+                    } else {
+                        intent = new Intent(this, VideoLibrary.class);
+                        intent.putExtra("sub", "All");
+                    }
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                         nb.setChannelId("03");
                         notifChannel("Study Video", "03", notificationManager);

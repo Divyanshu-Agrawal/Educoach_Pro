@@ -51,7 +51,7 @@
                     android:layout_toStartOf="@id/filter"
                     android:id="@+id/live_video"
                     android:gravity="center"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:orientation="vertical">
 
                     <androidx.cardview.widget.CardView
@@ -92,11 +92,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:fontFamily="ROBOTO-REGULAR.TTF"
         android:gravity="center"
         android:text="No Videos"
         android:textSize="30sp"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <Spinner
         android:id="@+id/batch_spinner"

@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -99,7 +100,7 @@ public class VideoLibrary extends AppCompatActivity {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     String userId, userSchoolId, userRoleId, userrType, userSection, url, userName, restricted;
     ImageButton filter;
-    private String selSubject = "All Subjects", disable;
+    private String selSubject = "All", disable;
     LinearLayout liveVideo;
 
     @Override
@@ -122,6 +123,8 @@ public class VideoLibrary extends AppCompatActivity {
         liveVideo = findViewById(R.id.live_video);
         mSwipeRefreshLayout.setRefreshing(false);
         listView.setEnabled(true);
+
+        selSubject = getIntent().getStringExtra("sub");
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
         selToolColor = settingsColor.getString("tool", "");
@@ -237,13 +240,14 @@ public class VideoLibrary extends AppCompatActivity {
             }
         });
 
-        if (userrType.equals("Student")) {
-            String section = "[{\"userName\":\"" + userSection + "\"}]";
-            GetSubject subject = new GetSubject(this);
-            subject.execute(userSchoolId, section);
-        } else {
+        if (!userrType.equals("Student")) {
             GetSubject subject = new GetSubject(this);
             subject.execute(userSchoolId, "All");
+        } else {
+            filter.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)liveVideo.getLayoutParams();
+            params.addRule(RelativeLayout.ALIGN_PARENT_END);
+            liveVideo.setLayoutParams(params);
         }
 
         filter.setOnClickListener(v -> {
@@ -283,13 +287,12 @@ public class VideoLibrary extends AppCompatActivity {
                 listView.setEnabled(false);
                 array.clear();
                 videosArray.clear();
+                GetVideos getVideos = new GetVideos(this);
                 if (userrType.equals("Student")) {
-                    GetVideos getVideos = new GetVideos(this);
                     getVideos.execute(userSchoolId, userSection, userrType);
                     selBatch = userSection;
                     batch_spinner.setVisibility(View.GONE);
                 } else {
-                    GetVideos getVideos = new GetVideos(this);
                     getVideos.execute(userSchoolId, selBatch, userrType);
                 }
             } else {
@@ -601,14 +604,12 @@ public class VideoLibrary extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (videosArray.size() == 0) {
+            if (videosArray.size() > 0) {
+                listItems(selSubject, disable);
+            } else {
                 noVideos.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.GONE);
                 mSwipeRefreshLayout.setRefreshing(false);
-            } else {
-                listItems("All Subjects", disable);
-                listView.setVisibility(View.VISIBLE);
-                noVideos.setVisibility(View.GONE);
             }
             super.onPostExecute(result);
         }
@@ -620,7 +621,7 @@ public class VideoLibrary extends AppCompatActivity {
 
         ArrayList<String> ids = new ArrayList<>();
         if (!userrType.equals("Student")) {
-            if (subject.equals("All Subjects")) {
+            if (subject.equals("All")) {
                 for (int i = 0; i < videosArray.size(); i++) {
                     if (!ids.contains(videosArray.get(i).getId())) {
                         ids.add(videosArray.get(i).getId());
@@ -652,7 +653,7 @@ public class VideoLibrary extends AppCompatActivity {
                 }
             }
         } else {
-            if (subject.equals("All Subjects")) {
+            if (subject.equals("All")) {
                 for (int i = 0; i < videosArray.size(); i++) {
                     if (!ids.contains(videosArray.get(i).getId())) {
                         ids.add(videosArray.get(i).getId());
@@ -685,12 +686,12 @@ public class VideoLibrary extends AppCompatActivity {
             }
         }
 
-        if (arrayList.size() == 0) {
-            noVideos.setVisibility(View.VISIBLE);
-            listView.setVisibility(View.GONE);
-        } else {
+        if (arrayList.size() > 0) {
             noVideos.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
+        } else {
+            noVideos.setVisibility(View.VISIBLE);
+            listView.setVisibility(View.GONE);
         }
 
         Collections.sort(arrayList, (o1, o2) -> {
@@ -954,7 +955,7 @@ public class VideoLibrary extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if (!result.isEmpty()) {
-                startActivity(new Intent(ctx, VideoLibrary.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                startActivity(new Intent(ctx, VideoLibrary.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).putExtra("sub", "All"));
             } else {
                 Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();
             }

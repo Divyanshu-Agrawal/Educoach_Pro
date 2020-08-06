@@ -238,7 +238,7 @@ public class ActivitiesActivity extends AppCompatActivity {
         iv_add_more_activities.setOnClickListener(view -> {
             if (isInternetOn()) {
                 Intent i = new Intent(ActivitiesActivity.this, IntermidiateScreenActivityPublication.class);
-                i.putExtra("str_tool_title", "Add Activity");
+                i.putExtra("str_tool_title", "Add Announcement");
                 startActivity(i);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             } else {
@@ -365,11 +365,10 @@ public class ActivitiesActivity extends AppCompatActivity {
                 ((TextView) adapterView.getChildAt(0)).setTextColor(getResources().getColor(R.color.text_gray));
                 if (batch_array[i].equals("All Batches")) {
                     selBatch = "All Batches";
-                    listItms(selBatch);
                 } else {
                     selBatch = batch_array[i];
-                    listItms(selBatch);
                 }
+                listItms(selBatch);
             }
 
             @Override

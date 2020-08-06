@@ -198,7 +198,7 @@ public class IntermidiateScreenActivityPublication extends AppCompatActivity {
         view1.setOnClickListener(view -> {
             mp.start();
             String studentArray1 = sp_dairy.getString("studentArray", "");
-            if ("Add Activity".equals(str_tool_title)) {
+            if ("Add Announcement".equals(str_tool_title)) {
                 if (!studentArray1.isEmpty()) {
                     Intent intent = new Intent(this, AddNewActivity.class);
                     intent.putExtra("type", "add");

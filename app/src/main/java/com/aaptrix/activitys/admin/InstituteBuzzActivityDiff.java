@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
@@ -47,6 +48,7 @@ import com.aaptrix.activitys.MobileNumberActivity;
 import com.aaptrix.activitys.guest.GuestMaterial;
 import com.aaptrix.activitys.guest.GuestVideo;
 import com.aaptrix.activitys.student.HomeworkActivity;
+import com.aaptrix.activitys.student.InstituteBuzzActivity;
 import com.aaptrix.activitys.student.LiveStreaming;
 import com.aaptrix.activitys.student.OnlineExam;
 import com.aaptrix.activitys.student.PublicationActivity;
@@ -62,7 +64,9 @@ import com.aaptrix.activitys.teacher.TeacherDairyActivity;
 
 import androidx.annotation.NonNull;
 
+import com.aaptrix.adaptor.ActivityAdapter;
 import com.aaptrix.adaptor.CustomSliderView;
+import com.aaptrix.databeans.DataBeanActivities;
 import com.aaptrix.databeans.PermissionData;
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.Indicators.PagerIndicator;
@@ -81,6 +85,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -170,6 +177,7 @@ import id.zelory.compressor.Compressor;
 import static com.aaptrix.activitys.SplashScreen.SCHOOL_ID;
 import static com.aaptrix.activitys.SplashScreen.SCHOOL_NAME;
 import static com.aaptrix.tools.HttpUrl.ABOUT_SCHOOL_INFO;
+import static com.aaptrix.tools.HttpUrl.ALL_ACTIVITIES;
 import static com.aaptrix.tools.HttpUrl.ALL_INSTITUTE_BUZZ_CATE;
 import static com.aaptrix.tools.HttpUrl.GET_PERMISSION;
 import static com.aaptrix.tools.HttpUrl.SWITCH_USERS;
@@ -233,6 +241,10 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
     CardView getMoreInfo, sliderCard;
     private String[] image;
     String instPhone;
+    RecyclerView announcements;
+    CardView announceCard;
+    ArrayList<DataBeanActivities> activitiesArray = new ArrayList<>();
+    int pos = 0;
 
     @SuppressLint({"SetTextI18n", "HardwareIds"})
     @Override
@@ -252,6 +264,16 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         appBarLayout = findViewById(R.id.appBarLayout);
         tool_title = findViewById(R.id.tool_title);
         mp = MediaPlayer.create(this, R.raw.button_click);
+
+        announceCard = findViewById(R.id.announce_card);
+        announcements = findViewById(R.id.announcement);
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        announcements.setLayoutManager(mLayoutManager);
+        announcements.setNestedScrollingEnabled(false);
+        announcements.setHasFixedSize(true);
+        announcements.setLayoutFrozen(true);
+        announcements.setItemAnimator(new DefaultItemAnimator());
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
         selToolColor = settingsColor.getString("tool", "");
@@ -318,6 +340,14 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         userType = settings.getString("userrType", "");
         userSchoolSchoolLogo3 = settings.getString("userSchoolLogo1", "");
         userEmailId = settings.getString("userEmailId", "");
+
+        if (!userrType.equals("Guest")) {
+            GetAllActivities b = new GetAllActivities(this);
+            b.execute(userSchoolId, "All Batches", userrType);
+        } else {
+            announceCard.setVisibility(View.GONE);
+            tv_today_day_date.setVisibility(View.VISIBLE);
+        }
 
         if (!userrType.equals("Guest")) {
             RateThisApp.onStart(this);
@@ -395,7 +425,6 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
             ArrayList<String> name = new ArrayList<>();
             name.add("About Us");
             name.add("Institute Calendar");
-            name.add("Activities");
             name.add("What's New!");
             name.add("Attendance");
             name.add("Remarks");
@@ -586,6 +615,128 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         header_name.setTextColor(Color.parseColor(selTextColor1));
         mNavigationView.setItemTextColor(ColorStateList.valueOf(Color.parseColor(selTextColor1)));
         tv_today_day_date.setTextColor(Color.parseColor(selTextColor1));
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public class GetAllActivities extends AsyncTask<String, String, String> {
+        Context ctx;
+
+        GetAllActivities(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String schoolId = params[0];
+            String userSection = params[1];
+            String userrType = params[2];
+            String data;
+
+            try {
+                URL url = new URL(ALL_ACTIVITIES);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
+                data = URLEncoder.encode("schoolId", "UTF-8") + "=" + URLEncoder.encode(schoolId, "UTF-8") + "&" +
+                        URLEncoder.encode("userSection", "UTF-8") + "=" + URLEncoder.encode(userSection, "UTF-8") + "&" +
+                        URLEncoder.encode("userrType", "UTF-8") + "=" + URLEncoder.encode(userrType, "UTF-8");
+                outputStream.write(data.getBytes());
+
+                bufferedWriter.write(data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.flush();
+                outputStream.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+
+                    response.append(line);
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                return response.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.e("ACHIVE", "" + result);
+            if (result.equals("{\"result\":null}")) {
+                announceCard.setVisibility(View.GONE);
+                tv_today_day_date.setVisibility(View.VISIBLE);
+            } else {
+                try {
+                    JSONObject jsonRootObject = new JSONObject(result);
+                    JSONArray jsonArray = jsonRootObject.getJSONArray("result");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        DataBeanActivities dbact = new DataBeanActivities();
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        dbact.setActiviId(jsonObject.getString("tbl_school_activities_id"));
+                        dbact.setActiviTitle(jsonObject.getString("tbl_school_activities_title"));
+                        activitiesArray.add(dbact);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (activitiesArray.size() != 0) {
+                    setAnnouncements();
+                } else {
+                    announceCard.setVisibility(View.GONE);
+                    tv_today_day_date.setVisibility(View.VISIBLE);
+                }
+            }
+            super.onPostExecute(result);
+        }
+    }
+
+    private void setAnnouncements() {
+        ActivityAdapter adapter = new ActivityAdapter(this, R.layout.list_announcement, activitiesArray);
+        announcements.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        new CountDownTimer(4000, 4000) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                if (pos == activitiesArray.size())
+                    pos = 0;
+                announcements.smoothScrollToPosition(pos);
+                pos++;
+                start();
+            }
+        }.start();
+
+        announceCard.setOnClickListener(v -> {
+            mp.start();
+            Intent i = new Intent(this, ActivitiesActivity.class);
+            startActivity(i);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
     }
 
     private void setImages() {
@@ -1060,7 +1211,6 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                     ArrayList<String> name = new ArrayList<>();
                     name.add("About Us");
                     name.add("Institute Calendar");
-                    name.add("Activities");
                     name.add("What's New!");
                     name.add("Attendance");
                     name.add("Remarks");
@@ -1264,6 +1414,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         } else {
                             Intent i = new Intent(InstituteBuzzActivityDiff.this, VideoLibrary.class);
+                            i.putExtra("sub", "All");
                             startActivity(i);
                             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         }

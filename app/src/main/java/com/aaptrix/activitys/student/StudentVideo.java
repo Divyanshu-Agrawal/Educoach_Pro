@@ -31,6 +31,7 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,13 +80,12 @@ public class StudentVideo extends AppCompatActivity {
     String selToolColor, selStatusColor, selTextColor1;
     TextView tool_title, noVideos;
     SharedPreferences sp;
-    LinearLayout add_layout;
     String[] subjects;
     ArrayList<String> subject_array = new ArrayList<>();
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     String userId, userSchoolId, userRoleId, userrType, userSection, url, userName, restricted;
     LinearLayout liveVideo;
     GridView subjectGrid;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,11 +99,9 @@ public class StudentVideo extends AppCompatActivity {
         tool_title = findViewById(R.id.tool_title);
         recyclerView = findViewById(R.id.video_list);
         noVideos = findViewById(R.id.no_videos);
-        mSwipeRefreshLayout = findViewById(R.id.activity_main_swipe_refresh_layout);
-        add_layout = findViewById(R.id.add_layout);
         liveVideo = findViewById(R.id.live_video);
         subjectGrid = findViewById(R.id.subject_grid);
-        mSwipeRefreshLayout.setRefreshing(false);
+        progressBar = findViewById(R.id.progress);
         recyclerView.setEnabled(true);
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
@@ -120,6 +118,9 @@ public class StudentVideo extends AppCompatActivity {
         userName = sp.getString("userName", "");
         restricted = sp.getString("restricted", "");
 
+        GetVideos getVideos = new GetVideos(this);
+        getVideos.execute(userSchoolId, userSection, userrType);
+
         url = sp.getString("imageUrl", "") + userSchoolId + "/InstituteVideo/";
 
         appBarLayout.setBackgroundColor(Color.parseColor(selToolColor));
@@ -128,8 +129,6 @@ public class StudentVideo extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.parseColor(selStatusColor));
         }
-        GradientDrawable bgShape = (GradientDrawable) add_layout.getBackground();
-        bgShape.setColor(Color.parseColor(selToolColor));
         tool_title.setTextColor(Color.parseColor(selTextColor1));
 
         SharedPreferences preferences = getSharedPreferences(PREFS_RW, 0);
@@ -162,21 +161,6 @@ public class StudentVideo extends AppCompatActivity {
         GetSubject subject = new GetSubject(this);
         subject.execute(userSchoolId, section);
 
-        mSwipeRefreshLayout.setOnRefreshListener(() -> {
-            if (isInternetOn()) {
-                mSwipeRefreshLayout.setRefreshing(true);
-                recyclerView.setEnabled(false);
-                array.clear();
-                videosArray.clear();
-                GetVideos getVideos = new GetVideos(this);
-                getVideos.execute(userSchoolId, userSection, userrType);
-            } else {
-                Toast.makeText(this, "No network Please connect with network for update", Toast.LENGTH_SHORT).show();
-                mSwipeRefreshLayout.setRefreshing(false);
-                recyclerView.setEnabled(true);
-            }
-        });
-
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setNestedScrollingEnabled(false);
@@ -196,8 +180,8 @@ public class StudentVideo extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             videosArray.clear();
-            mSwipeRefreshLayout.setRefreshing(true);
             recyclerView.setEnabled(false);
+            progressBar.setVisibility(View.VISIBLE);
             array.clear();
             super.onPreExecute();
         }
@@ -256,7 +240,6 @@ public class StudentVideo extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             Log.e("res", result);
-            mSwipeRefreshLayout.setRefreshing(false);
             recyclerView.setEnabled(true);
             try {
                 array.clear();
@@ -351,11 +334,12 @@ public class StudentVideo extends AppCompatActivity {
             if (videosArray.size() == 0) {
                 noVideos.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.GONE);
-                mSwipeRefreshLayout.setRefreshing(false);
+                subjectGrid.setVisibility(View.GONE);
             } else {
                 listItems();
                 recyclerView.setVisibility(View.VISIBLE);
                 noVideos.setVisibility(View.GONE);
+                subjectGrid.setVisibility(View.VISIBLE);
             }
             super.onPostExecute(result);
         }
@@ -381,6 +365,8 @@ public class StudentVideo extends AppCompatActivity {
             }
         }
 
+        progressBar.setVisibility(View.GONE);
+
         if (arrayList.size() == 0) {
             noVideos.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
@@ -405,8 +391,6 @@ public class StudentVideo extends AppCompatActivity {
         StudentVideoAdapter adapter = new StudentVideoAdapter(this, R.layout.list_video, arrayList);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -475,7 +459,7 @@ public class StudentVideo extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if (result.equals("{\"SubjectList\":null}")) {
-                subject_array.add("All Subjects");
+                subject_array.add("All");
             } else {
                 try {
                     subject_array.clear();
@@ -487,7 +471,7 @@ public class StudentVideo extends AppCompatActivity {
                         subjects[i] = jsonObject.getString("tbl_batch_subjct_name");
                     }
                     String object = jsonRootObject.getString("DisableSubject");
-                    subject_array.add("All Subjects");
+                    subject_array.add("All");
                     for (String subject : subjects) {
                         if (!object.contains(subject)) {
                             subject_array.add(subject);
@@ -504,6 +488,8 @@ public class StudentVideo extends AppCompatActivity {
 
     private void setSubject() {
         SubjectAdapter adapter = new SubjectAdapter(this, R.layout.list_subject, subject_array);
+        subjectGrid.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     static class SubjectAdapter extends ArrayAdapter<String> {
@@ -534,8 +520,18 @@ public class StudentVideo extends AppCompatActivity {
             holder.subject = view.findViewById(R.id.subject);
             view.setTag(holder);
 
+            view.setOnClickListener(v -> {
+                Log.e("sub", objects.get(position));
+                Intent intent = new Intent(context, VideoLibrary.class);
+                intent.putExtra("sub", objects.get(position));
+                context.startActivity(intent);
+            });
+
             if (objects != null) {
-                holder.subject.setText(objects.get(position));
+                if (objects.get(position).equals("All")) {
+                    holder.subject.setText("All Subjects");
+                } else
+                    holder.subject.setText(objects.get(position));
             }
             return view;
         }
@@ -544,6 +540,7 @@ public class StudentVideo extends AppCompatActivity {
         public int getViewTypeCount() {
             return Math.max(getCount(), 1);
         }
+
         @Override
         public int getItemViewType(int position) {
             return position;

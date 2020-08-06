@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/image_gallery_grid"
-        android:layout_width="@dimen/_90sdp"
-        android:layout_height="@dimen/_90sdp"
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_80sdp"
         android:scaleType="centerCrop"
         android:src="@drawable/folder"
         android:padding="20dp"/>
@@ -19,7 +19,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/subject"
         android:textSize="14sp"
-        android:padding="5dp"
         android:gravity="center"/>
 
 </LinearLayout>

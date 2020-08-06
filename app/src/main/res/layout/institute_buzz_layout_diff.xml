@@ -55,7 +55,6 @@
                                     android:id="@+id/tool_title"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:fontFamily="ROBOTO-REGULAR.TTF"
                                     android:gravity="start|center"
                                     android:text="@string/app_name"
                                     android:textAllCaps="false"
@@ -204,7 +203,6 @@
                             android:id="@+id/tvID"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="ROBOTO-REGULAR.TTF"
                             android:text="Name "
                             android:textColor="@color/orange"
                             android:textSize="@dimen/siz12" />
@@ -214,7 +212,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
-                            android:fontFamily="ROBOTO-REGULAR.TTF"
                             android:lines="1"
                             android:text="Name : "
                             android:textColor="@color/text_gray"
@@ -234,7 +231,6 @@
                             android:id="@+id/tvCLSTEACH"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="ROBOTO-REGULAR.TTF"
                             android:text="Registered Number"
                             android:textColor="@color/orange"
                             android:textSize="@dimen/siz12" />
@@ -243,7 +239,6 @@
                             android:id="@+id/tv_std_cls_teacher"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="ROBOTO-REGULAR.TTF"
                             android:text="Number"
                             android:textColor="@color/text_gray"
                             android:textSize="16sp" />
@@ -266,13 +261,57 @@
                 android:layout_height="45dp"
                 android:layout_weight="0.5"
                 android:background="@color/orange"
-                android:fontFamily="ROBOTO-REGULAR.TTF"
                 android:gravity="center"
                 android:padding="@dimen/siz10"
                 android:text="Today's Date and Day"
                 android:textColor="@color/white"
                 android:textSize="@dimen/siz16"
+                android:visibility="gone"
                 android:textStyle="normal" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/announce_card"
+                android:layout_marginStart="@dimen/siz5"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/siz5"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:background="@color/white"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0.0px"
+                android:elevation="8dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp"
+                app:cardPreventCornerOverlap="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginTop="5dp"
+                        android:id="@+id/announcement"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="View More..."
+                        android:gravity="end"
+                        android:layout_marginBottom="2dp"
+                        android:paddingEnd="10dp"
+                        android:paddingStart="10dp"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
 
         <LinearLayout
@@ -290,9 +329,6 @@
                     android:id="@+id/institue_lv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/siz5"
-                    android:layout_marginRight="@dimen/siz5"
-                    android:layout_marginBottom="@dimen/siz5"
                     android:columnWidth="100dp"
                     android:divider="@null"
                     android:dividerHeight="0dp"

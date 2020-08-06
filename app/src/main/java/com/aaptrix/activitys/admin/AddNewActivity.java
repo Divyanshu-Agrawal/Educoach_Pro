@@ -127,7 +127,7 @@ public class AddNewActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         appBarLayout = findViewById(R.id.appBarLayout);
         setSupportActionBar(toolbar);
-        setTitle("Add Activity");
+        setTitle("Add Announcement");
         setResult(RESULT_OK);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -193,7 +193,7 @@ public class AddNewActivity extends AppCompatActivity {
         layout.setOnTouchListener((v, event) -> false);
 
         if (type.equals("update")) {
-            setTitle("Update Activity");
+            setTitle("Update Announcement");
             strTitle = getIntent().getStringExtra("title");
             strDesc = getIntent().getStringExtra("description");
             strDate = getIntent().getStringExtra("date");
@@ -456,7 +456,7 @@ public class AddNewActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            Toast.makeText(ctx, "Please wait, adding activity entry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ctx, "Please wait, adding announcement entry", Toast.LENGTH_SHORT).show();
             super.onPreExecute();
 
         }
@@ -667,7 +667,7 @@ public class AddNewActivity extends AppCompatActivity {
 
                     @Override
                     public void onFinish() {
-                        startActivity(new Intent(AddNewActivity.this, ActivitiesActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        startActivity(new Intent(AddNewActivity.this, InstituteBuzzActivityDiff.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     }
                 }.start();
 
@@ -746,7 +746,7 @@ public class AddNewActivity extends AppCompatActivity {
             Log.d("Json", "" + result);
             progressBar.setVisibility(View.GONE);
             if (!result.isEmpty()) {
-                startActivity(new Intent(AddNewActivity.this, ActivitiesActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                startActivity(new Intent(AddNewActivity.this, InstituteBuzzActivityDiff.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             } else {
                 Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();
             }

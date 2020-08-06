@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/background"
     tools:context="com.aaptrix.activitys.student.StudentVideo">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -38,7 +39,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_toStartOf="@id/live_video"
-                    android:fontFamily="ROBOTO-REGULAR.TTF"
                     android:gravity="start|center"
                     android:text="Study Videos"
                     android:textAllCaps="false"
@@ -50,8 +50,9 @@
                     android:layout_width="70dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
+                    android:layout_alignParentEnd="true"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="wrap_content"
@@ -87,22 +88,24 @@
         android:textSize="30sp"
         android:visibility="gone" />
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/activity_main_swipe_refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/appBarLayout"
-        tools:ignore="MergeRootFrame">
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/progress"
+        android:visibility="gone"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_below="@id/appBarLayout">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/video_list"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_200sdp" />
+                android:layout_height="@dimen/_190sdp"
+                android:layout_margin="5dp"/>
 
             <GridView
                 android:layout_width="match_parent"
@@ -110,21 +113,18 @@
                 android:id="@+id/subject_grid"
                 android:layout_margin="5dp"
                 android:clickable="true"
-                android:columnWidth="@dimen/_70sdp"
+                android:columnWidth="@dimen/_60sdp"
                 android:drawSelectorOnTop="true"
                 android:focusable="true"
                 android:gravity="center"
                 android:horizontalSpacing="10dp"
                 android:numColumns="auto_fit"
                 android:paddingStart="5dp"
-                android:paddingTop="10dp"
                 android:paddingEnd="5dp"
                 android:paddingBottom="10dp"
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="10dp"/>
 
         </LinearLayout>
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>
