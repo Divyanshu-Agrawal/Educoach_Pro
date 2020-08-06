@@ -245,6 +245,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
     CardView announceCard;
     ArrayList<DataBeanActivities> activitiesArray = new ArrayList<>();
     int pos = 0;
+    TextView noAnnounce;
 
     @SuppressLint({"SetTextI18n", "HardwareIds"})
     @Override
@@ -267,6 +268,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
 
         announceCard = findViewById(R.id.announce_card);
         announcements = findViewById(R.id.announcement);
+        noAnnounce = findViewById(R.id.no_announcement);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         announcements.setLayoutManager(mLayoutManager);
@@ -281,7 +283,6 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         selStatusColor = settingsColor.getString("status", "");
         selTextColor1 = settingsColor.getString("text1", "");
         selTextColor2 = settingsColor.getString("text2", "");
-        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         mDrawerLayout = findViewById(R.id.drawer);
         viewId = findViewById(R.id.viewId);
 
@@ -346,7 +347,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
             b.execute(userSchoolId, "All Batches", userrType);
         } else {
             announceCard.setVisibility(View.GONE);
-            tv_today_day_date.setVisibility(View.VISIBLE);
+            noAnnounce.setVisibility(View.VISIBLE);
         }
 
         if (!userrType.equals("Guest")) {
@@ -684,7 +685,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
             Log.e("ACHIVE", "" + result);
             if (result.equals("{\"result\":null}")) {
                 announceCard.setVisibility(View.GONE);
-                tv_today_day_date.setVisibility(View.VISIBLE);
+                noAnnounce.setVisibility(View.VISIBLE);
             } else {
                 try {
                     JSONObject jsonRootObject = new JSONObject(result);
@@ -703,7 +704,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                     setAnnouncements();
                 } else {
                     announceCard.setVisibility(View.GONE);
-                    tv_today_day_date.setVisibility(View.VISIBLE);
+                    noAnnounce.setVisibility(View.VISIBLE);
                 }
             }
             super.onPostExecute(result);
@@ -732,7 +733,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
             }
         }.start();
 
-        announceCard.setOnClickListener(v -> {
+        noAnnounce.setOnClickListener(v -> {
             mp.start();
             Intent i = new Intent(this, ActivitiesActivity.class);
             startActivity(i);

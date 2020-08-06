@@ -302,6 +302,18 @@ public class InstitueBuzzAdaptor extends ArrayAdapter<DataBeanInstitueBuzz> {
                         e.printStackTrace();
                     }
                 }
+                case "Online Exam": {
+                    try {
+                        Bitmap bigImage = BitmapFactory.decodeResource(context.getResources(), R.drawable.results_b);
+                        Bitmap smallImage = BitmapFactory.decodeResource(context.getResources(), R.drawable.results_f);
+                        Bitmap front = tintImage(smallImage, Color.parseColor(frontColor));
+                        Bitmap back = tintImage(bigImage, Color.parseColor(backColor));
+                        Bitmap mergedImages = createImage(front, back);
+                        insti_iv_img.setImageBitmap(mergedImages);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         return v;

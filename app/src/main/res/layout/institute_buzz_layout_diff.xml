@@ -302,6 +302,15 @@
 
                     <TextView
                         android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:text="No Announcements"
+                        android:id="@+id/no_announcement"
+                        android:textSize="24sp"
+                        android:gravity="center"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="View More..."
                         android:gravity="end"
