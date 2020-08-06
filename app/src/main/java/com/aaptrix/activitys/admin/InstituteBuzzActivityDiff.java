@@ -438,6 +438,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
             name.add("Refer a Friend");
             name.add("Feedback");
             name.add("Guest Exam");
+            name.add("Online Exam");
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 dbib = new DataBeanInstitueBuzz();
@@ -1223,6 +1224,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                     name.add("Teaching Staff");
                     name.add("Refer a Friend");
                     name.add("Feedback");
+                    name.add("Online Exam");
                     name.add("Guest Exam");
 
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -1479,6 +1481,13 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                     case "Guest Exam": {
                         mp.start();
                         Intent i = new Intent(this, GuestExam.class);
+                        startActivity(i);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        break;
+                    }
+                    case "Online Exam": {
+                        mp.start();
+                        Intent i = new Intent(this, OnlineExam.class);
                         startActivity(i);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         break;

@@ -1,9 +1,12 @@
 package com.aaptrix.activitys.student;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
@@ -63,6 +66,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -92,9 +96,6 @@ public class AboutUsActivity extends AppCompatActivity implements BaseSliderView
     String[] image;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     //offline
-    private SharedPreferences sp_aboutUs;
-    SharedPreferences.Editor se_aboutUs;
-    public static final String PREFS_ABOUTUS = "json_about11";
     ArrayList<DataBeanAboutUs> aboutArray = new ArrayList<>();
     DataBeanAboutUs dbau;
     AboutUsMoreInfoListAdaptor aboutUsMoreInfoListAdaptor;
@@ -105,7 +106,8 @@ public class AboutUsActivity extends AppCompatActivity implements BaseSliderView
     SharedPreferences sp;
     LinearLayout share;
     TextView cusineTitle, facilities;
-    ImageView whatsapp, instagram, facebook, pinterest, twitter;
+    ImageView whatsapp, instagram, facebook, youtube, twitter;
+    String strWA, strInsta, strfb, strYt, strTwitter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +128,7 @@ public class AboutUsActivity extends AppCompatActivity implements BaseSliderView
         facebook = findViewById(R.id.view_facebook);
         instagram = findViewById(R.id.view_instagram);
         twitter = findViewById(R.id.view_twitter);
-        pinterest = findViewById(R.id.view_pinteresr);
+        youtube = findViewById(R.id.view_youtube);
 
         facilities.setText("Courses Offered");
 
@@ -163,15 +165,12 @@ public class AboutUsActivity extends AppCompatActivity implements BaseSliderView
             mapLayout.setClickable(false);
             return true;
         });
-        sp_aboutUs = getSharedPreferences(PREFS_ABOUTUS, 0);
-        String aboutUs = sp_aboutUs.getString("json_aboutus", "");
-        getAboutUs(aboutUs);
 
         if (isInternetOn()) {
             GetSchoolDeatails b1 = new GetSchoolDeatails(AboutUsActivity.this);
             b1.execute(userSchoolId);
         } else {
-            getAboutUs(aboutUs);
+            Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
             mSwipeRefreshLayout.setRefreshing(false);
         }
 
@@ -236,51 +235,6 @@ public class AboutUsActivity extends AppCompatActivity implements BaseSliderView
         selTextColor2 = settingsColor.getString("text2", "");
     }
 
-    @SuppressLint("SetTextI18n")
-    private void getAboutUs(String aboutUs) {
-        if (aboutUs.equals("{\"result\":null}")) {
-            school_name.setText("Not Available");
-            school_area.setText("Not Available");
-            school_description.setText("Not Available");
-            school_contact_number.setText("Not Available");
-            school_cuisines.setText("Not Available");
-            school_type.setText("Not Available");
-            school_adress.setText("Not Available");
-            Toast.makeText(AboutUsActivity.this, "No Data", Toast.LENGTH_SHORT).show();
-        } else {
-            try {
-                JSONObject jsonRootObject = new JSONObject(aboutUs);
-                JSONArray jsonArray = jsonRootObject.getJSONArray("result");
-                aboutArray.clear();
-                dbau = new DataBeanAboutUs();
-                JSONObject jsonObject = jsonArray.getJSONObject(0);
-                aboutName = jsonObject.getString("tbl_abt_schl_details_name");
-                aboutArea = jsonObject.getString("tbl_abt_schl_details_area");
-                aboutDesc = jsonObject.getString("tbl_abt_schl_details_desc");
-                aboutContact = jsonObject.getString("tbl_abt_schl_details_contact");
-                aboutCuisiness = jsonObject.getString("tbl_abt_schl_details_cuisines");
-                aboutType = jsonObject.getString("tbl_abt_schl_details_type");
-                aboutAddr = jsonObject.getString("tbl_abt_schl_details_addr");
-                aboutSchoolWebsite = jsonObject.getString("tbl_abt_schl_details_website");
-                aboutMapLatitude = jsonObject.getString("tbl_abt_schl_details_map_latitude");
-                aboutMapLongitude = jsonObject.getString("tbl_abt_schl_details_map_longitutde");
-                aboutMoreImages = jsonObject.getString("tbl_school_slider_imgs");
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    dbau = new DataBeanAboutUs();
-                    JSONObject object = jsonArray.getJSONObject(i);
-                    dbau.setAboutMoreInfoName(object.getString("tbl_abt_schl_more_info_name"));
-                    aboutArray.add(dbau);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            if (aboutArray.size() != 0) {
-                listItms();
-                slider();
-            }
-        }
-    }
-
     @SuppressLint("StaticFieldLeak")
     public class GetSchoolDeatails extends AsyncTask<String, String, String> {
         Context ctx;
@@ -340,13 +294,7 @@ public class AboutUsActivity extends AppCompatActivity implements BaseSliderView
         @Override
         protected void onPostExecute(String result) {
             mSwipeRefreshLayout.setRefreshing(false);
-            sp_aboutUs = getSharedPreferences(PREFS_ABOUTUS, 0);
-            se_aboutUs = sp_aboutUs.edit();
-            se_aboutUs.clear();
-            se_aboutUs.putString("json_aboutus", result);
-            se_aboutUs.apply();
-
-            if (result.equals("{\"result\":null}")) {
+            if (result.contains("{\"result\":null}")) {
                 school_name.setText("Not Available");
                 school_area.setText("Not Available");
                 school_description.setText("Not Available");
@@ -378,6 +326,13 @@ public class AboutUsActivity extends AppCompatActivity implements BaseSliderView
                         dbau.setAboutMoreInfoName(object.getString("tbl_abt_schl_more_info_name"));
                         aboutArray.add(dbau);
                     }
+                    JSONArray social = jsonRootObject.getJSONArray("SocialLinks");
+                    JSONObject object = social.getJSONObject(0);
+                    strWA = object.getString("whatsapp_no");
+                    strfb = object.getString("facebook_url").split("\\?")[0];
+                    strInsta = object.getString("instagram_url").split("\\?")[0];
+                    strTwitter = object.getString("twitter_url").split("\\?")[0];
+                    strYt = object.getString("youtube_url");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -392,6 +347,63 @@ public class AboutUsActivity extends AppCompatActivity implements BaseSliderView
     }
 
     private void listItms() {
+
+        if (strYt.equals("null"))
+            youtube.setVisibility(View.GONE);
+        if (strTwitter.equals("null"))
+            twitter.setVisibility(View.GONE);
+        if (strInsta.equals("null"))
+            instagram.setVisibility(View.GONE);
+        if (strfb.equals("null"))
+            facebook.setVisibility(View.GONE);
+        if (strWA.equals("null"))
+            whatsapp.setVisibility(View.GONE);
+
+        facebook.setOnClickListener(v -> {
+            Intent facebookIntent = new Intent(Intent.ACTION_VIEW);
+            String facebookUrl = getFacebookPageURL(strfb);
+            facebookIntent.setData(Uri.parse(facebookUrl));
+            startActivity(facebookIntent);
+        });
+
+        instagram.setOnClickListener(v -> {
+            Intent intent = newInstagramProfileIntent(strInsta);
+            startActivity(intent);
+        });
+
+        twitter.setOnClickListener(v -> {
+            String[] name = strTwitter.split("/");
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("twitter://user?screen_name=" + name[name.length-1]));
+                startActivity(intent);
+            } catch (Exception e) {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://twitter.com/#!/" + name[name.length-1])));
+            }
+        });
+
+        youtube.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    Intent.ACTION_VIEW ,
+                    Uri.parse(strYt));
+            startActivity(intent);
+        });
+
+        whatsapp.setOnClickListener(v -> {
+            String url = "https://api.whatsapp.com/send?phone=" + strWA;
+            try {
+                PackageManager pm = getPackageManager();
+                pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            } catch (PackageManager.NameNotFoundException e) {
+                Toast.makeText(this, "WhatsApp not installed in your phone", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        });
+
         try {
             school_name.setText(aboutName);
             school_area.setText(aboutArea);
@@ -437,6 +449,40 @@ public class AboutUsActivity extends AppCompatActivity implements BaseSliderView
             Toast.makeText(this, "Something missing", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    public Intent newInstagramProfileIntent(String url) {
+        final Intent intent = new Intent(Intent.ACTION_VIEW);
+        PackageManager packageManager = getPackageManager();
+        try {
+            if (packageManager.getPackageInfo("com.instagram.android", 0) != null) {
+                if (url.endsWith("/")) {
+                    url = url.substring(0, url.length() - 1);
+                }
+                final String username = url.substring(url.lastIndexOf("/") + 1);
+                intent.setData(Uri.parse("http://instagram.com/_u/" + username));
+                intent.setPackage("com.instagram.android");
+                return intent;
+            }
+        } catch (PackageManager.NameNotFoundException ignored) {
+        }
+        intent.setData(Uri.parse(url));
+        return intent;
+    }
+
+    public String getFacebookPageURL(String url) {
+        PackageManager packageManager = getPackageManager();
+        try {
+            int versionCode = packageManager.getPackageInfo("com.facebook.katana", 0).versionCode;
+            if (versionCode >= 3002850) { //newer versions of fb app
+                return "fb://facewebmodal/f?href=" + url;
+            } else { //older versions of fb app
+                String[] pageId = url.split("/");
+                return "fb://page/" + pageId[pageId.length-1];
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            return url; //normal web url
+        }
     }
 
     @Override

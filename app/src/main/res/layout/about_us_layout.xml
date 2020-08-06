@@ -393,9 +393,9 @@
                                 android:layout_width="0dp"
                                 android:layout_height="@dimen/_30sdp"
                                 android:layout_weight="1"
-                                android:id="@+id/view_pinteresr"
-                                android:src="@drawable/pinterest"
-                                android:padding="8dp"/>
+                                android:id="@+id/view_youtube"
+                                android:src="@drawable/youtube"
+                                android:padding="5dp"/>
 
                         </LinearLayout>
 
