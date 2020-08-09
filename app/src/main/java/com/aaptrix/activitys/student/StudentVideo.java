@@ -86,6 +86,7 @@ public class StudentVideo extends AppCompatActivity {
     LinearLayout liveVideo;
     GridView subjectGrid;
     ProgressBar progressBar;
+    LinearLayout mainLayout, viewAll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +103,8 @@ public class StudentVideo extends AppCompatActivity {
         liveVideo = findViewById(R.id.live_video);
         subjectGrid = findViewById(R.id.subject_grid);
         progressBar = findViewById(R.id.progress);
+        mainLayout = findViewById(R.id.main_layout);
+        viewAll = findViewById(R.id.view_all);
         recyclerView.setEnabled(true);
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
@@ -167,6 +170,12 @@ public class StudentVideo extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutFrozen(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        viewAll.setOnClickListener(v -> {
+            Intent intent = new Intent(this, VideoLibrary.class);
+            intent.putExtra("sub", "All");
+            startActivity(intent);
+        });
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -331,15 +340,14 @@ public class StudentVideo extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            progressBar.setVisibility(View.GONE);
             if (videosArray.size() == 0) {
                 noVideos.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.GONE);
-                subjectGrid.setVisibility(View.GONE);
+                mainLayout.setVisibility(View.GONE);
             } else {
                 listItems();
-                recyclerView.setVisibility(View.VISIBLE);
                 noVideos.setVisibility(View.GONE);
-                subjectGrid.setVisibility(View.VISIBLE);
+                mainLayout.setVisibility(View.VISIBLE);
             }
             super.onPostExecute(result);
         }
@@ -369,12 +377,10 @@ public class StudentVideo extends AppCompatActivity {
 
         if (arrayList.size() == 0) {
             noVideos.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-            subjectGrid.setVisibility(View.GONE);
+            mainLayout.setVisibility(View.GONE);
         } else {
             noVideos.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-            subjectGrid.setVisibility(View.VISIBLE);
+            mainLayout.setVisibility(View.VISIBLE);
         }
 
         Collections.sort(arrayList, (o1, o2) -> {
@@ -521,7 +527,6 @@ public class StudentVideo extends AppCompatActivity {
             view.setTag(holder);
 
             view.setOnClickListener(v -> {
-                Log.e("sub", objects.get(position));
                 Intent intent = new Intent(context, VideoLibrary.class);
                 intent.putExtra("sub", objects.get(position));
                 context.startActivity(intent);

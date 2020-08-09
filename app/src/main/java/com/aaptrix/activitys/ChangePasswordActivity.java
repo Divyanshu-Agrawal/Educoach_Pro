@@ -52,6 +52,7 @@ import java.util.Objects;
 
 import com.aaptrix.R;
 
+import static com.aaptrix.activitys.SplashScreen.SCHOOL_ID;
 import static com.aaptrix.tools.HttpUrl.CHANGE_PASSWORD;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
 import static com.aaptrix.tools.SPClass.PREF_COLOR;
@@ -272,7 +273,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
 				data = URLEncoder.encode("userId", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
 						URLEncoder.encode("newPass", "UTF-8") + "=" + URLEncoder.encode(newP, "UTF-8") + "&" +
 						URLEncoder.encode("user_type", "UTF-8") + "=" + URLEncoder.encode(getSharedPreferences(PREF_ROLE, 0).getString("userRole", ""), "UTF-8") + "&" +
-						URLEncoder.encode("device_id", "UTF-8") + "=" + URLEncoder.encode(deviceId, "UTF-8");
+						URLEncoder.encode("device_id", "UTF-8") + "=" + URLEncoder.encode(deviceId, "UTF-8") + "&" +
+						URLEncoder.encode("tbl_school_id", "UTF-8") + "=" + URLEncoder.encode(SCHOOL_ID, "UTF-8");
 				outputStream.write(data.getBytes());
 				
 				bufferedWriter.write(data);

@@ -350,6 +350,8 @@ public class GuestVideo extends AppCompatActivity {
                         videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
                         videosData.setBatch(jsonObject.getString("tbl_course_name"));
                         videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
+                        videosData.setStart(jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time"));
+                        videosData.setEnd(jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time"));
                         videosArray.add(videosData);
                     }
                 }
@@ -433,6 +435,7 @@ public class GuestVideo extends AppCompatActivity {
                 intent.putExtra("url", arrayList.get(position).getUrl());
                 intent.putExtra("id", arrayList.get(position).getId());
                 intent.putExtra("desc", arrayList.get(position).getDesc());
+                intent.putExtra("endDate", arrayList.get(position).getEnd());
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();

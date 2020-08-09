@@ -43,6 +43,7 @@ import cz.msebera.android.httpclient.impl.client.HttpClients;
 import cz.msebera.android.httpclient.util.EntityUtils;
 import pl.droidsonroids.gif.GifImageView;
 
+import static com.aaptrix.activitys.SplashScreen.SCHOOL_ID;
 import static com.aaptrix.activitys.SplashScreen.TNC;
 import static com.aaptrix.tools.HttpUrl.HELP;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
@@ -184,6 +185,7 @@ public class GetHelp extends AppCompatActivity {
                 HttpPost httppost = new HttpPost(HELP);
                 MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
                 entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+                entityBuilder.addTextBody("tbl_school_id", SCHOOL_ID);
                 entityBuilder.addTextBody("user_nm", username);
                 entityBuilder.addTextBody("user_mob_no", userphone);
                 entityBuilder.addTextBody("message", "[Help] : " + userMsg);

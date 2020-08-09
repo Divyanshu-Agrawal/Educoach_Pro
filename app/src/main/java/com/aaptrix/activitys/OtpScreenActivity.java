@@ -294,6 +294,7 @@ public class OtpScreenActivity extends Activity {
                 data = URLEncoder.encode("mob", "UTF-8") + "=" + URLEncoder.encode(mob, "UTF-8") + "&" +
                         URLEncoder.encode("str_user_password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8") + "&" +
                         URLEncoder.encode("device_id", "UTF-8") + "=" + URLEncoder.encode(deviceId, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_school_id", "UTF-8") + "=" + URLEncoder.encode(SCHOOL_ID, "UTF-8") + "&" +
                         URLEncoder.encode("user_type", "UTF-8") + "=" + URLEncoder.encode(getSharedPreferences(PREF_ROLE, 0).getString("userRole", ""), "UTF-8");
                 outputStream.write(data.getBytes());
 

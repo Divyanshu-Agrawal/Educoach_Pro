@@ -176,7 +176,8 @@ public class ChangePasswordInitialActivity extends AppCompatActivity {
                 data = URLEncoder.encode("str_mob", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
                         URLEncoder.encode("newPass", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8") + "&" +
                         URLEncoder.encode("device_id", "UTF-8") + "=" + URLEncoder.encode(deviceId, "UTF-8") + "&" +
-                        URLEncoder.encode("user_type", "UTF-8") + "=" + URLEncoder.encode(getSharedPreferences(PREF_ROLE, 0).getString("userRole", ""), "UTF-8");
+                        URLEncoder.encode("user_type", "UTF-8") + "=" + URLEncoder.encode(getSharedPreferences(PREF_ROLE, 0).getString("userRole", ""), "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_school_id", "UTF-8") + "=" + URLEncoder.encode(SCHOOL_ID, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);

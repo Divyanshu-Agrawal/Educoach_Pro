@@ -45,6 +45,7 @@ import cz.msebera.android.httpclient.impl.client.HttpClients;
 import cz.msebera.android.httpclient.util.EntityUtils;
 import pl.droidsonroids.gif.GifImageView;
 
+import static com.aaptrix.activitys.SplashScreen.SCHOOL_ID;
 import static com.aaptrix.tools.HttpUrl.HELP;
 import static com.aaptrix.tools.SPClass.PREF_COLOR;
 import static cz.msebera.android.httpclient.conn.ssl.SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
@@ -178,14 +179,14 @@ public class TroubleLoggingIn extends AppCompatActivity {
                 HttpClient httpclient = HttpClients.custom().setSSLSocketFactory(f).build();
                 HttpPost httppost = new HttpPost(HELP);
                 MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
-                entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+                entityBuilder.addTextBody("tbl_school_id", SCHOOL_ID);
                 entityBuilder.addTextBody("user_nm", username);
                 entityBuilder.addTextBody("user_mob_no", userphone);
-                entityBuilder.addTextBody("message", userMsg + " Institute Name : " +
-                        instName + " Version : " + BuildConfig.VERSION_NAME +
-                        " Android : " + sdk + " Product : " + product + " Device : " + device + " Model : " + model);
+                entityBuilder.addTextBody("message", userMsg);
                 entityBuilder.addTextBody("institute_nm", instName);
                 entityBuilder.addTextBody("app_nm", appNm);
+                entityBuilder.addTextBody("app_info", "Version : " + BuildConfig.VERSION_NAME +
+                        " Android : " + sdk + " Product : " + product + " Device : " + device + " Model : " + model + " Package : " + getPackageName());
                 HttpEntity entity = entityBuilder.build();
                 httppost.setEntity(entity);
                 HttpResponse response = httpclient.execute(httppost);

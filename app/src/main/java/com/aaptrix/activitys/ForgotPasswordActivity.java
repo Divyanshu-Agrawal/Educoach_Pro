@@ -41,6 +41,7 @@ import java.util.Random;
 
 import com.aaptrix.R;
 
+import static com.aaptrix.activitys.SplashScreen.SCHOOL_ID;
 import static com.aaptrix.activitys.SplashScreen.SCHOOL_NAME;
 import static com.aaptrix.activitys.SplashScreen.SENDER_ID;
 import static com.aaptrix.tools.HttpUrl.FORGOT_PASSWORD;
@@ -137,6 +138,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 				BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
 				data = URLEncoder.encode("phone", "UTF-8") + "=" + URLEncoder.encode(phone, "UTF-8") + "&" +
 						URLEncoder.encode("device_id", "UTF-8") + "=" + URLEncoder.encode(deviceId, "UTF-8") + "&" +
+						URLEncoder.encode("tbl_school_id", "UTF-8") + "=" + URLEncoder.encode(SCHOOL_ID, "UTF-8") + "&" +
 						URLEncoder.encode("user_type", "UTF-8") + "=" + URLEncoder.encode(getSharedPreferences(PREF_ROLE, 0).getString("userRole", ""), "UTF-8");
 				outputStream.write(data.getBytes());
 				

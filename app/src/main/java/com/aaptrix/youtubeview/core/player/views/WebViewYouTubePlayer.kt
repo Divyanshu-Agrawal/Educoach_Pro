@@ -123,7 +123,6 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
                 .replace("<<injectedPlayerVars>>", playerOptions.toString().replace("rel:0", "ecver=2"))
 
         loadDataWithBaseURL(playerOptions.getOrigin(), htmlPage, "text/html", "utf-8", null)
-
         // if the video's thumbnail is not in memory, show a black screen
         webChromeClient = object : WebChromeClient() {
             override fun getDefaultVideoPoster(): Bitmap? {

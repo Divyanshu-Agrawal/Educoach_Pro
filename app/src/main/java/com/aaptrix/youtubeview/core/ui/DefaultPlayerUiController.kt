@@ -78,6 +78,8 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
         controlsContainer = controlsView.findViewById(R.id.controls_container)
         extraViewsContainer = controlsView.findViewById(R.id.extra_views_container)
 
+        mainLayout.setOnLongClickListener(null)
+
         videoTitle = controlsView.findViewById(R.id.video_title)
         liveVideoIndicator = controlsView.findViewById(R.id.live_video_indicator)
 
