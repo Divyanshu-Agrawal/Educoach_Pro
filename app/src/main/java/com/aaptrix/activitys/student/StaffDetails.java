@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,15 +22,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aaptrix.R;
+import com.aaptrix.adaptor.RateAdapter;
+import com.aaptrix.databeans.RateData;
 import com.google.android.material.appbar.AppBarLayout;
 import com.squareup.picasso.Picasso;
 
@@ -37,7 +43,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 
 import javax.net.ssl.SSLContext;
@@ -55,21 +63,23 @@ import cz.msebera.android.httpclient.util.EntityUtils;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.aaptrix.tools.HttpUrl.SEND_RATING;
+import static com.aaptrix.tools.HttpUrl.STAFF_RATING;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
 import static com.aaptrix.tools.SPClass.PREF_COLOR;
 import static cz.msebera.android.httpclient.conn.ssl.SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
 
 public class StaffDetails extends AppCompatActivity {
 
-    Toolbar toolbar;
     CircleImageView userProfile;
     AppBarLayout appBarLayout;
     SharedPreferences sp;
-    TextView name, bio, subjects, tool_title, bio_title, sub_title;
+    TextView name, bio, subjects, tool_title, bio_title, sub_title, rate_title;
+    ListView listView;
     Button rateBtn;
     String strName, strId, strBio, strRateEnabled, strSubjects, strImage, strType, strRated, strComment, strRating, strShort;
     String url = "", schoolId, userId, imageUrl;
     String selToolColor, selDrawerColor, selStatusColor, selTextColor1, selTextColor2;
+    ArrayList<RateData> ratingArray = new ArrayList<>();
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -87,9 +97,11 @@ public class StaffDetails extends AppCompatActivity {
         tool_title = findViewById(R.id.tool_title);
         bio_title = findViewById(R.id.bio_title);
         sub_title = findViewById(R.id.sub_title);
+        rate_title = findViewById(R.id.rate_title);
+        listView = findViewById(R.id.review_list);
 
         sp = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        schoolId = sp.getString("str_school_id","");
+        schoolId = sp.getString("str_school_id", "");
         userId = sp.getString("userID", "");
         imageUrl = sp.getString("imageUrl", "");
         String userType = sp.getString("userrType", "");
@@ -118,6 +130,9 @@ public class StaffDetails extends AppCompatActivity {
         strComment = getIntent().getStringExtra("comment");
         strRating = getIntent().getStringExtra("rating");
         strShort = getIntent().getStringExtra("shortBio");
+
+        GetRating getRating = new GetRating(this);
+        getRating.execute(schoolId, strId);
 
         if (strRated.equals("1")) {
             rateBtn.setText("Show Rating");
@@ -187,6 +202,97 @@ public class StaffDetails extends AppCompatActivity {
         rateBtn.setBackgroundColor(Color.parseColor(selToolColor));
         rateBtn.setTextColor(Color.parseColor(selTextColor1));
 
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public class GetRating extends AsyncTask<String, String, String> {
+        Context ctx;
+
+        GetRating(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String schoolId = params[0];
+            String userId = params[1];
+
+            try {
+                SSLContext sslContext = SSLContexts.custom().useTLS().build();
+                SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
+                        sslContext,
+                        new String[]{"TLSv1.1", "TLSv1.2"},
+                        null,
+                        BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+                HttpClient httpclient = HttpClients.custom().setSSLSocketFactory(f).build();
+                HttpPost httppost = new HttpPost(STAFF_RATING);
+                MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
+                entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+                entityBuilder.addTextBody("school_id", schoolId);
+                entityBuilder.addTextBody("tbl_users_id", userId);
+                HttpEntity entity = entityBuilder.build();
+                httppost.setEntity(entity);
+                HttpResponse response = httpclient.execute(httppost);
+                HttpEntity httpEntity = response.getEntity();
+                return EntityUtils.toString(httpEntity);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.e("result", result);
+            if (!result.contains("{\"result\":null}")) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    JSONArray jsonArray = jsonObject.getJSONArray("result");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        RateData data = new RateData();
+                        data.setRating(object.getString("rating"));
+                        data.setReview(object.getString("comment"));
+                        data.setFeatured(object.getString("mark_as_featured"));
+                        data.setName(object.getString("tbl_users_name"));
+                        ratingArray.add(data);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (ratingArray.size() != 0) {
+                    listItem();
+                } else {
+                    rate_title.setVisibility(View.GONE);
+                    listView.setVisibility(View.GONE);
+                }
+            } else {
+                rate_title.setVisibility(View.GONE);
+                listView.setVisibility(View.GONE);
+            }
+            super.onPostExecute(result);
+        }
+    }
+
+    private void listItem() {
+
+        Collections.sort(ratingArray, (o1, o2) -> o1.getFeatured().compareTo(o2.getFeatured()));
+        Collections.reverse(ratingArray);
+
+        int size = (int) getResources().getDimension(R.dimen._70sdp) * ratingArray.size();
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.height = size;
+        listView.setLayoutParams(params);
+
+        RateAdapter adapter = new RateAdapter(this, R.layout.list_reviews, ratingArray);
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     private void rateStaff() {
@@ -277,7 +383,7 @@ public class StaffDetails extends AppCompatActivity {
         }
 
         if (strRating != null && !strRating.equals("null")) {
-            ratingBar.setRating(Float.valueOf(strRating));
+            ratingBar.setRating(Float.parseFloat(strRating));
         }
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.DialogTheme);
@@ -304,40 +410,40 @@ public class StaffDetails extends AppCompatActivity {
     }
 
     private void sendRating(String rating, String comment) {
-            new Thread(() -> {
-                try {
-                    SSLContext sslContext = SSLContexts.custom().useTLS().build();
-                    SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
-                            sslContext,
-                            new String[]{"TLSv1.1", "TLSv1.2"},
-                            null,
-                            BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
-                    HttpClient httpclient = HttpClients.custom().setSSLSocketFactory(f).build();
-                    HttpPost httppost = new HttpPost(SEND_RATING);
-                    MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
-                    entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-                    entityBuilder.addTextBody("tbl_school_id", schoolId);
-                    entityBuilder.addTextBody("tbl_users_id", userId);
-                    entityBuilder.addTextBody("tbl_staff_id", strId);
-                    entityBuilder.addTextBody("tbl_staff_name", strName);
-                    entityBuilder.addTextBody("rating", rating);
-                    entityBuilder.addTextBody("comment", comment);
-                    HttpEntity entity = entityBuilder.build();
-                    httppost.setEntity(entity);
-                    HttpResponse response = httpclient.execute(httppost);
-                    HttpEntity httpEntity = response.getEntity();
-                    String res = EntityUtils.toString(httpEntity);
-                    Log.e("result", res);
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(() -> {
-                        if (res.contains("submitted")) {
-                            Toast.makeText(this, "Submitted", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(this, StaffActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }).start();
+        new Thread(() -> {
+            try {
+                SSLContext sslContext = SSLContexts.custom().useTLS().build();
+                SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
+                        sslContext,
+                        new String[]{"TLSv1.1", "TLSv1.2"},
+                        null,
+                        BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+                HttpClient httpclient = HttpClients.custom().setSSLSocketFactory(f).build();
+                HttpPost httppost = new HttpPost(SEND_RATING);
+                MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
+                entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+                entityBuilder.addTextBody("tbl_school_id", schoolId);
+                entityBuilder.addTextBody("tbl_users_id", userId);
+                entityBuilder.addTextBody("tbl_staff_id", strId);
+                entityBuilder.addTextBody("tbl_staff_name", strName);
+                entityBuilder.addTextBody("rating", rating);
+                entityBuilder.addTextBody("comment", comment);
+                HttpEntity entity = entityBuilder.build();
+                httppost.setEntity(entity);
+                HttpResponse response = httpclient.execute(httppost);
+                HttpEntity httpEntity = response.getEntity();
+                String res = EntityUtils.toString(httpEntity);
+                Log.e("result", res);
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(() -> {
+                    if (res.contains("submitted")) {
+                        Toast.makeText(this, "Submitted", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(this, StaffActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }
