@@ -123,6 +123,7 @@
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
                     android:id="@+id/rate_title"
+                    android:visibility="gone"
                     android:paddingBottom="5dp"
                     android:text="Ratings and Reviews" />
 
@@ -130,7 +131,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/review_list"
+                    android:visibility="gone"
                     android:divider="@null"
+                    android:nestedScrollingEnabled="false"
                     android:dividerHeight="0dp"/>
 
             </LinearLayout>

@@ -282,11 +282,13 @@ public class StaffDetails extends AppCompatActivity {
 
     private void listItem() {
 
+        rate_title.setVisibility(View.VISIBLE);
+        listView.setVisibility(View.VISIBLE);
         Collections.sort(ratingArray, (o1, o2) -> o1.getFeatured().compareTo(o2.getFeatured()));
         Collections.reverse(ratingArray);
 
-        int size = (int) getResources().getDimension(R.dimen._70sdp) * ratingArray.size();
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int size = (int) getResources().getDimension(R.dimen._90sdp) * ratingArray.size();
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.height = size;
         listView.setLayoutParams(params);
 

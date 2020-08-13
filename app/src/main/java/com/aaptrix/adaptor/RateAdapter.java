@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 
 import com.aaptrix.R;
 import com.aaptrix.databeans.RateData;
@@ -44,11 +43,6 @@ public class RateAdapter extends ArrayAdapter<RateData> {
         TextView name = view.findViewById(R.id.name);
         TextView review = view.findViewById(R.id.review);
         RatingBar ratingBar =  view.findViewById(R.id.rating);
-        CardView featured = view.findViewById(R.id.featured);
-
-        if (objects.get(position).getFeatured().equals("1")) {
-            featured.setVisibility(View.VISIBLE);
-        }
 
         name.setText("By : " + objects.get(position).getName());
         review.setText(objects.get(position).getReview());
