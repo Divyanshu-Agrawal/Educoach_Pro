@@ -4,6 +4,9 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
+import android.view.GestureDetector
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.MotionEvent
 import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
@@ -20,6 +23,7 @@ import com.aaptrix.youtubeview.core.ui.views.YouTubePlayerFastForwardRewind
 import com.aaptrix.youtubeview.core.ui.views.YouTubePlayerSeekBar
 import com.aaptrix.youtubeview.core.ui.views.YouTubePlayerSeekBarListener
 
+
 internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYouTubePlayerView, private val youTubePlayer: YouTubePlayer) : PlayerUiController, YouTubePlayerListener, YouTubePlayerFullScreenListener, YouTubePlayerSeekBarListener {
 
     private var youTubePlayerMenu: YouTubePlayerMenu
@@ -32,7 +36,7 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
 
     private val controlsContainer: View
     private val extraViewsContainer: LinearLayout
-    private val mainLayout : FrameLayout
+    private val mainLayout: FrameLayout
 
     private val videoTitle: TextView
     private val liveVideoIndicator: TextView
@@ -63,6 +67,7 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
     private var isPlayPauseButtonEnabled = true
     private var isCustomActionLeftEnabled = false
     private var isCustomActionRightEnabled = false
+    private var isLongClicked = true
 
     init {
 
@@ -77,8 +82,6 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
         mainLayout = controlsView.findViewById(R.id.main_layout);
         controlsContainer = controlsView.findViewById(R.id.controls_container)
         extraViewsContainer = controlsView.findViewById(R.id.extra_views_container)
-
-        mainLayout.setOnLongClickListener(null)
 
         videoTitle = controlsView.findViewById(R.id.video_title)
         liveVideoIndicator = controlsView.findViewById(R.id.live_video_indicator)
@@ -257,7 +260,8 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
             PlayerConstants.PlayerState.ENDED -> isPlaying = false
             PlayerConstants.PlayerState.PAUSED -> isPlaying = false
             PlayerConstants.PlayerState.PLAYING -> isPlaying = true
-            else -> { }
+            else -> {
+            }
         }
 
         updatePlayPauseButtonIcon(!isPlaying)
@@ -322,7 +326,10 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
     override fun onPlaybackRateChange(youTubePlayer: YouTubePlayer, playbackRate: PlayerConstants.PlaybackRate) {}
     override fun onError(youTubePlayer: YouTubePlayer, error: PlayerConstants.PlayerError) {}
     override fun onApiChange(youTubePlayer: YouTubePlayer) {}
-    override fun onCurrentSecond(youTubePlayer: YouTubePlayer, second: Float) { currentSecond = second }
+    override fun onCurrentSecond(youTubePlayer: YouTubePlayer, second: Float) {
+        currentSecond = second
+    }
+
     override fun onVideoDuration(youTubePlayer: YouTubePlayer, duration: Float) {}
     override fun onVideoLoadedFraction(youTubePlayer: YouTubePlayer, loadedFraction: Float) {}
 }

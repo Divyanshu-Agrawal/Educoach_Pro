@@ -12,22 +12,31 @@
         android:layout_height="match_parent"
         android:background="@android:color/black"
         android:clickable="true"
-        android:layout_marginEnd="@dimen/_40sdp"
+        android:layout_marginEnd="@dimen/_35sdp"
         android:focusable="true" />
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_70sdp"
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_190sdp"
         android:background="@android:color/transparent"
         android:clickable="true"
+        android:layout_gravity="end"
         android:focusable="true" />
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_70sdp"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="match_parent"
         android:background="@android:color/transparent"
         android:clickable="true"
-        android:layout_gravity="bottom"
+        android:layout_gravity="end"
+        android:focusable="true" />
+
+    <View
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:background="@android:color/transparent"
+        android:clickable="true"
+        android:layout_gravity="bottom|end"
         android:focusable="true" />
 
     <RelativeLayout
@@ -89,7 +98,7 @@
         <com.aaptrix.youtubeview.core.ui.views.YouTubePlayerFastForwardRewind
             android:id="@+id/fast_rewind_layout"
             android:layout_width="match_parent"
-            android:layout_marginStart="@dimen/_30sdp"
+            android:layout_marginStart="@dimen/_40sdp"
             android:layout_height="match_parent"
             android:layout_toStartOf="@+id/play_pause_button"
             android:contentDescription="@string/ayp_fast_rewind"
@@ -111,7 +120,7 @@
         <com.aaptrix.youtubeview.core.ui.views.YouTubePlayerFastForwardRewind
             android:id="@+id/fast_forward_layout"
             android:layout_width="match_parent"
-            android:layout_marginEnd="@dimen/_30sdp"
+            android:layout_marginEnd="@dimen/_40sdp"
             android:layout_height="match_parent"
             android:layout_toEndOf="@+id/play_pause_button"
             android:contentDescription="@string/ayp_fast_forward" />

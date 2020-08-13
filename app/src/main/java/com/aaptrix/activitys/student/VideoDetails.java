@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -83,6 +85,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
@@ -183,7 +186,7 @@ public class VideoDetails extends AppCompatActivity {
         if (strTags.equals("null") || strTags.equals("")) {
             gridView.setVisibility(View.GONE);
         } else {
-            String[] tag = strTags.replace("[", "").replace("]", "").split(",");
+            String[] tag = strTags.replace("[", "").replace("]", "").trim().split(",");
             TagsAdapter adapter = new TagsAdapter(this, tag);
             gridView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -374,8 +377,7 @@ public class VideoDetails extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NotNull TagsAdapter.ViewHolder holder, final int position) {
-            if (!tags[position].isEmpty())
-                holder.tagsName.setText(tags[position]);
+            holder.tagsName.setText(tags[position]);
 
             holder.tagsName.setOnClickListener(v -> {
                 Intent intent = new Intent(context, VideoByTag.class);
@@ -495,6 +497,13 @@ public class VideoDetails extends AppCompatActivity {
         if (timer != null) {
             timer.cancel();
         }
+        ClipboardManager clipService = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+        assert clipService != null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            clipService.clearPrimaryClip();
+        } else {
+            clipService.setPrimaryClip(ClipData.newPlainText("", ""));
+        }
         youTubeView.release();
         super.onDestroy();
     }
@@ -600,6 +609,13 @@ public class VideoDetails extends AppCompatActivity {
         if (timer != null) {
             timer.cancel();
         }
+        ClipboardManager clipService = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+        assert clipService != null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            clipService.clearPrimaryClip();
+        } else {
+            clipService.setPrimaryClip(ClipData.newPlainText("", ""));
+        }
         super.onPause();
     }
 
@@ -628,15 +644,15 @@ public class VideoDetails extends AppCompatActivity {
             if (mFullScreenDialog != null)
                 mFullScreenDialog.dismiss();
             finish();
-            super.onBackPressed();
         }
-        if (fullscr) {
-            fullscr = false;
-            youTubeView.exitFullScreen();
+        ClipboardManager clipService = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+        assert clipService != null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            clipService.clearPrimaryClip();
         } else {
-            finish();
-            super.onBackPressed();
+            clipService.setPrimaryClip(ClipData.newPlainText("", ""));
         }
+        super.onBackPressed();
     }
 
     @SuppressLint("StaticFieldLeak")
