@@ -105,7 +105,7 @@ public class AboutUsActivity extends AppCompatActivity implements BaseSliderView
     LinearLayout mapLayout, webLayout;
     SharedPreferences sp;
     LinearLayout share;
-    TextView cusineTitle, facilities;
+    TextView cusineTitle, facilities, connect;
     ImageView whatsapp, instagram, facebook, youtube, twitter;
     String strWA, strInsta, strfb, strYt, strTwitter;
 
@@ -129,6 +129,7 @@ public class AboutUsActivity extends AppCompatActivity implements BaseSliderView
         instagram = findViewById(R.id.view_instagram);
         twitter = findViewById(R.id.view_twitter);
         youtube = findViewById(R.id.view_youtube);
+        connect = findViewById(R.id.connect);
 
         facilities.setText("Courses Offered");
 
@@ -358,6 +359,9 @@ public class AboutUsActivity extends AppCompatActivity implements BaseSliderView
             facebook.setVisibility(View.GONE);
         if (strWA.equals("null"))
             whatsapp.setVisibility(View.GONE);
+
+        if (strWA.equals("null") && strfb.equals("null") && strInsta.equals("null") && strTwitter.equals("null") && strYt.equals("null"))
+            connect.setVisibility(View.GONE);
 
         facebook.setOnClickListener(v -> {
             Intent facebookIntent = new Intent(Intent.ACTION_VIEW);
