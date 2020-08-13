@@ -44,6 +44,7 @@ import cz.msebera.android.httpclient.util.EntityUtils;
 import pl.droidsonroids.gif.GifImageView;
 
 import static com.aaptrix.activitys.SplashScreen.SCHOOL_ID;
+import static com.aaptrix.activitys.SplashScreen.SCHOOL_NAME;
 import static com.aaptrix.activitys.SplashScreen.TNC;
 import static com.aaptrix.tools.HttpUrl.HELP;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
@@ -167,7 +168,6 @@ public class GetHelp extends AppCompatActivity {
             String userMsg = params[0];
             String username = params[1];
             String userphone = params[2];
-            String instName = sp.getString("userSchoolName", "");
             String appNm = ctx.getResources().getString(R.string.app_name);
             String sdk = android.os.Build.VERSION.SDK;
             String device = android.os.Build.DEVICE;
@@ -189,7 +189,7 @@ public class GetHelp extends AppCompatActivity {
                 entityBuilder.addTextBody("user_nm", username);
                 entityBuilder.addTextBody("user_mob_no", userphone);
                 entityBuilder.addTextBody("message", "[Help] : " + userMsg);
-                entityBuilder.addTextBody("institute_nm", instName);
+                entityBuilder.addTextBody("institute_nm", SCHOOL_NAME);
                 entityBuilder.addTextBody("app_nm", appNm);
                 entityBuilder.addTextBody("app_info", "Version : " + BuildConfig.VERSION_NAME +
                         " Android : " + sdk + " Product : " + product + " Device : " + device + " Model : " + model + " Package : " + getPackageName());

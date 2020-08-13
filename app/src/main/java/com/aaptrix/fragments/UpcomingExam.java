@@ -298,6 +298,9 @@ public class UpcomingExam extends Fragment {
             String school_id = params[0];
             String batch = params[1];
 
+            Log.e("user", userId);
+            Log.e("batch", batch);
+
             String data;
 
             try {

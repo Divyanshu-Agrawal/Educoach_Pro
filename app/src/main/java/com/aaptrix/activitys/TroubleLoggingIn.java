@@ -46,6 +46,7 @@ import cz.msebera.android.httpclient.util.EntityUtils;
 import pl.droidsonroids.gif.GifImageView;
 
 import static com.aaptrix.activitys.SplashScreen.SCHOOL_ID;
+import static com.aaptrix.activitys.SplashScreen.SCHOOL_NAME;
 import static com.aaptrix.tools.HttpUrl.HELP;
 import static com.aaptrix.tools.SPClass.PREF_COLOR;
 import static cz.msebera.android.httpclient.conn.ssl.SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
@@ -162,7 +163,6 @@ public class TroubleLoggingIn extends AppCompatActivity {
             String username = params[0];
             String userphone = params[1];
             String userMsg = params[2];
-            String instName = ctx.getResources().getString(R.string.app_name);
             String appNm = ctx.getResources().getString(R.string.app_name);
             String sdk = android.os.Build.VERSION.SDK;
             String device = android.os.Build.DEVICE;
@@ -183,7 +183,7 @@ public class TroubleLoggingIn extends AppCompatActivity {
                 entityBuilder.addTextBody("user_nm", username);
                 entityBuilder.addTextBody("user_mob_no", userphone);
                 entityBuilder.addTextBody("message", userMsg);
-                entityBuilder.addTextBody("institute_nm", instName);
+                entityBuilder.addTextBody("institute_nm", SCHOOL_NAME);
                 entityBuilder.addTextBody("app_nm", appNm);
                 entityBuilder.addTextBody("app_info", "Version : " + BuildConfig.VERSION_NAME +
                         " Android : " + sdk + " Product : " + product + " Device : " + device + " Model : " + model + " Package : " + getPackageName());
