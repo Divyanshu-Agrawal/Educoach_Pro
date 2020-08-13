@@ -8,13 +8,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -25,6 +26,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +66,7 @@ public class FeedbackActivity extends AppCompatActivity {
     Button submit;
     ProgressBar progressBar;
     EditText feedback;
+    RatingBar ratingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +86,7 @@ public class FeedbackActivity extends AppCompatActivity {
         submit = findViewById(R.id.submit_feedback);
         progressBar = findViewById(R.id.progress_bar);
         anonText = findViewById(R.id.anon_text);
+        ratingBar = findViewById(R.id.rating);
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
         selToolColor = settingsColor.getString("tool", "");
@@ -91,6 +95,10 @@ public class FeedbackActivity extends AppCompatActivity {
         selTextColor1 = settingsColor.getString("text1", "");
         selTextColor2 = settingsColor.getString("text2", "");
         mp = MediaPlayer.create(this, R.raw.button_click);
+
+        ratingBar.setStepSize(1);
+        LayerDrawable draw = (LayerDrawable) ratingBar.getProgressDrawable();
+        draw.getDrawable(2).setColorFilter(Color.parseColor("#FFD700"), PorterDuff.Mode.SRC_ATOP);
 
         cube1 = findViewById(R.id.cube1);
         cube2 = findViewById(R.id.cube2);
@@ -140,9 +148,10 @@ public class FeedbackActivity extends AppCompatActivity {
             if (TextUtils.isEmpty(feedback.getText().toString())) {
                 feedback.setError("Please Enter Feedback");
                 feedback.requestFocus();
+            } else if (ratingBar.getRating() < 1) {
+                Toast.makeText(this, "Please select rating", Toast.LENGTH_SHORT).show();
             } else {
                 submit.setClickable(false);
-                Log.e("checked", String.valueOf(anonymous.isChecked()));
                 if (anonymous.isChecked()) {
                     SendFeedback sendFeedback = new SendFeedback(this);
                     sendFeedback.execute(schoolId, userId, feedback.getText().toString(), "1");
@@ -212,13 +221,12 @@ public class FeedbackActivity extends AppCompatActivity {
                 entityBuilder.addTextBody("tbl_users_id", userId);
                 entityBuilder.addTextBody("comment", feedback);
                 entityBuilder.addTextBody("anonymous", anon);
+                entityBuilder.addTextBody("rating", String.valueOf(ratingBar.getRating()));
                 HttpEntity entity = entityBuilder.build();
                 httppost.setEntity(entity);
                 HttpResponse response = httpclient.execute(httppost);
                 HttpEntity httpEntity = response.getEntity();
-                String res = EntityUtils.toString(httpEntity);
-                Log.e("res", res);
-                return res;
+                return EntityUtils.toString(httpEntity);
             } catch (Exception e) {
                 e.printStackTrace();
             }
