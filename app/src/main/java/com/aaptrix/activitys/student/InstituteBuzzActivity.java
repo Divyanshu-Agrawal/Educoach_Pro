@@ -1180,7 +1180,7 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
     private void listItms() {
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.height = (int) getResources().getDimension(R.dimen._100sdp) * (instiBuzzArray.size()/3);
+        params.height = (int) getResources().getDimension(R.dimen._110sdp) * (instiBuzzArray.size()/3);
         institue_lv.setLayoutParams(params);
 
         institueBuzzAdaptor = new InstitueBuzzAdaptor(InstituteBuzzActivity.this, R.layout.insti_buzz_list_item, instiBuzzArray);

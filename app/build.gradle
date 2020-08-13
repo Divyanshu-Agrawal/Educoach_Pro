@@ -85,8 +85,8 @@ android {
                     appIcon: "@mipmap/ic_launcher",
                     appIconRound: "@mipmap/ic_launcher_round"
             ]
-            versionCode 8
-            versionName "v1.0.6"
+            versionCode 9
+            versionName "v2.0.0"
             signingConfig signingConfigs.demo
         }
 
@@ -101,8 +101,8 @@ android {
                     appIcon: "@mipmap/ic_launcher",
                     appIconRound: "@mipmap/ic_launcher_round"
             ]
-            versionCode 36
-            versionName "v2.1.6"
+            versionCode 37
+            versionName "v3.0.0"
             signingConfig signingConfigs.npc
         }
 
@@ -178,7 +178,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.firebase:firebase-core:17.4.4'
     implementation 'com.google.firebase:firebase-messaging:20.2.4'
     implementation 'com.google.firebase:firebase-iid:20.2.4'
