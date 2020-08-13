@@ -60,6 +60,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -68,6 +69,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -163,7 +165,7 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
     public static final String PREFS_INSTI_BUZZ = "json_institue_buzz";
     AlertDialog.Builder alert;
     RecyclerView announcements;
-    CardView announceCard;
+    LinearLayout announce_layout;
 
     SharedPreferences.Editor editorColor;
     String selToolColor, selDrawerColor, selStatusColor, selTextColor1, selTextColor2, userJson, numberOfUser, userSchoolSchoolLogo3;
@@ -202,7 +204,7 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         setResult(RESULT_OK);
         appBarLayout = findViewById(R.id.appBarLayout);
         tool_title = findViewById(R.id.tool_title);
-        announceCard = findViewById(R.id.announce_card);
+        announce_layout = findViewById(R.id.announce_layout);
         announcements = findViewById(R.id.announcement);
 
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -565,7 +567,7 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         protected void onPostExecute(String result) {
             Log.e("ACHIVE", "" + result);
             if (result.equals("{\"result\":null}")) {
-                announceCard.setVisibility(View.GONE);
+                announce_layout.setVisibility(View.GONE);
                 tv_today_day_date.setVisibility(View.VISIBLE);
             } else {
                 try {
@@ -583,7 +585,7 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
                 if (activitiesArray.size() != 0) {
                     setAnnouncements();
                 } else {
-                    announceCard.setVisibility(View.GONE);
+                    announce_layout.setVisibility(View.GONE);
                     tv_today_day_date.setVisibility(View.VISIBLE);
                 }
             }
@@ -592,7 +594,7 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
     }
 
     private void setAnnouncements() {
-        ActivityAdapter adapter = new ActivityAdapter(this, R.layout.list_announcement, activitiesArray);
+        ActivityAdapter adapter = new ActivityAdapter(this, R.layout.list_announcement, activitiesArray, "announcements");
         announcements.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -613,7 +615,7 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
             }
         }.start();
 
-        announceCard.setOnClickListener(v -> {
+        announce_layout.setOnClickListener(v -> {
             mp.start();
             Intent i = new Intent(InstituteBuzzActivity.this, ActivitiesActivity.class);
             startActivity(i);
@@ -1176,6 +1178,11 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
     }
 
     private void listItms() {
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        params.height = (int) getResources().getDimension(R.dimen._100sdp) * (instiBuzzArray.size()/3);
+        institue_lv.setLayoutParams(params);
+
         institueBuzzAdaptor = new InstitueBuzzAdaptor(InstituteBuzzActivity.this, R.layout.insti_buzz_list_item, instiBuzzArray);
         institue_lv.setAdapter(institueBuzzAdaptor);
 
@@ -1247,14 +1254,11 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
                         i.putExtra("userType", "student");
                         startActivity(i);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-//                        Intent i = new Intent(InstituteBuzzActivity.this, ResultActivity.class);
-//                        startActivity(i);
-//                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         break;
                     }
                     case "Study Materials": {
                         mp.start();
-                        Intent i = new Intent(InstituteBuzzActivity.this, StudyMaterial.class);
+                        Intent i = new Intent(InstituteBuzzActivity.this, StudentMaterial.class);
                         startActivity(i);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     }

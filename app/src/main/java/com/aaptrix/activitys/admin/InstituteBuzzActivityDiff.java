@@ -95,6 +95,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -103,6 +104,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -182,6 +184,7 @@ import static com.aaptrix.tools.HttpUrl.ALL_INSTITUTE_BUZZ_CATE;
 import static com.aaptrix.tools.HttpUrl.GET_PERMISSION;
 import static com.aaptrix.tools.HttpUrl.SWITCH_USERS;
 //import static com.aaptrix.tools.HttpUrl.UPDATE_USER_PRO_IMAGE;
+import static com.aaptrix.tools.HttpUrl.TESTIMONIALS;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
 import static com.aaptrix.tools.SPClass.PREFS_RW;
 import static com.aaptrix.tools.SPClass.PREFS_USER;
@@ -241,8 +244,8 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
     CardView getMoreInfo, sliderCard;
     private String[] image;
     String instPhone;
-    RecyclerView announcements;
-    CardView announceCard;
+    RecyclerView announcements, testimonials;
+    LinearLayout announceLayout, testimonialLayout;
     ArrayList<DataBeanActivities> activitiesArray = new ArrayList<>();
     int pos = 0;
     TextView noAnnounce;
@@ -266,9 +269,11 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         tool_title = findViewById(R.id.tool_title);
         mp = MediaPlayer.create(this, R.raw.button_click);
 
-        announceCard = findViewById(R.id.announce_card);
+        announceLayout = findViewById(R.id.announce_layout);
         announcements = findViewById(R.id.announcement);
         noAnnounce = findViewById(R.id.no_announcement);
+        testimonials = findViewById(R.id.testimonials);
+        testimonialLayout = findViewById(R.id.testimonial_layout);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         announcements.setLayoutManager(mLayoutManager);
@@ -276,6 +281,13 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         announcements.setHasFixedSize(true);
         announcements.setLayoutFrozen(true);
         announcements.setItemAnimator(new DefaultItemAnimator());
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        testimonials.setLayoutManager(layoutManager);
+        testimonials.setNestedScrollingEnabled(false);
+        testimonials.setHasFixedSize(true);
+        testimonials.setLayoutFrozen(true);
+        testimonials.setItemAnimator(new DefaultItemAnimator());
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
         selToolColor = settingsColor.getString("tool", "");
@@ -346,8 +358,9 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
             GetAllActivities b = new GetAllActivities(this);
             b.execute(userSchoolId, "All Batches", userrType);
         } else {
-            announceCard.setVisibility(View.GONE);
-            noAnnounce.setVisibility(View.VISIBLE);
+            announceLayout.setVisibility(View.GONE);
+            GetTestmonials getTestmonials = new GetTestmonials(this);
+            getTestmonials.execute(userSchoolId);
         }
 
         if (!userrType.equals("Guest")) {
@@ -684,7 +697,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         protected void onPostExecute(String result) {
             Log.e("ACHIVE", "" + result);
             if (result.equals("{\"result\":null}")) {
-                announceCard.setVisibility(View.GONE);
+                announcements.setVisibility(View.GONE);
                 noAnnounce.setVisibility(View.VISIBLE);
             } else {
                 try {
@@ -703,7 +716,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                 if (activitiesArray.size() != 0) {
                     setAnnouncements();
                 } else {
-                    announceCard.setVisibility(View.GONE);
+                    announcements.setVisibility(View.GONE);
                     noAnnounce.setVisibility(View.VISIBLE);
                 }
             }
@@ -712,7 +725,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
     }
 
     private void setAnnouncements() {
-        ActivityAdapter adapter = new ActivityAdapter(this, R.layout.list_announcement, activitiesArray);
+        ActivityAdapter adapter = new ActivityAdapter(this, R.layout.list_announcement, activitiesArray, "announcements");
         announcements.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -739,6 +752,115 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
             startActivity(i);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public class GetTestmonials extends AsyncTask<String, String, String> {
+        Context ctx;
+
+        GetTestmonials(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String schoolId = params[0];
+            String data;
+
+            try {
+                URL url = new URL(TESTIMONIALS);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
+                data = URLEncoder.encode("tbl_school_id", "UTF-8") + "=" + URLEncoder.encode(schoolId, "UTF-8");
+                outputStream.write(data.getBytes());
+
+                bufferedWriter.write(data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.flush();
+                outputStream.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+
+                    response.append(line);
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                return response.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.e("testimonials", "" + result);
+            if (result.equals("{\"result\":null}")) {
+                testimonialLayout.setVisibility(View.GONE);
+            } else {
+                try {
+                    JSONObject jsonRootObject = new JSONObject(result);
+                    JSONArray jsonArray = jsonRootObject.getJSONArray("result");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        DataBeanActivities dbact = new DataBeanActivities();
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        dbact.setActiviTitle(jsonObject.getString("comment"));
+                        activitiesArray.add(dbact);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (activitiesArray.size() != 0) {
+                    setTestmonials();
+                    testimonialLayout.setVisibility(View.VISIBLE);
+                } else {
+                    testimonialLayout.setVisibility(View.GONE);
+                }
+            }
+            super.onPostExecute(result);
+        }
+    }
+
+    private void setTestmonials() {
+        ActivityAdapter adapter = new ActivityAdapter(this, R.layout.list_announcement, activitiesArray, "testimonials");
+        testimonials.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        new CountDownTimer(4000, 4000) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                if (pos == activitiesArray.size())
+                    pos = 0;
+                testimonials.smoothScrollToPosition(pos);
+                pos++;
+                start();
+            }
+        }.start();
     }
 
     private void setImages() {
@@ -846,130 +968,6 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         });
 
     }
-
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        Uri filePath;
-//        if (requestCode == 1 && resultCode == RESULT_OK) {
-//            filePath = data.getData();
-//            assert filePath != null;
-//            CropImage.activity(filePath)
-//                    .setGuidelines(CropImageView.Guidelines.ON)
-//                    .setAspectRatio(150, 150)
-//                    .setGuidelines(CropImageView.Guidelines.ON)
-//                    .setCropShape(CropImageView.CropShape.OVAL)
-//                    .start(this);
-//        }
-//
-//        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-//            if (resultCode == RESULT_OK) {
-//                filePath = result.getUri();
-//                try {
-//                    File actualImage = FileUtil.from(InstituteBuzzActivityDiff.this, filePath);
-//                    File compressedImage = new Compressor(InstituteBuzzActivityDiff.this)
-//                            .setMaxWidth(640)
-//                            .setMaxHeight(480)
-//                            .setQuality(75)
-//                            .setCompressFormat(Bitmap.CompressFormat.WEBP)
-//                            .compressToFile(actualImage);
-//                    bitmap = MediaStore.Images.Media.getBitmap(InstituteBuzzActivityDiff.this.getContentResolver(), Uri.fromFile(compressedImage));
-//                    iv_user_img.setImageBitmap(bitmap);
-//                    prof_logo1.setImageBitmap(bitmap);
-//                    header_img.setImageBitmap(bitmap);
-//
-//                    UpdateProfileImage updateProfileImage = new UpdateProfileImage(InstituteBuzzActivityDiff.this, compressedImage);
-//                    updateProfileImage.execute(userId);
-//
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-//                Exception error = result.getError();
-//                Toast.makeText(InstituteBuzzActivityDiff.this, "" + error, Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
-//
-//    @SuppressLint("StaticFieldLeak")
-//    public class UpdateProfileImage extends AsyncTask<String, String, String> {
-//        Context ctx;
-//        File image;
-//
-//        UpdateProfileImage(Context ctx, File image) {
-//            this.ctx = ctx;
-//            this.image = image;
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            Toast.makeText(ctx, "Please wait we are updating your profile", Toast.LENGTH_SHORT).show();
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//            String userId = params[0];
-//
-//            try {
-//
-//                SSLContext sslContext = SSLContexts.custom().useTLS().build();
-//                SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
-//                        sslContext,
-//                        new String[]{"TLSv1.1", "TLSv1.2"},
-//                        null,
-//                        BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
-//                HttpClient httpclient = HttpClients.custom().setSSLSocketFactory(f).build();
-//                HttpPost httppost = new HttpPost(UPDATE_USER_PRO_IMAGE);
-//                MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
-//                entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-//                FileBody newImage = new FileBody(image);
-//                entityBuilder.addPart("image", newImage);
-//                entityBuilder.addTextBody("userId", userId);
-//                HttpEntity entity = entityBuilder.build();
-//                httppost.setEntity(entity);
-//                HttpResponse response = httpclient.execute(httppost);
-//                HttpEntity httpEntity = response.getEntity();
-//                return EntityUtils.toString(httpEntity);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            try {
-//                JSONObject jsonObject = new JSONObject(result);
-//                if (jsonObject.getString("success").equals("true")) {
-//                    editor.putString("userImg", jsonObject.getString("imageNm"));
-//                    editor.commit();
-//                    String firebase_userID = "educoach" + userId + "@educoach.co.in";
-//                    String firebase_password = "educoach" + userId;
-//                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-//                    mAuth.signInWithEmailAndPassword(firebase_userID, firebase_password)
-//                            .addOnCompleteListener(task -> {
-//                                String current_user_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-//                                DatabaseReference storeUserDefaultDataReference = FirebaseDatabase.getInstance().getReference().child("Users").child(current_user_id);
-//                                try {
-//                                    storeUserDefaultDataReference.child("userImg").setValue(jsonObject.getString("imageNm"));
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            });
-//                    Toast.makeText(InstituteBuzzActivityDiff.this, "Your Image is Updated", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(InstituteBuzzActivityDiff.this, "Not uploaded image is too large", Toast.LENGTH_SHORT).show();
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            super.onPostExecute(result);
-//        }
-//
-//    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -1305,6 +1303,11 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
     }
 
     private void listItms() {
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        params.height = (int) getResources().getDimension(R.dimen._100sdp) * (instiBuzzArray.size()/3);
+        institue_lv.setLayoutParams(params);
+
         institueBuzzAdaptor = new InstitueBuzzAdaptor(InstituteBuzzActivityDiff.this, R.layout.insti_buzz_list_item, instiBuzzArray);
         institue_lv.setAdapter(institueBuzzAdaptor);
 
@@ -1404,6 +1407,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         } else {
                             Intent i = new Intent(InstituteBuzzActivityDiff.this, StudyMaterial.class);
+                            i.putExtra("sub", "All");
                             startActivity(i);
                             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         }

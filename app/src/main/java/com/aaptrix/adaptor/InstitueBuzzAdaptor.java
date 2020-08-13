@@ -304,8 +304,8 @@ public class InstitueBuzzAdaptor extends ArrayAdapter<DataBeanInstitueBuzz> {
                 }
                 case "Online Exam": {
                     try {
-                        Bitmap bigImage = BitmapFactory.decodeResource(context.getResources(), R.drawable.results_b);
-                        Bitmap smallImage = BitmapFactory.decodeResource(context.getResources(), R.drawable.results_f);
+                        Bitmap bigImage = BitmapFactory.decodeResource(context.getResources(), R.drawable.exam_b);
+                        Bitmap smallImage = BitmapFactory.decodeResource(context.getResources(), R.drawable.exam_f);
                         Bitmap front = tintImage(smallImage, Color.parseColor(frontColor));
                         Bitmap back = tintImage(bigImage, Color.parseColor(backColor));
                         Bitmap mergedImages = createImage(front, back);
