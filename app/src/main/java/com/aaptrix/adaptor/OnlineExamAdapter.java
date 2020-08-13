@@ -91,7 +91,7 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
                 sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
                 assert date != null;
                 assert endDate != null;
-                examDate.setText(sdf.format(date));
+                examDate.setText("Starts At : " + sdf.format(date));
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.add(Calendar.DATE, -1);

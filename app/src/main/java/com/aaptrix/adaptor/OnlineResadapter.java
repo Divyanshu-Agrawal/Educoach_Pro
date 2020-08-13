@@ -88,7 +88,7 @@ public class OnlineResadapter extends ArrayAdapter<OnlineExamData> {
                 sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
                 assert date != null;
                 assert endDate != null;
-                examDate.setText(sdf.format(date));
+                examDate.setText("Started At : " + sdf.format(date));
 
                 String end = sdf.format(endDate);
                 sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
