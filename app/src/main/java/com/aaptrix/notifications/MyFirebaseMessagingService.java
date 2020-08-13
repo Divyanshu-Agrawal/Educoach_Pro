@@ -21,6 +21,7 @@ import com.aaptrix.activitys.student.DairyActivity;
 import com.aaptrix.activitys.student.GalleryActivity;
 import com.aaptrix.activitys.student.HomeworkActivity;
 import com.aaptrix.activitys.student.PublicationActivity;
+import com.aaptrix.activitys.student.StudentMaterial;
 import com.aaptrix.activitys.student.StudentTimeTableActivity;
 import com.aaptrix.activitys.student.StudentVideo;
 import com.aaptrix.activitys.student.StudyMaterial;
@@ -125,7 +126,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
                 break;
                 case "Study Material": {
-                    intent = new Intent(this, StudyMaterial.class);
+                    if (userType.equals("Student")) {
+                        intent = new Intent(this, StudentMaterial.class);
+                    } else {
+                        intent = new Intent(this, StudyMaterial.class);
+                        intent.putExtra("sub", "All");
+                    }
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                         nb.setChannelId("04");
                         notifChannel("Study Material", "04", notificationManager);

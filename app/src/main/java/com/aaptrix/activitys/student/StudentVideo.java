@@ -65,16 +65,16 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-import static com.aaptrix.tools.HttpUrl.ALL_VIDEOS;
 import static com.aaptrix.tools.HttpUrl.GET_SUBS;
+import static com.aaptrix.tools.HttpUrl.STUDENT_VIDEO;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
 import static com.aaptrix.tools.SPClass.PREFS_RW;
 import static com.aaptrix.tools.SPClass.PREF_COLOR;
 
 public class StudentVideo extends AppCompatActivity {
 
-    RecyclerView recyclerView;
-    ArrayList<VideosData> videosArray = new ArrayList<>(), array = new ArrayList<>();
+    RecyclerView recyclerView, liveList;
+    ArrayList<VideosData> videosArray = new ArrayList<>(), array = new ArrayList<>(), liveArray = new ArrayList<>(), dataArray = new ArrayList<>();
     VideosData videosData;
     AppBarLayout appBarLayout;
     String selToolColor, selStatusColor, selTextColor1;
@@ -83,10 +83,9 @@ public class StudentVideo extends AppCompatActivity {
     String[] subjects;
     ArrayList<String> subject_array = new ArrayList<>();
     String userId, userSchoolId, userRoleId, userrType, userSection, url, userName, restricted;
-    LinearLayout liveVideo;
     GridView subjectGrid;
     ProgressBar progressBar;
-    LinearLayout mainLayout, viewAll;
+    LinearLayout mainLayout, viewAll, viewAllLive, viewAllSubject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,11 +99,13 @@ public class StudentVideo extends AppCompatActivity {
         tool_title = findViewById(R.id.tool_title);
         recyclerView = findViewById(R.id.video_list);
         noVideos = findViewById(R.id.no_videos);
-        liveVideo = findViewById(R.id.live_video);
         subjectGrid = findViewById(R.id.subject_grid);
         progressBar = findViewById(R.id.progress);
         mainLayout = findViewById(R.id.main_layout);
         viewAll = findViewById(R.id.view_all);
+        viewAllLive = findViewById(R.id.view_all_live);
+        viewAllSubject = findViewById(R.id.view_all_subject);
+        liveList = findViewById(R.id.live_list);
         recyclerView.setEnabled(true);
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
@@ -134,32 +135,6 @@ public class StudentVideo extends AppCompatActivity {
         }
         tool_title.setTextColor(Color.parseColor(selTextColor1));
 
-        SharedPreferences preferences = getSharedPreferences(PREFS_RW, 0);
-        String json = preferences.getString("result", "");
-
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-            JSONArray jsonArray = jsonObject.getJSONArray("result");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject object = jsonArray.getJSONObject(i);
-                if (object.getString("tbl_insti_buzz_cate_name").equals("Video Live Streaming")) {
-                    if (object.getString("tbl_scl_inst_buzz_detl_status").equals("Active")) {
-                        liveVideo.setVisibility(View.VISIBLE);
-                    } else {
-                        liveVideo.setVisibility(View.GONE);
-                    }
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        liveVideo.setOnClickListener(v -> {
-            Intent intent = new Intent(this, LiveStreaming.class);
-            startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        });
-
         String section = "[{\"userName\":\"" + userSection + "\"}]";
         GetSubject subject = new GetSubject(this);
         subject.execute(userSchoolId, section);
@@ -171,7 +146,22 @@ public class StudentVideo extends AppCompatActivity {
         recyclerView.setLayoutFrozen(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        liveList.setLayoutManager(layoutManager);
+        liveList.setNestedScrollingEnabled(false);
+        liveList.setHasFixedSize(true);
+        liveList.setLayoutFrozen(true);
+        liveList.setItemAnimator(new DefaultItemAnimator());
+
+        viewAllLive.setOnClickListener(v -> startActivity(new Intent(this, LiveStreaming.class)));
+
         viewAll.setOnClickListener(v -> {
+            Intent intent = new Intent(this, VideoLibrary.class);
+            intent.putExtra("sub", "All");
+            startActivity(intent);
+        });
+
+        viewAllSubject.setOnClickListener(v -> {
             Intent intent = new Intent(this, VideoLibrary.class);
             intent.putExtra("sub", "All");
             startActivity(intent);
@@ -192,6 +182,9 @@ public class StudentVideo extends AppCompatActivity {
             recyclerView.setEnabled(false);
             progressBar.setVisibility(View.VISIBLE);
             array.clear();
+            dataArray.clear();
+            liveArray.clear();
+            liveList.setEnabled(false);
             super.onPreExecute();
         }
 
@@ -205,7 +198,7 @@ public class StudentVideo extends AppCompatActivity {
 
             try {
 
-                URL url = new URL(ALL_VIDEOS);
+                URL url = new URL(STUDENT_VIDEO);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setDoOutput(true);
@@ -250,9 +243,12 @@ public class StudentVideo extends AppCompatActivity {
         protected void onPostExecute(String result) {
             Log.e("res", result);
             recyclerView.setEnabled(true);
+            liveList.setEnabled(true);
             try {
                 array.clear();
                 videosArray.clear();
+                dataArray.clear();
+                liveArray.clear();
                 Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
                 JSONObject jsonRootObject = new JSONObject(result);
@@ -270,8 +266,9 @@ public class StudentVideo extends AppCompatActivity {
                         videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
                         videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
                         videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
+                        videosData.setTags(jsonObject.getString("tbl_school_studyvideo_tag"));
                         videosData.setStart(jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time"));
-                        videosData.setEnd(jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time"));
+                        videosData.setEnd(end);
                         if (!end.equals("0000-00-00 00:00:00")) {
                             if (calendar.getTime().before(enddate)) {
                                 array.add(videosData);
@@ -281,73 +278,68 @@ public class StudentVideo extends AppCompatActivity {
                         }
                     }
                 }
-                if (!result.contains("\"instituteVideos\":null")) {
-                    JSONArray jsonArray = jsonRootObject.getJSONArray("instituteVideos");
+                if (!result.contains("\"liveStreamingvideo\":null")) {
+                    JSONArray jsonArray = jsonRootObject.getJSONArray("liveStreamingvideo");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
-                        Date enddate = sdf.parse(end);
                         videosData = new VideosData();
-                        videosData.setId(jsonObject.getString("tbl_school_institutevideo_id"));
-                        videosData.setTitle(jsonObject.getString("tbl_school_institutevideo_title"));
-                        videosData.setUrl(url + jsonObject.getString("tbl_school_institutevideo_video"));
-                        videosData.setDesc(jsonObject.getString("tbl_school_institutevideo_desc"));
+                        videosData.setId(jsonObject.getString("tbl_school_live_streamingvideo_id"));
+                        videosData.setTitle(jsonObject.getString("tbl_school_live_streamingvideo_title"));
+                        videosData.setUrl(jsonObject.getString("tbl_school_live_streamingvideo_video"));
                         videosData.setSubject(jsonObject.getString("subject_name"));
-                        videosData.setDate(jsonObject.getString("tbl_school_institutevideo_date"));
+                        videosData.setDesc(jsonObject.getString("tbl_school_live_streamingvideo_desc"));
                         videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
-                        videosData.setStart(jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time"));
-                        videosData.setEnd(jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time"));
-                        if (!end.equals("0000-00-00 00:00:00")) {
-                            if (calendar.getTime().before(enddate)) {
-                                array.add(videosData);
-                            }
-                        } else {
-                            array.add(videosData);
-                        }
+                        videosData.setDate(jsonObject.getString("tbl_school_live_streamingvideo_date"));
+                        videosData.setComments(jsonObject.getString("comments_enable_disable"));
+                        videosData.setStream(jsonObject.getString("streaming_on_off"));
+                        dataArray.add(videosData);
                     }
                 }
                 String disable = jsonRootObject.getString("DisableSubject");
-                if (!result.contains("\"studyVideosStudent\":null")) {
-                    JSONArray jsonArray = jsonRootObject.getJSONArray("studyVideosStudent");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
-                        Date enddate = sdf.parse(end);
-                        videosData = new VideosData();
-                        videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
-                        videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
-                        videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
-                        videosData.setSubject(jsonObject.getString("subject_name"));
-                        videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
-                        videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
-                        videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
-                        videosData.setStart(jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time"));
-                        videosData.setEnd(jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time"));
-                        if (!end.equals("0000-00-00 00:00:00")) {
-                            if (calendar.getTime().before(enddate)) {
-                                array.add(videosData);
-                            }
-                        } else {
-                            array.add(videosData);
-                        }
+                for (int i = 0; i < array.size(); i++) {
+                    if (!disable.contains(array.get(i).getSubject())) {
+                        videosArray.add(array.get(i));
                     }
-                    for (int i = 0; i < array.size(); i++) {
-                        if (!disable.contains(array.get(i).getSubject())) {
-                            videosArray.add(array.get(i));
-                        }
+                }
+                for (int i = 0; i < dataArray.size(); i++) {
+                    if (!disable.contains(dataArray.get(i).getSubject())) {
+                        liveArray.add(dataArray.get(i));
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
             progressBar.setVisibility(View.GONE);
-            if (videosArray.size() == 0) {
+
+            if (videosArray.size() == 0 && liveArray.size() == 0) {
                 noVideos.setVisibility(View.VISIBLE);
                 mainLayout.setVisibility(View.GONE);
-            } else {
+            } else if (videosArray.size() > 0 && liveArray.size() > 0) {
                 listItems();
+                viewAll.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.VISIBLE);
                 noVideos.setVisibility(View.GONE);
                 mainLayout.setVisibility(View.VISIBLE);
+                viewAllLive.setVisibility(View.VISIBLE);
+                liveList.setVisibility(View.VISIBLE);
+            } else {
+                if (videosArray.size() > 0) {
+                    listItems();
+                    viewAll.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                } else {
+                    viewAll.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.GONE);
+                }
+
+                if (liveArray.size() > 0) {
+                    listItems();
+                    viewAllLive.setVisibility(View.VISIBLE);
+                    liveList.setVisibility(View.VISIBLE);
+                } else {
+                    viewAllLive.setVisibility(View.GONE);
+                    liveList.setVisibility(View.GONE);
+                }
             }
             super.onPostExecute(result);
         }
@@ -356,6 +348,7 @@ public class StudentVideo extends AppCompatActivity {
     private void listItems() {
 
         ArrayList<VideosData> arrayList = new ArrayList<>();
+        ArrayList<VideosData> live = new ArrayList<>();
 
         ArrayList<String> ids = new ArrayList<>();
         for (int i = 0; i < videosArray.size(); i++) {
@@ -366,8 +359,22 @@ public class StudentVideo extends AppCompatActivity {
         for (int i = 0; i < ids.size(); i++) {
             for (int j = 0; j < videosArray.size(); j++) {
                 if (ids.get(i).equals(videosArray.get(j).getId())) {
-                    if (arrayList.size() <= 5)
-                        arrayList.add(videosArray.get(j));
+                    arrayList.add(videosArray.get(j));
+                    break;
+                }
+            }
+        }
+
+        ArrayList<String> id = new ArrayList<>();
+        for (int i = 0; i < liveArray.size(); i++) {
+            if (!id.contains(liveArray.get(i).getId())) {
+                id.add(liveArray.get(i).getId());
+            }
+        }
+        for (int i = 0; i < id.size(); i++) {
+            for (int j = 0; j < liveArray.size(); j++) {
+                if (id.get(i).equals(liveArray.get(j).getId())) {
+                    live.add(liveArray.get(j));
                     break;
                 }
             }
@@ -375,12 +382,22 @@ public class StudentVideo extends AppCompatActivity {
 
         progressBar.setVisibility(View.GONE);
 
-        if (arrayList.size() == 0) {
+        if (arrayList.size() == 0 && live.size() == 0) {
             noVideos.setVisibility(View.VISIBLE);
             mainLayout.setVisibility(View.GONE);
+        } else if (arrayList.size() > 0 && live.size() > 0) {
+            noVideos.setVisibility(View.GONE);
+            mainLayout.setVisibility(View.VISIBLE);
         } else {
             noVideos.setVisibility(View.GONE);
             mainLayout.setVisibility(View.VISIBLE);
+            if (arrayList.size() == 0) {
+                viewAll.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
+            } else {
+                viewAllLive.setVisibility(View.GONE);
+                liveList.setVisibility(View.GONE);
+            }
         }
 
         Collections.sort(arrayList, (o1, o2) -> {
@@ -394,9 +411,14 @@ public class StudentVideo extends AppCompatActivity {
         });
         Collections.reverse(arrayList);
 
-        StudentVideoAdapter adapter = new StudentVideoAdapter(this, R.layout.list_video, arrayList);
+        StudentVideoAdapter adapter = new StudentVideoAdapter(this, R.layout.list_video, arrayList, "video");
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        StudentVideoAdapter liveAdapter = new StudentVideoAdapter(this, R.layout.list_video, live, "live");
+        liveList.setAdapter(liveAdapter);
+        liveAdapter.notifyDataSetChanged();
+
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -464,9 +486,7 @@ public class StudentVideo extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            if (result.equals("{\"SubjectList\":null}")) {
-                subject_array.add("All");
-            } else {
+            if (!result.equals("{\"SubjectList\":null}")) {
                 try {
                     subject_array.clear();
                     JSONObject jsonRootObject = new JSONObject(result);
@@ -477,7 +497,6 @@ public class StudentVideo extends AppCompatActivity {
                         subjects[i] = jsonObject.getString("tbl_batch_subjct_name");
                     }
                     String object = jsonRootObject.getString("DisableSubject");
-                    subject_array.add("All");
                     for (String subject : subjects) {
                         if (!object.contains(subject)) {
                             subject_array.add(subject);
@@ -496,6 +515,10 @@ public class StudentVideo extends AppCompatActivity {
         SubjectAdapter adapter = new SubjectAdapter(this, R.layout.list_subject, subject_array);
         subjectGrid.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.height = (int) getResources().getDimension(R.dimen._90sdp) * (subject_array.size() / 2);
+        subjectGrid.setLayoutParams(params);
     }
 
     static class SubjectAdapter extends ArrayAdapter<String> {
@@ -533,10 +556,7 @@ public class StudentVideo extends AppCompatActivity {
             });
 
             if (objects != null) {
-                if (objects.get(position).equals("All")) {
-                    holder.subject.setText("All Subjects");
-                } else
-                    holder.subject.setText(objects.get(position));
+                holder.subject.setText(objects.get(position));
             }
             return view;
         }
@@ -552,16 +572,18 @@ public class StudentVideo extends AppCompatActivity {
         }
     }
 
-    static class StudentVideoAdapter extends RecyclerView.Adapter<StudentVideoAdapter.ViewHolder> {
+    class StudentVideoAdapter extends RecyclerView.Adapter<StudentVideoAdapter.ViewHolder> {
 
         private Context context;
         private int resource;
         private ArrayList<VideosData> objects;
+        private String type;
 
-        public StudentVideoAdapter(Context context, int resource, ArrayList<VideosData> objects) {
+        public StudentVideoAdapter(Context context, int resource, ArrayList<VideosData> objects, String type) {
             this.context = context;
             this.resource = resource;
             this.objects = objects;
+            this.type = type;
         }
 
         @Override
@@ -569,11 +591,11 @@ public class StudentVideo extends AppCompatActivity {
             return position;
         }
 
-        static class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder {
 
-            ImageView imageView;
             TextView title, startAt;
-            CardView start;
+            ImageView imageView;
+            CardView live, start;
 
             ViewHolder(@NonNull View view) {
                 super(view);
@@ -581,6 +603,7 @@ public class StudentVideo extends AppCompatActivity {
                 imageView = view.findViewById(R.id.videoImage);
                 startAt = view.findViewById(R.id.start_at);
                 start = view.findViewById(R.id.start_time);
+                live = view.findViewById(R.id.live_video_indicator);
             }
         }
 
@@ -606,67 +629,97 @@ public class StudentVideo extends AppCompatActivity {
                 holder.imageView.setBackgroundColor(Color.WHITE);
             }
 
-            try {
-                Calendar calendar = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
-                String start = objects.get(position).getStart();
-                Date startdate = sdf.parse(start);
-                assert startdate != null;
-                sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                Date d = sdf.parse(start);
-                String cal = sdf.format(calendar.getTime());
-                assert d != null;
-                if (!start.equals("0000-00-00 00:00:00")) {
-                    if (cal.equals(sdf.format(d))) {
-                        if (calendar.getTime().before(startdate)) {
-                            sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
-                            String date = sdf.format(startdate);
-                            holder.start.setVisibility(View.VISIBLE);
-                            holder.startAt.setText("Starts At : " + date);
-                        }
-                    } else {
-                        if (calendar.getTime().before(startdate)) {
-                            sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm aa", Locale.getDefault());
-                            String date = sdf.format(startdate);
-                            holder.start.setVisibility(View.VISIBLE);
-                            holder.startAt.setText("Starts At : " + date);
-                        }
-                    }
+            if (type.equals("live")) {
+                if (objects.get(position).getStream().equals("1")) {
+                    holder.live.setVisibility(View.VISIBLE);
+                    holder.live.bringToFront();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
 
-            holder.imageView.setOnClickListener(v -> {
+            if (type.equals("video")) {
                 try {
                     Calendar calendar = Calendar.getInstance();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
                     String start = objects.get(position).getStart();
                     Date startdate = sdf.parse(start);
-                    sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                    Date date = sdf.parse(start);
-                    Intent intent = new Intent(context, VideoDetails.class);
-                    intent.putExtra("title", objects.get(position).getTitle());
-                    intent.putExtra("url", objects.get(position).getUrl());
-                    intent.putExtra("id", objects.get(position).getId());
-                    intent.putExtra("desc", objects.get(position).getDesc());
-                    intent.putExtra("endDate", objects.get(position).getEnd());
                     assert startdate != null;
+                    sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    Date d = sdf.parse(start);
+                    String cal = sdf.format(calendar.getTime());
                     if (!start.equals("0000-00-00 00:00:00")) {
-                        if (calendar.getTime().equals(startdate) || (calendar.getTime().after(startdate))) {
-                            context.startActivity(intent);
-                        } else if (calendar.getTime().before(date)) {
-                            sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm aa", Locale.getDefault());
-                            Toast.makeText(context, "Starts at " + sdf.format(startdate), Toast.LENGTH_SHORT).show();
+                        if (cal.equals(sdf.format(d))) {
+                            if (calendar.getTime().before(startdate)) {
+                                sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+                                String date = sdf.format(startdate);
+                                holder.start.setVisibility(View.VISIBLE);
+                                holder.startAt.setText("Starts At : " + date);
+                            }
                         } else {
-                            sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
-                            Toast.makeText(context, "Starts at " + sdf.format(startdate), Toast.LENGTH_SHORT).show();
+                            if (calendar.getTime().before(startdate)) {
+                                sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm aa", Locale.getDefault());
+                                String date = sdf.format(startdate);
+                                holder.start.setVisibility(View.VISIBLE);
+                                holder.startAt.setText("Starts At : " + date);
+                            }
                         }
-                    } else {
-                        context.startActivity(intent);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+            }
+
+            holder.imageView.setOnClickListener(v -> {
+                if (type.equals("video")) {
+                    try {
+                        Calendar calendar = Calendar.getInstance();
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
+                        String start = objects.get(position).getStart();
+                        Date startdate = sdf.parse(start);
+                        sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                        Date date = sdf.parse(start);
+                        Intent intent = new Intent(context, VideoDetails.class);
+                        intent.putExtra("title", objects.get(position).getTitle());
+                        intent.putExtra("url", objects.get(position).getUrl());
+                        intent.putExtra("id", objects.get(position).getId());
+                        intent.putExtra("desc", objects.get(position).getDesc());
+                        intent.putExtra("endDate", objects.get(position).getEnd());
+                        intent.putExtra("tags", objects.get(position).getTags());
+                        intent.putExtra("subject", objects.get(position).getSubject());
+                        assert startdate != null;
+                        if (!start.equals("0000-00-00 00:00:00")) {
+                            if (calendar.getTime().equals(startdate) || (calendar.getTime().after(startdate))) {
+                                context.startActivity(intent);
+                            } else if (calendar.getTime().before(date)) {
+                                sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm aa", Locale.getDefault());
+                                Toast.makeText(context, "Starts at " + sdf.format(startdate), Toast.LENGTH_SHORT).show();
+                            } else {
+                                sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+                                Toast.makeText(context, "Starts at " + sdf.format(startdate), Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            context.startActivity(intent);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    if (objects.get(position).getStream().equals("1")) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                        if (isInternetOn()) {
+                            Intent intent = new Intent(context, PlayLiveStream.class);
+                            intent.putExtra("title", objects.get(position).getTitle());
+                            intent.putExtra("url", objects.get(position).getUrl());
+                            intent.putExtra("id", objects.get(position).getId());
+                            intent.putExtra("desc", objects.get(position).getDesc());
+                            intent.putExtra("comments", objects.get(position).getComments());
+                            intent.putExtra("date", sdf.format(Calendar.getInstance().getTime()));
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(context, "No Internet", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(context, "Streaming is ended", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }
@@ -682,7 +735,7 @@ public class StudentVideo extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return objects.size();
+            return Math.min(objects.size(), 5);
         }
     }
 

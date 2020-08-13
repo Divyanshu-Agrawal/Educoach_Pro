@@ -11,6 +11,7 @@
         app:cardCornerRadius="5dp"
         app:cardUseCompatPadding="true"
         android:elevation="10dp"
+        android:id="@+id/cardview"
         android:layout_margin="5dp"
         app:cardPreventCornerOverlap="true">
 

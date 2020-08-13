@@ -35,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -91,7 +92,7 @@ public class StudyMaterial extends AppCompatActivity {
     ArrayList<StudyMaterialData> studyMaterialArray = new ArrayList<>(), array = new ArrayList<>();
     StudyMaterialData data;
     ImageButton filter;
-    private String selSubject = "All Subjects", disable;
+    private String selSubject = "All", disable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +122,8 @@ public class StudyMaterial extends AppCompatActivity {
         userrType = settings.getString("userrType", "");
         userName = settings.getString("userName", "");
         restricted = settings.getString("restricted", "");
+
+        selSubject = getIntent().getStringExtra("sub");
 
         if (userrType.equals("Admin") || userrType.equals("Teacher")) {
             setBatch();
@@ -189,25 +192,15 @@ public class StudyMaterial extends AppCompatActivity {
             }
         });
 
-        if (!userrType.equals("Guest")) {
-            if (userrType.equals("Student")) {
-                String section = "[{\"userName\":\"" + userSection + "\"}]";
-                GetSubject subject = new GetSubject(this);
-                subject.execute(userSchoolId, section);
-            } else {
-                if (!selBatch.equals("All Batches")) {
-                    String section = "[{\"userName\":\"" + selBatch + "\"}]";
-                    GetSubject subject = new GetSubject(this);
-                    subject.execute(userSchoolId, section);
-                } else {
-                    GetSubject subject = new GetSubject(this);
-                    subject.execute(userSchoolId, "All");
-                }
-            }
-        }
-
         if (userrType.equals("Guest")) {
             batch_spinner.setVisibility(View.GONE);
+            filter.setVisibility(View.GONE);
+        }
+
+        if (!userrType.equals("Student")) {
+            GetSubject subject = new GetSubject(this);
+            subject.execute(userSchoolId, "All");
+        } else {
             filter.setVisibility(View.GONE);
         }
 
@@ -473,6 +466,7 @@ public class StudyMaterial extends AppCompatActivity {
                         data.setSubject(jObject.getString("subject_name"));
                         data.setBatch(jObject.getString("tbl_stnt_prsnl_data_section"));
                         data.setPermission(jObject.getString("download_permission"));
+                        data.setTags(jObject.getString("tbl_school_studymaterial_tag"));
                         array.add(data);
                     }
                 }
@@ -489,6 +483,7 @@ public class StudyMaterial extends AppCompatActivity {
                             data.setSubject(jObject.getString("subject_name"));
                             data.setBatch(jObject.getString("tbl_stnt_prsnl_data_section"));
                             data.setPermission(jObject.getString("download_permission"));
+                            data.setTags(jObject.getString("tbl_school_studymaterial_tag"));
                             array.add(data);
                         }
                     }
@@ -534,7 +529,7 @@ public class StudyMaterial extends AppCompatActivity {
         listView.setVisibility(View.VISIBLE);
         ArrayList<String> ids = new ArrayList<>();
         if (!userrType.equals("Student")) {
-            if (subject.equals("All Subjects")) {
+            if (subject.equals("All")) {
                 for (int i = 0; i < studyMaterialArray.size(); i++) {
                     if (!ids.contains(studyMaterialArray.get(i).getId())) {
                         ids.add(studyMaterialArray.get(i).getId());
@@ -566,7 +561,7 @@ public class StudyMaterial extends AppCompatActivity {
                 }
             }
         } else {
-            if (subject.equals("All Subjects")) {
+            if (subject.equals("All")) {
                 for (int i = 0; i < studyMaterialArray.size(); i++) {
                     if (!ids.contains(studyMaterialArray.get(i).getId())) {
                         ids.add(studyMaterialArray.get(i).getId());
@@ -619,6 +614,8 @@ public class StudyMaterial extends AppCompatActivity {
             intent.putExtra("id", arrayList.get(position).getId());
             intent.putExtra("url", arrayList.get(position).getUrl());
             intent.putExtra("permission", arrayList.get(position).getPermission());
+            intent.putExtra("tags", arrayList.get(position).getTags());
+            intent.putExtra("subject", arrayList.get(position).getSubject());
             startActivity(intent);
         });
 

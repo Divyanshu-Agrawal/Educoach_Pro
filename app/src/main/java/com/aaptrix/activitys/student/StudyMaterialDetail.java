@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.PermissionChecker;
+import androidx.leanback.widget.HorizontalGridView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -28,10 +30,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -40,6 +44,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.appbar.AppBarLayout;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -67,11 +73,12 @@ public class StudyMaterialDetail extends AppCompatActivity {
 	TextView tool_title;
 	ListView listView;
 	TextView title, description;
-	String strTitle, strDesc, strId, strPermission;
+	String strTitle, strDesc, strId, strPermission, strTags, strSubject;
 	long downloadID;
 	String[] strUrl;
 	ArrayList<String> url = new ArrayList<>();
 	SharedPreferences sp;
+	HorizontalGridView gridView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +99,19 @@ public class StudyMaterialDetail extends AppCompatActivity {
 		strId = getIntent().getStringExtra("id");
 		strUrl = getIntent().getStringArrayExtra("url");
 		strPermission = getIntent().getStringExtra("permission");
+		strTags = getIntent().getStringExtra("tags");
+		strSubject = getIntent().getStringExtra("subject");
 		title.setText(strTitle);
+		gridView = findViewById(R.id.tags);
+
+		if (strTags.equals("null") || strTags.equals("")) {
+			gridView.setVisibility(View.GONE);
+		} else {
+			String[] tag = strTags.replace("[", "").replace("]", "").split(",");
+			TagsAdapter adapter = new TagsAdapter(this, tag);
+			gridView.setAdapter(adapter);
+			adapter.notifyDataSetChanged();
+		}
 
 		if (!strDesc.equals("null")) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -148,6 +167,55 @@ public class StudyMaterialDetail extends AppCompatActivity {
 			}
 		});
 		
+	}
+
+	class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder>{
+
+		private Context context;
+		private String[] tags;
+
+		public TagsAdapter(Context context, String[] tags){
+			this.context = context;
+			this.tags = tags;
+		}
+
+		public class ViewHolder extends RecyclerView.ViewHolder {
+
+			TextView tagsName;
+
+			public ViewHolder(View view) {
+				super(view);
+				tagsName = view.findViewById(R.id.tag_name);
+			}
+		}
+
+		@NotNull
+		@Override
+		public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+			final View view = LayoutInflater.from(this.context).inflate(R.layout.tags_list, parent, false);
+			return new ViewHolder(view);
+		}
+
+		@Override
+		public void onBindViewHolder(@NotNull ViewHolder holder, final int position) {
+			holder.tagsName.setText(tags[position]);
+			holder.tagsName.setOnClickListener(v -> {
+				Intent intent = new Intent(context, MaterialByTag.class);
+				intent.putExtra("subject",strSubject);
+				intent.putExtra("tag", tags[position]);
+				context.startActivity(intent);
+			});
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public int getItemCount() {
+			return tags.length;
+		}
 	}
 
 	public final boolean isInternetOn() {

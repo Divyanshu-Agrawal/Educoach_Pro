@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.aaptrix.activitys.student.SubjectExamView">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/orange"
+        android:id="@+id/appBarLayout"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:weightSum="3">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            app:popupTheme="@style/MyDarkToolbarStyle"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:gravity="start|center"
+                android:orientation="horizontal"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/tool_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="start|center"
+                    android:textAllCaps="false"
+                    android:layout_toStartOf="@id/download"
+                    android:textColor="@color/white"
+                    android:textSize="18dp" />
+                <ImageButton
+                    android:layout_width="55dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/download_icon"
+                    android:layout_alignParentEnd="true"
+                    android:visibility="gone"
+                    android:background="@android:color/transparent"
+                    android:id="@+id/download"/>
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.github.barteksc.pdfviewer.PDFView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fullscr_pdf"
+        android:visibility="visible"
+        android:layout_below="@id/appBarLayout"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="28sp"
+        android:rotation="-45"
+        android:layout_centerInParent="true"
+        android:textStyle="bold"
+        android:text="Student roll number"
+        android:textColor="#80111111"
+        android:id="@+id/watermark"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_60sdp"
+        android:layout_alignParentBottom="true"
+        android:background="#CC111111"
+        android:id="@+id/notice"
+        android:layout_margin="@dimen/_10sdp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="9"
+            android:textColor="#ffffff"
+            android:padding="5dp"
+            android:text="@string/notice"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_cross_white_24"
+            android:id="@+id/dismiss"
+            android:padding="10dp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

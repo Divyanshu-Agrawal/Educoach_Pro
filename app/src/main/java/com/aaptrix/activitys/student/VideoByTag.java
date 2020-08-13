@@ -1,11 +1,9 @@
 package com.aaptrix.activitys.student;
 
-import com.aaptrix.activitys.admin.AddNewVideo;
-import com.aaptrix.adaptor.VideoAdapter;
-import com.aaptrix.databeans.VideosData;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -37,6 +35,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aaptrix.R;
+import com.aaptrix.activitys.admin.AddNewVideo;
+import com.aaptrix.adaptor.VideoAdapter;
+import com.aaptrix.databeans.VideosData;
 import com.google.android.material.appbar.AppBarLayout;
 
 import org.json.JSONArray;
@@ -67,11 +69,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-import com.aaptrix.R;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import static com.aaptrix.tools.HttpUrl.ALL_BATCHS;
 import static com.aaptrix.tools.HttpUrl.ALL_VIDEOS;
 import static com.aaptrix.tools.HttpUrl.GET_SUBS;
@@ -80,7 +77,7 @@ import static com.aaptrix.tools.SPClass.PREFS_NAME;
 import static com.aaptrix.tools.SPClass.PREFS_RW;
 import static com.aaptrix.tools.SPClass.PREF_COLOR;
 
-public class VideoLibrary extends AppCompatActivity {
+public class VideoByTag extends AppCompatActivity {
 
     ListView listView;
     VideoAdapter videoAdapter;
@@ -90,23 +87,17 @@ public class VideoLibrary extends AppCompatActivity {
     String selToolColor, selStatusColor, selTextColor1;
     TextView tool_title, noVideos;
     SharedPreferences sp;
-    LinearLayout add_layout;
-    String[] subjects;
-    ArrayList<String> subject_array = new ArrayList<>();
-    ImageView addVideo;
     String[] batch_array = {"All Batches"};
     Spinner batch_spinner;
     String selBatch = "All";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     String userId, userSchoolId, userRoleId, userrType, userSection, url, userName, restricted;
-    ImageButton filter;
-    private String selSubject = "All", disable;
-    LinearLayout liveVideo;
+    private String selSubject, strTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_video_library);
+        setContentView(R.layout.activity_video_by_tag);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -116,15 +107,14 @@ public class VideoLibrary extends AppCompatActivity {
         listView = findViewById(R.id.video_listview);
         noVideos = findViewById(R.id.no_videos);
         mSwipeRefreshLayout = findViewById(R.id.activity_main_swipe_refresh_layout);
-        add_layout = findViewById(R.id.add_layout);
-        addVideo = findViewById(R.id.add_video);
-        filter = findViewById(R.id.filter);
         batch_spinner = findViewById(R.id.batch_spinner);
-        liveVideo = findViewById(R.id.live_video);
         mSwipeRefreshLayout.setRefreshing(false);
         listView.setEnabled(true);
 
-        selSubject = getIntent().getStringExtra("sub");
+        selSubject = getIntent().getStringExtra("subject");
+        strTag = getIntent().getStringExtra("tag");
+
+        tool_title.setText(strTag);
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
         selToolColor = settingsColor.getString("tool", "");
@@ -148,17 +138,10 @@ public class VideoLibrary extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.parseColor(selStatusColor));
         }
-        GradientDrawable bgShape = (GradientDrawable) add_layout.getBackground();
-        bgShape.setColor(Color.parseColor(selToolColor));
         tool_title.setTextColor(Color.parseColor(selTextColor1));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            filter.setImageTintList(ColorStateList.valueOf(Color.parseColor(selTextColor1)));
-        }
-        addVideo.setBackgroundColor(Color.parseColor(selToolColor));
 
         if (userrType.equals("Guest")) {
             batch_spinner.setVisibility(View.GONE);
-            filter.setVisibility(View.GONE);
         }
 
         if (userrType.equals("Admin") || userrType.equals("Teacher")) {
@@ -184,7 +167,7 @@ public class VideoLibrary extends AppCompatActivity {
                     }
                     setBatch();
                 } else {
-                    String batch_array[] = {"All Batches"};
+                    String[] batch_array = {"All Batches"};
                     ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(this, R.layout.spinner_list_item1, batch_array);
                     dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
                     batch_spinner.setAdapter(dataAdapter1);
@@ -196,82 +179,6 @@ public class VideoLibrary extends AppCompatActivity {
                 b1.execute(userSchoolId);
             }
         }
-
-        SharedPreferences preferences = getSharedPreferences(PREFS_RW, 0);
-        String json = preferences.getString("result", "");
-
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-            JSONArray jsonArray = jsonObject.getJSONArray("result");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject object = jsonArray.getJSONObject(i);
-                if (object.getString("tbl_insti_buzz_cate_name").equals("Study Videos")) {
-                    if (object.getString("tbl_scl_inst_buzz_detl_write_status").equals("Active")) {
-                        add_layout.setVisibility(View.VISIBLE);
-                    } else {
-                        add_layout.setVisibility(View.GONE);
-                    }
-                }
-                if (object.getString("tbl_insti_buzz_cate_name").equals("Video Live Streaming")) {
-                    if (object.getString("tbl_scl_inst_buzz_detl_status").equals("Active")) {
-                        liveVideo.setVisibility(View.VISIBLE);
-                    } else {
-                        liveVideo.setVisibility(View.GONE);
-                    }
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        if (userrType.equals("Student") || userrType.equals("Parent")) {
-            liveVideo.setVisibility(View.GONE);
-        }
-
-        liveVideo.setOnClickListener(v -> {
-            Intent intent = new Intent(this, LiveStreaming.class);
-            startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        });
-
-        addVideo.setOnClickListener(view -> {
-            if (isInternetOn()) {
-                Intent intent = new Intent(this, AddNewVideo.class);
-                startActivity(intent);
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            } else {
-                Toast.makeText(this, "No network Please connect with network", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        if (!userrType.equals("Student")) {
-            GetSubject subject = new GetSubject(this);
-            subject.execute(userSchoolId, "All");
-        } else {
-            filter.setVisibility(View.GONE);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)liveVideo.getLayoutParams();
-            params.addRule(RelativeLayout.ALIGN_PARENT_END);
-            liveVideo.setLayoutParams(params);
-        }
-
-        filter.setOnClickListener(v -> {
-            PopupMenu popupMenu = new PopupMenu(this, v);
-            popupMenu.getMenuInflater().inflate(R.menu.filter_menu, popupMenu.getMenu());
-            if (subject_array.size() != 0) {
-                for (int i = 0; i < subject_array.size(); i++) {
-                    popupMenu.getMenu().add(1, i, i, subject_array.get(i));
-                }
-                popupMenu.show();
-            } else {
-                Toast.makeText(this, "Nothing to show", Toast.LENGTH_SHORT).show();
-            }
-
-            popupMenu.setOnMenuItemClickListener(item1 -> {
-                selSubject = item1.getTitle().toString();
-                listItems(selSubject, disable);
-                return true;
-            });
-        });
 
         if (isInternetOn()) {
             GetVideos getVideos = new GetVideos(this);
@@ -383,7 +290,7 @@ public class VideoLibrary extends AppCompatActivity {
                 }
                 setBatch();
             } else {
-                String batch_array[] = {"All Batches"};
+                String[] batch_array = {"All Batches"};
                 ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(ctx, R.layout.spinner_list_item1, batch_array);
                 dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
                 batch_spinner.setAdapter(dataAdapter1);
@@ -404,17 +311,12 @@ public class VideoLibrary extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (batch_array[i].equals("All Batches")) {
                     selBatch = "All";
-                    GetVideos getVideos = new GetVideos(VideoLibrary.this);
+                    GetVideos getVideos = new GetVideos(VideoByTag.this);
                     getVideos.execute(userSchoolId, "All", userrType);
-                    GetSubject subject = new GetSubject(VideoLibrary.this);
-                    subject.execute(userSchoolId, "All");
                 } else {
                     selBatch = batch_array[i];
-                    GetVideos getVideos = new GetVideos(VideoLibrary.this);
+                    GetVideos getVideos = new GetVideos(VideoByTag.this);
                     getVideos.execute(userSchoolId, selBatch, userrType);
-                    String section = "[{\"userName\":\"" + selBatch + "\"}]";
-                    GetSubject subject = new GetSubject(VideoLibrary.this);
-                    subject.execute(userSchoolId, section);
                 }
             }
 
@@ -511,60 +413,7 @@ public class VideoLibrary extends AppCompatActivity {
                         String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
                         Date enddate = sdf.parse(end);
                         videosData = new VideosData();
-                        videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
-                        videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
-                        videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
-                        videosData.setSubject(jsonObject.getString("subject_name"));
-                        videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
-                        videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
-                        videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
-                        videosData.setTags(jsonObject.getString("tbl_school_studyvideo_tag"));
-                        videosData.setStart(jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time"));
-                        videosData.setEnd(jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time"));
-                        if (!end.equals("0000-00-00 00:00:00")) {
-                            if (calendar.getTime().before(enddate)) {
-                                array.add(videosData);
-                            }
-                        } else {
-                            array.add(videosData);
-                        }
-                    }
-                }
-                if (!result.contains("\"instituteVideos\":null")) {
-                    JSONArray jsonArray = jsonRootObject.getJSONArray("instituteVideos");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
-                        Date enddate = sdf.parse(end);
-                        videosData = new VideosData();
-                        videosData.setId(jsonObject.getString("tbl_school_institutevideo_id"));
-                        videosData.setTitle(jsonObject.getString("tbl_school_institutevideo_title"));
-                        videosData.setUrl(url + jsonObject.getString("tbl_school_institutevideo_video"));
-                        videosData.setDesc(jsonObject.getString("tbl_school_institutevideo_desc"));
-                        videosData.setSubject(jsonObject.getString("subject_name"));
-                        videosData.setDate(jsonObject.getString("tbl_school_institutevideo_date"));
-                        videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
-                        videosData.setTags(jsonObject.getString("tbl_school_studyvideo_tag"));
-                        videosData.setStart(jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time"));
-                        videosData.setEnd(jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time"));
-                        if (!end.equals("0000-00-00 00:00:00")) {
-                            if (calendar.getTime().before(enddate)) {
-                                array.add(videosData);
-                            }
-                        } else {
-                            array.add(videosData);
-                        }
-                    }
-                }
-                if (userrType.equals("Student")) {
-                    disable = jsonRootObject.getString("DisableSubject");
-                    if (!result.contains("\"studyVideosStudent\":null")) {
-                        JSONArray jsonArray = jsonRootObject.getJSONArray("studyVideosStudent");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
-                            Date enddate = sdf.parse(end);
-                            videosData = new VideosData();
+                        if (jsonObject.getString("tbl_school_studyvideo_tag").contains(strTag)) {
                             videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
                             videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
                             videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
@@ -581,6 +430,65 @@ public class VideoLibrary extends AppCompatActivity {
                                 }
                             } else {
                                 array.add(videosData);
+                            }
+                        }
+                    }
+                }
+                if (!result.contains("\"instituteVideos\":null")) {
+                    JSONArray jsonArray = jsonRootObject.getJSONArray("instituteVideos");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
+                        Date enddate = sdf.parse(end);
+                        videosData = new VideosData();
+                        if (jsonObject.getString("tbl_school_studyvideo_tag").contains(strTag)) {
+                            videosData.setId(jsonObject.getString("tbl_school_institutevideo_id"));
+                            videosData.setTitle(jsonObject.getString("tbl_school_institutevideo_title"));
+                            videosData.setUrl(url + jsonObject.getString("tbl_school_institutevideo_video"));
+                            videosData.setDesc(jsonObject.getString("tbl_school_institutevideo_desc"));
+                            videosData.setSubject(jsonObject.getString("subject_name"));
+                            videosData.setDate(jsonObject.getString("tbl_school_institutevideo_date"));
+                            videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
+                            videosData.setTags(jsonObject.getString("tbl_school_studyvideo_tag"));
+                            videosData.setStart(jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time"));
+                            videosData.setEnd(jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time"));
+                            if (!end.equals("0000-00-00 00:00:00")) {
+                                if (calendar.getTime().before(enddate)) {
+                                    array.add(videosData);
+                                }
+                            } else {
+                                array.add(videosData);
+                            }
+                        }
+                    }
+                }
+                if (userrType.equals("Student")) {
+                    String disable = jsonRootObject.getString("DisableSubject");
+                    if (!result.contains("\"studyVideosStudent\":null")) {
+                        JSONArray jsonArray = jsonRootObject.getJSONArray("studyVideosStudent");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            String end = jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time");
+                            Date enddate = sdf.parse(end);
+                            videosData = new VideosData();
+                            if (jsonObject.getString("tbl_school_studyvideo_tag").contains(strTag)) {
+                                videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
+                                videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
+                                videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
+                                videosData.setSubject(jsonObject.getString("subject_name"));
+                                videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
+                                videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
+                                videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
+                                videosData.setTags(jsonObject.getString("tbl_school_studyvideo_tag"));
+                                videosData.setStart(jsonObject.getString("visible_start_date") + " " + jsonObject.getString("visible_start_time"));
+                                videosData.setEnd(jsonObject.getString("visible_till") + " " + jsonObject.getString("visible_till_time"));
+                                if (!end.equals("0000-00-00 00:00:00")) {
+                                    if (calendar.getTime().before(enddate)) {
+                                        array.add(videosData);
+                                    }
+                                } else {
+                                    array.add(videosData);
+                                }
                             }
                         }
                     }
@@ -608,7 +516,7 @@ public class VideoLibrary extends AppCompatActivity {
                 e.printStackTrace();
             }
             if (videosArray.size() > 0) {
-                listItems(selSubject, disable);
+                listItems(selSubject);
             } else {
                 noVideos.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.GONE);
@@ -618,71 +526,39 @@ public class VideoLibrary extends AppCompatActivity {
         }
     }
 
-    private void listItems(String subject, String disable) {
+    private void listItems(String subject) {
 
         ArrayList<VideosData> arrayList = new ArrayList<>();
 
         ArrayList<String> ids = new ArrayList<>();
         if (!userrType.equals("Student")) {
-            if (subject.equals("All")) {
-                for (int i = 0; i < videosArray.size(); i++) {
-                    if (!ids.contains(videosArray.get(i).getId())) {
-                        ids.add(videosArray.get(i).getId());
-                    }
+            for (int i = 0; i < videosArray.size(); i++) {
+                if (!ids.contains(videosArray.get(i).getId())) {
+                    ids.add(videosArray.get(i).getId());
                 }
-                for (int i = 0; i < ids.size(); i++) {
-                    for (int j = 0; j < videosArray.size(); j++) {
-                        if (ids.get(i).equals(videosArray.get(j).getId())) {
+            }
+            for (int i = 0; i < ids.size(); i++) {
+                for (int j = 0; j < videosArray.size(); j++) {
+                    if (ids.get(i).equals(videosArray.get(j).getId())) {
+                        if (videosArray.get(j).getSubject().contentEquals(subject) || videosArray.get(j).getSubject().equals("0")) {
                             arrayList.add(videosArray.get(j));
                             break;
-                        }
-                    }
-                }
-            } else {
-                for (int i = 0; i < videosArray.size(); i++) {
-                    if (!ids.contains(videosArray.get(i).getId())) {
-                        ids.add(videosArray.get(i).getId());
-                    }
-                }
-                for (int i = 0; i < ids.size(); i++) {
-                    for (int j = 0; j < videosArray.size(); j++) {
-                        if (ids.get(i).equals(videosArray.get(j).getId())) {
-                            if (videosArray.get(j).getSubject().contentEquals(subject) || videosArray.get(j).getSubject().equals("0")) {
-                                arrayList.add(videosArray.get(j));
-                                break;
-                            }
                         }
                     }
                 }
             }
         } else {
-            if (subject.equals("All")) {
-                for (int i = 0; i < videosArray.size(); i++) {
-                    if (!ids.contains(videosArray.get(i).getId())) {
-                        ids.add(videosArray.get(i).getId());
-                    }
+            for (int i = 0; i < videosArray.size(); i++) {
+                if (!ids.contains(videosArray.get(i).getId())) {
+                    ids.add(videosArray.get(i).getId());
                 }
-                for (int i = 0; i < ids.size(); i++) {
-                    for (int j = 0; j < videosArray.size(); j++) {
-                        if (ids.get(i).equals(videosArray.get(j).getId()) && !disable.contains(videosArray.get(j).getSubject())) {
+            }
+            for (int i = 0; i < ids.size(); i++) {
+                for (int j = 0; j < videosArray.size(); j++) {
+                    if (ids.get(i).equals(videosArray.get(j).getId())) {
+                        if (videosArray.get(j).getSubject().contentEquals(subject) || videosArray.get(j).getSubject().equals("0")) {
                             arrayList.add(videosArray.get(j));
                             break;
-                        }
-                    }
-                }
-            } else {
-                for (int i = 0; i < videosArray.size(); i++) {
-                    if (!ids.contains(videosArray.get(i).getId())) {
-                        ids.add(videosArray.get(i).getId());
-                    }
-                }
-                for (int i = 0; i < ids.size(); i++) {
-                    for (int j = 0; j < videosArray.size(); j++) {
-                        if (ids.get(i).equals(videosArray.get(j).getId())) {
-                            if (videosArray.get(j).getSubject().contentEquals(subject) || videosArray.get(j).getSubject().equals("0")) {
-                                arrayList.add(videosArray.get(j));
-                                break;
-                            }
                         }
                     }
                 }
@@ -751,221 +627,6 @@ public class VideoLibrary extends AppCompatActivity {
                 Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
             }
         });
-
-        SharedPreferences sp = getSharedPreferences(PREFS_RW, 0);
-        String json = sp.getString("result", "");
-
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-            JSONArray jsonArray = jsonObject.getJSONArray("result");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject object = jsonArray.getJSONObject(i);
-                if (object.getString("tbl_insti_buzz_cate_name").equals("Study Videos")) {
-                    if (object.getString("tbl_scl_inst_buzz_detl_write_status").equals("Active")) {
-                        listView.setOnItemLongClickListener((arg0, arg1, pos, id) -> {
-                            if (isInternetOn()) {
-                                AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.DialogTheme);
-                                alert.setTitle("Are you sure you want to delete").setPositiveButton("Yes", (dialog, which) -> {
-                                    RemoveVideo removeVideo = new RemoveVideo(this);
-                                    removeVideo.execute(userSchoolId, arrayList.get(pos).getId());
-                                }).setNegativeButton("No", null);
-                                AlertDialog alertDialog = alert.create();
-                                alertDialog.setCancelable(false);
-                                alertDialog.show();
-                                Button theButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                                Button theButton1 = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                                theButton.setTextColor(Color.parseColor(selToolColor));
-                                theButton1.setTextColor(Color.parseColor(selToolColor));
-                            } else {
-                                Toast.makeText(this, "No network Please connect with network for update", Toast.LENGTH_SHORT).show();
-                            }
-                            return true;
-                        });
-                    }
-                    break;
-                }
-            }
-        } catch (
-                JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @SuppressLint("StaticFieldLeak")
-    public class GetSubject extends AsyncTask<String, String, String> {
-        Context ctx;
-
-        GetSubject(Context ctx) {
-            this.ctx = ctx;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            String school_id = params[0];
-            String batchArray = params[1];
-            String data;
-
-            try {
-
-                URL url = new URL(GET_SUBS);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
-                data = URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
-                        URLEncoder.encode("batchArray", "UTF-8") + "=" + URLEncoder.encode(batchArray, "UTF-8") + "&" +
-                        URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
-                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8") + "&" +
-                        URLEncoder.encode("restricted_access", "UTF-8") + "=" + URLEncoder.encode(restricted, "UTF-8");
-                outputStream.write(data.getBytes());
-
-                bufferedWriter.write(data);
-                bufferedWriter.flush();
-                bufferedWriter.close();
-                outputStream.flush();
-                outputStream.close();
-
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
-                StringBuilder response = new StringBuilder();
-                String line;
-
-                while ((line = bufferedReader.readLine()) != null) {
-
-                    response.append(line);
-                }
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-                return response.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (result.equals("{\"SubjectList\":null}")) {
-                subject_array.add("All Subjects");
-            } else {
-                try {
-                    subject_array.clear();
-                    JSONObject jsonRootObject = new JSONObject(result);
-                    JSONArray jsonArray = jsonRootObject.getJSONArray("SubjectList");
-                    subjects = new String[jsonArray.length()];
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        subjects[i] = jsonObject.getString("tbl_batch_subjct_name");
-                    }
-                    if (userrType.equals("Student")) {
-                        String object = jsonRootObject.getString("DisableSubject");
-                        subject_array.add("All Subjects");
-                        for (String subject : subjects) {
-                            if (!object.contains(subject)) {
-                                subject_array.add(subject);
-                            }
-                        }
-                    } else if (userrType.equals("Teacher")) {
-                        String object = jsonRootObject.getString("RistrictedSubject");
-                        subject_array.add("All Subjects");
-                        if (object.equals("null")) {
-                            subject_array.addAll(Arrays.asList(subjects));
-                        } else {
-                            for (String subject : subjects) {
-                                if (object.contains(subject)) {
-                                    subject_array.add(subject);
-                                }
-                            }
-                        }
-                    } else {
-                        subject_array.add("All Subjects");
-                        subject_array.addAll(Arrays.asList(subjects));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                super.onPostExecute(result);
-            }
-        }
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    public class RemoveVideo extends AsyncTask<String, String, String> {
-        Context ctx;
-
-        RemoveVideo(Context ctx) {
-            this.ctx = ctx;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String userId = params[0];
-            String videoId = params[1];
-            String data;
-
-            try {
-                URL url = new URL(REMOVE_VIDEOS);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
-                data = URLEncoder.encode("schoolId", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
-                        URLEncoder.encode("studyVideoId", "UTF-8") + "=" + URLEncoder.encode(videoId, "UTF-8");
-                outputStream.write(data.getBytes());
-
-                bufferedWriter.write(data);
-                bufferedWriter.flush();
-                bufferedWriter.close();
-                outputStream.flush();
-                outputStream.close();
-
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    response.append(line);
-                }
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-                return response.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (!result.isEmpty()) {
-                startActivity(new Intent(ctx, VideoLibrary.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).putExtra("sub", "All"));
-            } else {
-                Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();
-            }
-        }
-
     }
 
     public final boolean isInternetOn() {

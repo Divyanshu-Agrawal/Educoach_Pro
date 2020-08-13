@@ -4,7 +4,23 @@ import java.io.Serializable;
 
 public class StudyMaterialData implements Serializable {
 	
-	private String title, description, id, subject, batch, permission;
+	private String title, description, id, subject, batch, permission, date, tags;
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
 
 	public String getPermission() {
 		return permission;

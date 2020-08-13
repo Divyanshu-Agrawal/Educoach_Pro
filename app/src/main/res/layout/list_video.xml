@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="@dimen/_280sdp"
+    android:layout_width="@dimen/_260sdp"
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/siz5"
+        android:layout_marginLeft="@dimen/siz5"
         android:layout_marginTop="@dimen/siz5"
-        android:layout_marginEnd="@dimen/siz5"
-        android:layout_marginBottom="@dimen/siz5"
+        android:layout_marginRight="@dimen/siz5"
+        android:layout_marginBottom="@dimen/siz2"
         android:background="@color/white"
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -30,12 +30,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:background="@color/white"
+                    android:layout_alignEnd="@id/videoImage"
+                    android:divider="@android:color/transparent"
+                    app:cardCornerRadius="5dp"
+                    android:id="@+id/live_video_indicator"
+                    app:cardElevation="3dp"
+                    android:visibility="gone"
+                    app:cardPreventCornerOverlap="false">
+
+                    <ImageView
+                        android:layout_width="@dimen/_60sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:src="@drawable/live_icon"
+                        android:tint="@android:color/holo_red_dark"/>
+
+                </androidx.cardview.widget.CardView>
+
                 <ImageView
                     android:id="@+id/videoImage"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_150sdp"
-                    android:layout_margin="@dimen/siz5"
-                    android:padding="7dp"
+                    android:layout_height="@dimen/_120sdp"
                     android:background="@color/black" />
 
                 <androidx.cardview.widget.CardView
@@ -93,7 +112,7 @@
                 android:layout_marginRight="@dimen/siz10"
                 android:layout_marginLeft="@dimen/siz10"
                 android:textColor="@color/text_gray"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="@dimen/siz5"/>
 
         </RelativeLayout>
 

@@ -236,11 +236,7 @@ public class StudyDetailAdaptor extends ArrayAdapter<String> implements Activity
 
     @Override
     public int getViewTypeCount() {
-        if (getCount() < 1) {
-            return 1;
-        } else {
-            return getCount();
-        }
+        return Math.max(getCount(), 1);
     }
 
     @Override

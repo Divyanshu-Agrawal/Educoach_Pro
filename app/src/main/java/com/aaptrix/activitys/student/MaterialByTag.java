@@ -1,14 +1,18 @@
-package com.aaptrix.activitys.guest;
+package com.aaptrix.activitys.student;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -20,13 +24,18 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aaptrix.R;
-import com.aaptrix.activitys.student.StudyMaterialDetail;
+import com.aaptrix.activitys.admin.AddNewMaterial;
 import com.aaptrix.adaptor.StudyMaterialAdaptor;
 import com.aaptrix.databeans.StudyMaterialData;
 import com.google.android.material.appbar.AppBarLayout;
@@ -37,9 +46,12 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -47,53 +59,144 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
-import static com.aaptrix.tools.HttpUrl.ABOUT_SCHOOL_INFO;
+import static com.aaptrix.tools.HttpUrl.ALL_BATCHS;
 import static com.aaptrix.tools.HttpUrl.ALL_STUDY_MATERIAL;
+import static com.aaptrix.tools.HttpUrl.GET_SUBS;
+import static com.aaptrix.tools.HttpUrl.REMOVE_STUDY_MATERIAL;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
+import static com.aaptrix.tools.SPClass.PREFS_RW;
 import static com.aaptrix.tools.SPClass.PREF_COLOR;
 
-public class GuestMaterial extends AppCompatActivity {
+public class MaterialByTag extends AppCompatActivity {
 
-    ListView listView;
-    ArrayList<StudyMaterialData> studyMaterialArray = new ArrayList<>(), array = new ArrayList<>();
     AppBarLayout appBarLayout;
     String selToolColor, selStatusColor, selTextColor1;
-    TextView tool_title, no_material;
-    SharedPreferences sp;
-    String[] batch_array = {"All Courses"};
-    Spinner batch_spinner;
+    TextView tool_title;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    String userSchoolId, userrType, url;
+    TextView no_material;
+    ListView listView;
+    String userId, userSchoolId, userRoleId, userrType, userSection, userName, restricted;
+    String skip;
+    String[] batch_array = {"All Batches"};
+    Spinner batch_spinner;
+    String selBatch = "All";
+    ArrayList<StudyMaterialData> studyMaterialArray = new ArrayList<>(), array = new ArrayList<>();
     StudyMaterialData data;
+    private String selSubject, strTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_guest_material);
+        setContentView(R.layout.activity_material_by_tag);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         appBarLayout = findViewById(R.id.appBarLayout);
         tool_title = findViewById(R.id.tool_title);
-        listView = findViewById(R.id.material_list);
         no_material = findViewById(R.id.no_material);
+        listView = findViewById(R.id.material_list);
         mSwipeRefreshLayout = findViewById(R.id.activity_main_swipe_refresh_layout);
         batch_spinner = findViewById(R.id.batch_spinner);
         mSwipeRefreshLayout.setRefreshing(false);
         listView.setEnabled(true);
 
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        userId = settings.getString("userID", "");
+        userSchoolId = settings.getString("str_school_id", "");
+        userRoleId = settings.getString("str_role_id", "");
+        userSection = settings.getString("userSection", "");
+        userrType = settings.getString("userrType", "");
+        userName = settings.getString("userName", "");
+        restricted = settings.getString("restricted", "");
+
+        selSubject = getIntent().getStringExtra("subject");
+        strTag = getIntent().getStringExtra("tag");
+
+        tool_title.setText(strTag);
+
+        if (userrType.equals("Admin") || userrType.equals("Teacher")) {
+            setBatch();
+            try {
+                File directory = getFilesDir();
+                ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(directory, "batches")));
+                String json = in.readObject().toString();
+                in.close();
+                if (!json.equals("{\"result\":null}")) {
+                    try {
+                        JSONObject jo = new JSONObject(json);
+                        JSONArray ja = jo.getJSONArray("result");
+                        batch_array = new String[ja.length() + 1];
+                        selBatch = "All";
+                        batch_array[0] = "All Batches";
+                        for (int i = 0; i < ja.length(); i++) {
+                            jo = ja.getJSONObject(i);
+                            batch_array[i + 1] = jo.getString("tbl_batch_name");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    setBatch();
+                } else {
+                    String[] batch_array = {"All Batches"};
+                    ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(this, R.layout.spinner_list_item1, batch_array);
+                    dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
+                    batch_spinner.setAdapter(dataAdapter1);
+                    Toast.makeText(this, "No Batch", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                GetAllBatches b1 = new GetAllBatches(this);
+                b1.execute(userSchoolId);
+            }
+        }
+
+        if (userrType.equals("Guest")) {
+            batch_spinner.setVisibility(View.GONE);
+        }
+
+        if (isInternetOn()) {
+            if (userrType.equals("Student")) {
+                selBatch = userSection;
+                GetMaterial getMaterial = new GetMaterial(this);
+                getMaterial.execute(userSchoolId, userSection, userrType, "0");
+                batch_spinner.setVisibility(View.GONE);
+            } else {
+                GetMaterial getMaterial = new GetMaterial(this);
+                getMaterial.execute(userSchoolId, "All", userrType, "0");
+            }
+        } else {
+            Toast.makeText(this, "Please connect to internet", Toast.LENGTH_SHORT).show();
+        }
+
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            if (isInternetOn()) {
+                listView.setEnabled(false);
+                array.clear();
+                studyMaterialArray.clear();
+                if (userrType.equals("Student")) {
+                    selBatch = userSection;
+                    GetMaterial getMaterial = new GetMaterial(this);
+                    getMaterial.execute(userSchoolId, userSection, userrType, "0");
+                    batch_spinner.setVisibility(View.GONE);
+                } else {
+                    GetMaterial getMaterial = new GetMaterial(this);
+                    getMaterial.execute(userSchoolId, selBatch, userrType, "0");
+                }
+            } else {
+                Toast.makeText(this, "No network Please connect with network for update", Toast.LENGTH_SHORT).show();
+                mSwipeRefreshLayout.setRefreshing(false);
+                listView.setEnabled(true);
+            }
+        });
+
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
         selToolColor = settingsColor.getString("tool", "");
         selStatusColor = settingsColor.getString("status", "");
         selTextColor1 = settingsColor.getString("text1", "");
-
-        sp = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        userSchoolId = sp.getString("str_school_id", "");
-        userrType = sp.getString("userrType", "");
-        url = sp.getString("imageUrl", "") + userSchoolId + "/InstituteVideo/";
 
         appBarLayout.setBackgroundColor(Color.parseColor(selToolColor));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -102,58 +205,7 @@ public class GuestMaterial extends AppCompatActivity {
             window.setStatusBarColor(Color.parseColor(selStatusColor));
         }
         tool_title.setTextColor(Color.parseColor(selTextColor1));
-
-        GetAllBatches b1 = new GetAllBatches(this);
-        b1.execute(userSchoolId);
-
-        if (isInternetOn()) {
-            GetMaterial getMaterial = new GetMaterial(this);
-            getMaterial.execute(userSchoolId, "All", userrType, "0");
-        } else {
-            String json = sp.getString("studymaterial", "");
-            try {
-                JSONObject jsonRootObject = new JSONObject(json);
-                if (!json.contains("\"guestMaterials\":null")) {
-                    JSONArray jsonArray = jsonRootObject.getJSONArray("guestMaterials");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        data = new StudyMaterialData();
-                        JSONObject jObject = jsonArray.getJSONObject(i);
-                        data.setTitle(jObject.getString("tbl_school_studymaterial_title"));
-                        data.setId(jObject.getString("tbl_school_studymaterial_id"));
-                        data.setDescription(jObject.getString("tbl_school_studymaterial_desc"));
-                        data.setUrl(jObject.getString("tbl_school_studymaterial_docfile").split(","));
-                        data.setSubject(jObject.getString("subject_name"));
-                        data.setBatch(jObject.getString("tbl_course_name"));
-                        data.setPermission(jObject.getString("download_permission"));
-                        studyMaterialArray.add(data);
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            if (studyMaterialArray.size() > 0) {
-                no_material.setVisibility(View.GONE);
-                listItems("All Courses");
-            } else {
-                no_material.setVisibility(View.VISIBLE);
-                listView.setVisibility(View.GONE);
-            }
-        }
-
-        mSwipeRefreshLayout.setOnRefreshListener(() -> {
-            if (isInternetOn()) {
-                mSwipeRefreshLayout.setRefreshing(true);
-                listView.setEnabled(false);
-                array.clear();
-                studyMaterialArray.clear();
-                GetMaterial getMaterial = new GetMaterial(this);
-                getMaterial.execute(userSchoolId, "All", userrType, "0");
-            } else {
-                Toast.makeText(this, "No network Please connect with network for update", Toast.LENGTH_SHORT).show();
-                mSwipeRefreshLayout.setRefreshing(false);
-                listView.setEnabled(true);
-            }
-        });
+        mSwipeRefreshLayout.setColorScheme(R.color.text_gray);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -177,7 +229,7 @@ public class GuestMaterial extends AppCompatActivity {
 
             try {
 
-                URL url = new URL(ABOUT_SCHOOL_INFO);
+                URL url = new URL(ALL_BATCHS);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setDoOutput(true);
@@ -186,7 +238,8 @@ public class GuestMaterial extends AppCompatActivity {
                 OutputStream outputStream = httpURLConnection.getOutputStream();
 
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
-                data = URLEncoder.encode("schoolId", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8");
+                data = URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_users_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);
@@ -215,26 +268,28 @@ public class GuestMaterial extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            Log.d("result", result);
             if (!result.equals("{\"result\":null}")) {
                 try {
-                    JSONObject jsonRootObject = new JSONObject(result);
-                    JSONArray jsonArray = jsonRootObject.getJSONArray("result");
-                    batch_array = new String[jsonArray.length() + 1];
-                    batch_array[0] = "All Courses";
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        batch_array[i + 1] = jsonObject.getString("tbl_abt_schl_more_info_name");
+                    JSONObject jo = new JSONObject(result);
+                    JSONArray ja = jo.getJSONArray("result");
+                    batch_array = new String[ja.length() + 1];
+                    selBatch = "All";
+                    batch_array[0] = "All Batches";
+                    for (int i = 0; i < ja.length(); i++) {
+                        jo = ja.getJSONObject(i);
+                        batch_array[i + 1] = jo.getString("tbl_batch_name");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 setBatch();
             } else {
-                String batch_array[] = {"All Courses"};
+                String[] batch_array = {"All Batches"};
                 ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(ctx, R.layout.spinner_list_item1, batch_array);
                 dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
                 batch_spinner.setAdapter(dataAdapter1);
-                Toast.makeText(ctx, "No Course", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ctx, "No Batch", Toast.LENGTH_SHORT).show();
             }
 
             super.onPostExecute(result);
@@ -249,10 +304,14 @@ public class GuestMaterial extends AppCompatActivity {
         batch_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (batch_array[i].equals("All Courses")) {
-                    listItems("All Courses");
+                if (batch_array[i].equals("All Batches")) {
+                    selBatch = "All";
+                    GetMaterial getMaterial = new GetMaterial(MaterialByTag.this);
+                    getMaterial.execute(userSchoolId, "All", userrType, "0");
                 } else {
-                    listItems(batch_array[i]);
+                    selBatch = batch_array[i];
+                    GetMaterial getMaterial = new GetMaterial(MaterialByTag.this);
+                    getMaterial.execute(userSchoolId, selBatch, userrType, "0");
                 }
             }
 
@@ -276,6 +335,7 @@ public class GuestMaterial extends AppCompatActivity {
             mSwipeRefreshLayout.setRefreshing(true);
             listView.setEnabled(false);
             studyMaterialArray.clear();
+            array.clear();
             super.onPreExecute();
         }
 
@@ -284,6 +344,7 @@ public class GuestMaterial extends AppCompatActivity {
             String schoolId = params[0];
             String userSection = params[1];
             String userrType = params[2];
+            skip = params[3];
             String data;
 
             try {
@@ -299,7 +360,9 @@ public class GuestMaterial extends AppCompatActivity {
                 data = URLEncoder.encode("schoolId", "UTF-8") + "=" + URLEncoder.encode(schoolId, "UTF-8") + "&" +
                         URLEncoder.encode("userSection", "UTF-8") + "=" + URLEncoder.encode(userSection, "UTF-8") + "&" +
                         URLEncoder.encode("userrType", "UTF-8") + "=" + URLEncoder.encode(userrType, "UTF-8") + "&" +
-                        URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode("0", "UTF-8");
+                        URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_users_nm", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8") + "&" +
+                        URLEncoder.encode("restricted_access", "UTF-8") + "=" + URLEncoder.encode(restricted, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);
@@ -330,29 +393,73 @@ public class GuestMaterial extends AppCompatActivity {
         protected void onPostExecute(String result) {
             Log.e("study material", result);
             mSwipeRefreshLayout.setRefreshing(false);
+            listView.setEnabled(true);
             try {
-                SharedPreferences sp = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-                sp.edit().putString("studymaterial", result).apply();
+                array.clear();
+                studyMaterialArray.clear();
                 JSONObject jsonRootObject = new JSONObject(result);
-                if (!result.contains("\"guestMaterials\":null")) {
-                    JSONArray jsonArray = jsonRootObject.getJSONArray("guestMaterials");
+                if (!result.contains("\"result\":null")) {
+                    JSONArray jsonArray = jsonRootObject.getJSONArray("result");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         data = new StudyMaterialData();
                         JSONObject jObject = jsonArray.getJSONObject(i);
-                        data.setTitle(jObject.getString("tbl_school_studymaterial_title"));
-                        data.setId(jObject.getString("tbl_school_studymaterial_id"));
-                        data.setDescription(jObject.getString("tbl_school_studymaterial_desc"));
-                        data.setUrl(jObject.getString("tbl_school_studymaterial_docfile").split(","));
-                        data.setSubject(jObject.getString("subject_name"));
-                        data.setBatch(jObject.getString("tbl_course_name"));
-                        data.setPermission(jObject.getString("download_permission"));
-                        data.setTags(jObject.getString("tbl_school_studymaterial_tag"));
-                        studyMaterialArray.add(data);
+                        if (jObject.getString("tbl_school_studymaterial_tag").contains(strTag)) {
+                            data.setTitle(jObject.getString("tbl_school_studymaterial_title"));
+                            data.setId(jObject.getString("tbl_school_studymaterial_id"));
+                            data.setDescription(jObject.getString("tbl_school_studymaterial_desc"));
+                            data.setUrl(jObject.getString("tbl_school_studymaterial_docfile").split(","));
+                            data.setSubject(jObject.getString("subject_name"));
+                            data.setBatch(jObject.getString("tbl_stnt_prsnl_data_section"));
+                            data.setPermission(jObject.getString("download_permission"));
+                            data.setTags(jObject.getString("tbl_school_studymaterial_tag"));
+                            array.add(data);
+                        }
                     }
+                }
+                if (userrType.equals("Student")) {
+                    if (!result.contains("\"studyMaterialsStudent\":null")) {
+                        JSONArray jsonArray = jsonRootObject.getJSONArray("studyMaterialsStudent");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            data = new StudyMaterialData();
+                            JSONObject jObject = jsonArray.getJSONObject(i);
+                            if (jObject.getString("tbl_school_studymaterial_tag").contains(strTag)) {
+                                data.setTitle(jObject.getString("tbl_school_studymaterial_title"));
+                                data.setId(jObject.getString("tbl_school_studymaterial_id"));
+                                data.setDescription(jObject.getString("tbl_school_studymaterial_desc"));
+                                data.setUrl(jObject.getString("tbl_school_studymaterial_docfile").split(","));
+                                data.setSubject(jObject.getString("subject_name"));
+                                data.setBatch(jObject.getString("tbl_stnt_prsnl_data_section"));
+                                data.setPermission(jObject.getString("download_permission"));
+                                data.setTags(jObject.getString("tbl_school_studymaterial_tag"));
+                                array.add(data);
+                            }
+                        }
+                    }
+                    String disable = jsonRootObject.getString("DisableSubject");
+                    for (int i = 0; i < array.size(); i++) {
+                        if (!disable.contains(array.get(i).getSubject())) {
+                            studyMaterialArray.add(array.get(i));
+                        }
+                    }
+                }
+                if (userrType.equals("Teacher")) {
+                    String restricted = jsonRootObject.getString("RistrictedSubject");
+                    if (restricted.equals("null")) {
+                        studyMaterialArray.addAll(array);
+                    } else {
+                        for (int i = 0; i < array.size(); i++) {
+                            if (restricted.contains(array.get(i).getSubject())) {
+                                studyMaterialArray.add(array.get(i));
+                            }
+                        }
+                    }
+                } else {
+                    studyMaterialArray.addAll(array);
                 }
                 if (studyMaterialArray.size() > 0) {
                     no_material.setVisibility(View.GONE);
-                    listItems("All Courses");
+                    listView.setVisibility(View.VISIBLE);
+                    listItms(selSubject);
                 } else {
                     no_material.setVisibility(View.VISIBLE);
                     listView.setVisibility(View.GONE);
@@ -365,12 +472,11 @@ public class GuestMaterial extends AppCompatActivity {
 
     }
 
-    private void listItems(String course) {
-
+    private void listItms(String subject) {
         ArrayList<StudyMaterialData> arrayList = new ArrayList<>();
+        listView.setVisibility(View.VISIBLE);
         ArrayList<String> ids = new ArrayList<>();
-
-        if (course.equals("All Courses")) {
+        if (!userrType.equals("Student")) {
             for (int i = 0; i < studyMaterialArray.size(); i++) {
                 if (!ids.contains(studyMaterialArray.get(i).getId())) {
                     ids.add(studyMaterialArray.get(i).getId());
@@ -379,8 +485,10 @@ public class GuestMaterial extends AppCompatActivity {
             for (int i = 0; i < ids.size(); i++) {
                 for (int j = 0; j < studyMaterialArray.size(); j++) {
                     if (ids.get(i).equals(studyMaterialArray.get(j).getId())) {
-                        arrayList.add(studyMaterialArray.get(j));
-                        break;
+                        if (studyMaterialArray.get(j).getSubject().equals(subject) || studyMaterialArray.get(j).getSubject().equals("0")) {
+                            arrayList.add(studyMaterialArray.get(j));
+                            break;
+                        }
                     }
                 }
             }
@@ -393,7 +501,7 @@ public class GuestMaterial extends AppCompatActivity {
             for (int i = 0; i < ids.size(); i++) {
                 for (int j = 0; j < studyMaterialArray.size(); j++) {
                     if (ids.get(i).equals(studyMaterialArray.get(j).getId())) {
-                        if (studyMaterialArray.get(j).getBatch().contentEquals(course) || studyMaterialArray.get(j).getBatch().equals("0")) {
+                        if (studyMaterialArray.get(j).getSubject().equals(subject) || studyMaterialArray.get(j).getSubject().equals("0")) {
                             arrayList.add(studyMaterialArray.get(j));
                             break;
                         }
@@ -404,8 +512,10 @@ public class GuestMaterial extends AppCompatActivity {
 
         if (arrayList.size() == 0) {
             no_material.setVisibility(View.VISIBLE);
+            listView.setVisibility(View.GONE);
         } else {
             no_material.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
         }
 
         listView.setEnabled(true);
@@ -421,7 +531,6 @@ public class GuestMaterial extends AppCompatActivity {
             intent.putExtra("url", arrayList.get(position).getUrl());
             intent.putExtra("permission", arrayList.get(position).getPermission());
             intent.putExtra("tags", arrayList.get(position).getTags());
-            intent.putExtra("subject", arrayList.get(position).getSubject());
             startActivity(intent);
         });
     }

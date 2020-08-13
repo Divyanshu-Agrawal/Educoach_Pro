@@ -72,7 +72,6 @@ public class FullscreenAdapter extends PagerAdapter {
 
         String url = sp.getString("imageUrl", "") + sp.getString("userSchoolId", "") + "/studyMaterial/" + studymaterial.get(position);
         String fileExt = studymaterial.get(position).substring(studymaterial.get(position).lastIndexOf(".") + 1);
-        Log.e("url", url);
 
         watermark.setText(rollNo);
         watermark.bringToFront();

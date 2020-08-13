@@ -8,11 +8,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.leanback.widget.HorizontalGridView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -22,6 +25,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Html;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,6 +63,8 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.material.appbar.AppBarLayout;
 
+import org.jetbrains.annotations.NotNull;
+
 import static com.aaptrix.activitys.SplashScreen.SCHOOL_NAME;
 import static com.aaptrix.tools.HttpUrl.REMOVE_VIDEOS;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
@@ -82,7 +89,7 @@ import java.util.Random;
 
 public class VideoDetails extends AppCompatActivity {
 
-    String strTitle, url, id, strDesc, strEnd;
+    String strTitle, url, id, strDesc, strEnd, strSubject, strTags;
     TextView title, desc, endDate;
     AppBarLayout appBarLayout;
     String selToolColor, selStatusColor, selTextColor1, userrType, userSchoolId, rollNo;
@@ -105,6 +112,7 @@ public class VideoDetails extends AppCompatActivity {
     YouTubePlayer ytPlayer;
     FrameLayout mainframe, yt_frame;
     RelativeLayout yt_layout, exo_layout;
+    HorizontalGridView gridView;
 
     @SuppressLint("NewApi")
     @Override
@@ -133,6 +141,7 @@ public class VideoDetails extends AppCompatActivity {
         yt_layout = findViewById(R.id.relative);
         exo_layout = findViewById(R.id.rel_layout);
         endDate = findViewById(R.id.end_date);
+        gridView = findViewById(R.id.tags);
 
         LoadControl loadControl = new DefaultLoadControl.Builder()
                 .setAllocator(new DefaultAllocator(true, 16))
@@ -168,6 +177,17 @@ public class VideoDetails extends AppCompatActivity {
         id = getIntent().getStringExtra("id");
         strDesc = getIntent().getStringExtra("desc");
         strEnd = getIntent().getStringExtra("endDate");
+        strSubject = getIntent().getStringExtra("subject");
+        strTags = getIntent().getStringExtra("tags");
+
+        if (strTags.equals("null") || strTags.equals("")) {
+            gridView.setVisibility(View.GONE);
+        } else {
+            String[] tag = strTags.replace("[", "").replace("]", "").split(",");
+            TagsAdapter adapter = new TagsAdapter(this, tag);
+            gridView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        }
 
         if (!strEnd.equals("0000-00-00 00:00:00")) {
             try {
@@ -284,10 +304,10 @@ public class VideoDetails extends AppCompatActivity {
             assert menu != null;
 
             menu.addItem(new com.aaptrix.youtubeview.core.ui.menu.MenuItem("0.5x", R.drawable.playback_speed, v -> {
-                        ytPlayer.setPlaybackRate(0.5f);
-                        Toast.makeText(this, "Playback speed set to 0.5x", Toast.LENGTH_SHORT).show();
-                        menu.dismiss();
-                    }))
+                ytPlayer.setPlaybackRate(0.5f);
+                Toast.makeText(this, "Playback speed set to 0.5x", Toast.LENGTH_SHORT).show();
+                menu.dismiss();
+            }))
                     .addItem(new com.aaptrix.youtubeview.core.ui.menu.MenuItem("1.0x", R.drawable.playback_speed, v -> {
                         ytPlayer.setPlaybackRate(1.0f);
                         Toast.makeText(this, "Playback speed set to 1.0x", Toast.LENGTH_SHORT).show();
@@ -322,6 +342,57 @@ public class VideoDetails extends AppCompatActivity {
             mainframe.setVisibility(View.VISIBLE);
             player.setVisibility(View.VISIBLE);
             initializePlayer();
+        }
+    }
+
+    class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
+
+        private Context context;
+        private String[] tags;
+
+        public TagsAdapter(Context context, String[] tags) {
+            this.context = context;
+            this.tags = tags;
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+
+            TextView tagsName;
+
+            public ViewHolder(View view) {
+                super(view);
+                tagsName = view.findViewById(R.id.tag_name);
+            }
+        }
+
+        @NotNull
+        @Override
+        public TagsAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+            final View view = LayoutInflater.from(this.context).inflate(R.layout.tags_list, parent, false);
+            return new TagsAdapter.ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NotNull TagsAdapter.ViewHolder holder, final int position) {
+            if (!tags[position].isEmpty())
+                holder.tagsName.setText(tags[position]);
+
+            holder.tagsName.setOnClickListener(v -> {
+                Intent intent = new Intent(context, VideoByTag.class);
+                intent.putExtra("subject", strSubject);
+                intent.putExtra("tag", tags[position]);
+                context.startActivity(intent);
+            });
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public int getItemCount() {
+            return tags.length;
         }
     }
 

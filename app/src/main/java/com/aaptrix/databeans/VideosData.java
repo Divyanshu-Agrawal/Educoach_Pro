@@ -4,7 +4,15 @@ import java.io.Serializable;
 
 public class VideosData implements Serializable {
 	
-	private String title, url, id, subject, batch, date, desc, comments, stream, start, end;
+	private String title, url, id, subject, batch, date, desc, comments, stream, start, end, tags;
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
 
 	public String getStart() {
 		return start;

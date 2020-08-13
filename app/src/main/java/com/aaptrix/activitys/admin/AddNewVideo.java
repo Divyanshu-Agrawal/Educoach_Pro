@@ -293,32 +293,24 @@ public class AddNewVideo extends AppCompatActivity {
 
         save.setOnClickListener(v -> {
             mp.start();
+            SharedPreferences sp = getSharedPreferences(PREFS_DAIRY, 0);
+            String studentArray = sp.getString("studentArray", "");
             if (TextUtils.isEmpty(title.getText())) {
                 title.requestFocus();
                 title.setError("Please enter video title");
             } else if (TextUtils.isEmpty(url.getText())) {
                 url.requestFocus();
                 url.setError("Please enter video URL");
+            } else if (studentArray.isEmpty()) {
+                Toast.makeText(this, "Please Select Batch", Toast.LENGTH_SHORT).show();
+            } else if (selsubject.equals("Select Subject")) {
+                Toast.makeText(this, "Please Select Subject", Toast.LENGTH_SHORT).show();
             } else {
-                SharedPreferences sp = getSharedPreferences(PREFS_DAIRY, 0);
-                String studentArray = sp.getString("studentArray", "");
-                if (studentArray.isEmpty()) {
-                    layout.setVisibility(View.VISIBLE);
-                    layout.bringToFront();
-                    UploadVideo uploadVideo = new UploadVideo(this);
-                    uploadVideo.execute(title.getText().toString(), url.getText().toString(),
-                            userSchoolId, userId, studentArray, userrType, desc.getText().toString(), "");
-                } else {
-                    if (selsubject.equals("Select Subject")) {
-                        Toast.makeText(this, "Please select subject", Toast.LENGTH_SHORT).show();
-                    } else {
-                        layout.setVisibility(View.VISIBLE);
-                        layout.bringToFront();
-                        UploadVideo uploadVideo = new UploadVideo(this);
-                        uploadVideo.execute(title.getText().toString(), url.getText().toString(),
-                                userSchoolId, userId, studentArray, userrType, desc.getText().toString(), selsubject);
-                    }
-                }
+                layout.setVisibility(View.VISIBLE);
+                layout.bringToFront();
+                UploadVideo uploadVideo = new UploadVideo(this);
+                uploadVideo.execute(title.getText().toString(), url.getText().toString(),
+                        userSchoolId, userId, studentArray, userrType, desc.getText().toString(), selsubject);
             }
         });
     }
@@ -742,11 +734,6 @@ public class AddNewVideo extends AppCompatActivity {
             String userType = params[5];
             String desc = params[6];
             String subject = params[7];
-
-            Log.e("batch", studentArray1);
-            Log.e("sub", subject);
-            Log.e("course", strCourse);
-            Log.e("user id", userId);
 
             try {
                 SSLContext sslContext = SSLContexts.custom().useTLS().build();

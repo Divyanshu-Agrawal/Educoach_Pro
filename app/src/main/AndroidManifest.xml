@@ -1,20 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.aaptrix">
+    package="com.aaptrix"
+    tools:ignore="MissingLeanbackLauncher">
+
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission
+        android:name="android.permission.INTERNET"
+        android:required="false" />
+    <uses-permission
+        android:name="android.permission.CALL_PHONE"
+        android:required="false" />
+    <uses-permission
+        android:name="android.permission.CAMERA"
+        android:required="false" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:required="false" />
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        android:required="false" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true" />
 
     <application
         android:name="androidx.multidex.MultiDexApplication"
@@ -32,19 +65,87 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="android:icon, android:theme">
-        <activity android:name=".activitys.student.StudentVideo"></activity>
-        <activity android:name=".activitys.TroubleFAQ" />
-        <activity android:name=".activitys.UpdateProfile" />
-        <activity android:name=".activitys.student.SubjectiveExamResult" />
-        <activity android:name=".activitys.student.SubjectiveQuesPaper" />
-        <activity android:name=".activitys.student.StartSubjective" />
-        <activity android:name=".activitys.guest.GuestAnswerSheet" />
-        <activity android:name=".activitys.guest.GuestExamReport" />
-        <activity android:name=".activitys.guest.GenerateLead" />
-        <activity android:name=".activitys.guest.StartGuestExam" />
-        <activity android:name=".activitys.guest.GuestExam" />
-        <activity android:name=".activitys.guest.GuestMaterial" />
-        <activity android:name=".activitys.guest.GuestVideo" />
+        <activity android:name=".activitys.student.SubjectExamView"></activity>
+        <activity
+            android:name=".activitys.student.VideoByTag"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activitys.student.MaterialByTag"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activitys.student.StudentMaterial"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activitys.student.StudentVideo"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activitys.TroubleFAQ"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activitys.UpdateProfile"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activitys.student.SubjectiveExamResult"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activitys.student.SubjectiveQuesPaper"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activitys.student.StartSubjective"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activitys.guest.GuestAnswerSheet"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activitys.guest.GuestExamReport"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activitys.guest.GenerateLead"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activitys.guest.StartGuestExam"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activitys.guest.GuestExam"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activitys.guest.GuestMaterial"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activitys.guest.GuestVideo"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".activitys.student.PlayLiveStream"
             android:configChanges="orientation|screenSize|layoutDirection"

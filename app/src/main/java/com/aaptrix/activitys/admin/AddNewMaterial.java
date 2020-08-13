@@ -223,31 +223,21 @@ public class AddNewMaterial extends AppCompatActivity {
 
         save.setOnClickListener(v -> {
             mp.start();
+            SharedPreferences sp = getSharedPreferences(PREFS_DAIRY, 0);
+            String studentArray = sp.getString("studentArray", "");
             if (TextUtils.isEmpty(title.getText())) {
                 title.requestFocus();
                 title.setError("Please enter title");
+            } else if (studentArray.isEmpty()) {
+                Toast.makeText(this, "Please Select Batch", Toast.LENGTH_SHORT).show();
+            } else if (selsubject.equals("Select Subject")) {
+                Toast.makeText(this, "Please Select Subject", Toast.LENGTH_SHORT).show();
             } else {
                 layout.setVisibility(View.VISIBLE);
                 layout.bringToFront();
-                SharedPreferences sp = getSharedPreferences(PREFS_DAIRY, 0);
-                String studentArray = sp.getString("studentArray", "");
-                if (studentArray.isEmpty()) {
-                    layout.setVisibility(View.VISIBLE);
-                    layout.bringToFront();
-                    UploadStudyMaterial uploadStudyMaterial = new UploadStudyMaterial(this);
-                    uploadStudyMaterial.execute(userSchoolId, title.getText().toString(),
-                            description.getText().toString(), studentArray, userId, "");
-                } else {
-                    if (selsubject.equals("Select Subject")) {
-                        Toast.makeText(this, "Please select subject", Toast.LENGTH_SHORT).show();
-                    } else {
-                        layout.setVisibility(View.VISIBLE);
-                        layout.bringToFront();
-                        UploadStudyMaterial uploadStudyMaterial = new UploadStudyMaterial(this);
-                        uploadStudyMaterial.execute(userSchoolId, title.getText().toString(),
-                                description.getText().toString(), studentArray, userId, userType, selsubject);
-                    }
-                }
+                UploadStudyMaterial uploadStudyMaterial = new UploadStudyMaterial(this);
+                uploadStudyMaterial.execute(userSchoolId, title.getText().toString(),
+                        description.getText().toString(), studentArray, userId, userType, selsubject);
             }
         });
     }
@@ -820,7 +810,8 @@ public class AddNewMaterial extends AppCompatActivity {
 
                     @Override
                     public void onFinish() {
-                        Intent i = new Intent(ctx, StudyMaterial.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        Intent i = new Intent(ctx, StudyMaterial.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).
+                                putExtra("sub", "All");
                         startActivity(i);
                         finish();
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
