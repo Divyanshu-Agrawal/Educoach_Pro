@@ -25,6 +25,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -83,9 +84,13 @@ public class MaterialByTag extends AppCompatActivity {
     String[] batch_array = {"All Batches"};
     Spinner batch_spinner;
     String selBatch = "All";
+    StudyMaterialAdaptor studyMaterialAdaptor;
     ArrayList<StudyMaterialData> studyMaterialArray = new ArrayList<>(), array = new ArrayList<>();
     StudyMaterialData data;
     private String selSubject, strTag;
+    LinearLayout search_layout;
+    ImageButton search, searchBtn;
+    EditText searchBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +108,10 @@ public class MaterialByTag extends AppCompatActivity {
         batch_spinner = findViewById(R.id.batch_spinner);
         mSwipeRefreshLayout.setRefreshing(false);
         listView.setEnabled(true);
+        search = findViewById(R.id.search);
+        search_layout = findViewById(R.id.search_layout);
+        searchBox = findViewById(R.id.search_txt);
+        searchBtn = findViewById(R.id.search_btn);
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         userId = settings.getString("userID", "");
@@ -519,9 +528,30 @@ public class MaterialByTag extends AppCompatActivity {
         }
 
         listView.setEnabled(true);
-        StudyMaterialAdaptor studyMaterialAdaptor = new StudyMaterialAdaptor(this, R.layout.list_study_material, arrayList);
+        studyMaterialAdaptor = new StudyMaterialAdaptor(this, R.layout.list_study_material, arrayList);
         listView.setAdapter(studyMaterialAdaptor);
         studyMaterialAdaptor.notifyDataSetChanged();
+
+        search.setOnClickListener(v -> {
+            if (search_layout.getVisibility() == View.VISIBLE) {
+                search_layout.setVisibility(View.GONE);
+                studyMaterialAdaptor = new StudyMaterialAdaptor(this, R.layout.list_study_material, arrayList);
+                listView.setAdapter(studyMaterialAdaptor);
+                studyMaterialAdaptor.notifyDataSetChanged();
+            } else {
+                search_layout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        searchBtn.setOnClickListener(v -> {
+            if (searchBox.getText().toString().isEmpty()) {
+                studyMaterialAdaptor = new StudyMaterialAdaptor(this, R.layout.list_study_material, arrayList);
+                listView.setAdapter(studyMaterialAdaptor);
+                studyMaterialAdaptor.notifyDataSetChanged();
+            } else {
+                filterSearch(arrayList, searchBox.getText().toString());
+            }
+        });
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(this, StudyMaterialDetail.class);
@@ -533,6 +563,20 @@ public class MaterialByTag extends AppCompatActivity {
             intent.putExtra("tags", arrayList.get(position).getTags());
             startActivity(intent);
         });
+    }
+
+    private void filterSearch(ArrayList<StudyMaterialData> array, String searchTxt) {
+        ArrayList<StudyMaterialData> arrayList = new ArrayList<>();
+        for (int i = 0; i < array.size(); i++) {
+            if (array.get(i).getTitle().toLowerCase().contains(searchTxt.toLowerCase())) {
+                arrayList.add(array.get(i));
+            }
+        }
+        listView.setEnabled(true);
+        studyMaterialAdaptor = new StudyMaterialAdaptor(this, R.layout.list_study_material, arrayList);
+        listView.setAdapter(studyMaterialAdaptor);
+        studyMaterialAdaptor.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     public final boolean isInternetOn() {

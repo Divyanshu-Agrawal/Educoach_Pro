@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -125,22 +126,19 @@ public class StudentMaterial extends AppCompatActivity {
         GetMaterial getMaterial = new GetMaterial(this);
         getMaterial.execute(userSchoolId, userSection, userrType);
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutFrozen(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         viewAll.setOnClickListener(v -> {
             Intent intent = new Intent(this, StudyMaterial.class);
-            intent.putExtra("sub", "All");
+            intent.putExtra("sub", "All Subjects");
             startActivity(intent);
         });
 
         viewAllSubjects.setOnClickListener(v -> {
             Intent intent = new Intent(this, StudyMaterial.class);
-            intent.putExtra("sub", "All");
+            intent.putExtra("sub", "All Subjects");
             startActivity(intent);
         });
     }
@@ -314,7 +312,7 @@ public class StudentMaterial extends AppCompatActivity {
         });
         Collections.reverse(arrayList);
 
-        StudentMaterialAdapter adapter = new StudentMaterialAdapter(this, R.layout.list_study_material, arrayList);
+        StudentMaterialAdapter adapter = new StudentMaterialAdapter(this, R.layout.list_material, arrayList);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
@@ -538,7 +536,7 @@ public class StudentMaterial extends AppCompatActivity {
 
             viewAllSubjects.setOnClickListener(v -> {
                 Intent intent = new Intent(context, StudyMaterial.class);
-                intent.putExtra("sub", "All");
+                intent.putExtra("sub", "All Subjects");
                 context.startActivity(intent);
             });
 
@@ -557,5 +555,20 @@ public class StudentMaterial extends AppCompatActivity {
         public int getItemViewType(int position) {
             return position;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

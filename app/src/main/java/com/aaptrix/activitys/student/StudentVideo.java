@@ -157,13 +157,13 @@ public class StudentVideo extends AppCompatActivity {
 
         viewAll.setOnClickListener(v -> {
             Intent intent = new Intent(this, VideoLibrary.class);
-            intent.putExtra("sub", "All");
+            intent.putExtra("sub", "All Subjects");
             startActivity(intent);
         });
 
         viewAllSubject.setOnClickListener(v -> {
             Intent intent = new Intent(this, VideoLibrary.class);
-            intent.putExtra("sub", "All");
+            intent.putExtra("sub", "All Subjects");
             startActivity(intent);
         });
     }
@@ -263,6 +263,7 @@ public class StudentVideo extends AppCompatActivity {
                         videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
                         videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
                         videosData.setSubject(jsonObject.getString("subject_name"));
+                        videosData.setTotalTime(jsonObject.getString("video_total_time"));
                         videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
                         videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
                         videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
@@ -685,6 +686,7 @@ public class StudentVideo extends AppCompatActivity {
                         intent.putExtra("endDate", objects.get(position).getEnd());
                         intent.putExtra("tags", objects.get(position).getTags());
                         intent.putExtra("subject", objects.get(position).getSubject());
+                        intent.putExtra("time", objects.get(position).getTotalTime());
                         assert startdate != null;
                         if (!start.equals("0000-00-00 00:00:00")) {
                             if (calendar.getTime().equals(startdate) || (calendar.getTime().after(startdate))) {

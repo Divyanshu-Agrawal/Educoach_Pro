@@ -27,7 +27,7 @@
             app:contentInsetStartWithNavigation="0dp"
             app:popupTheme="@style/MyDarkToolbarStyle">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="start|center"
@@ -35,10 +35,9 @@
 
                 <TextView
                     android:id="@+id/tool_title"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="6"
                     android:layout_height="match_parent"
-                    android:layout_toStartOf="@id/live_video"
-                    android:fontFamily="ROBOTO-REGULAR.TTF"
                     android:gravity="start|center"
                     android:text="Study Videos"
                     android:textAllCaps="false"
@@ -46,9 +45,9 @@
                     android:textSize="18dp" />
 
                 <LinearLayout
-                    android:layout_width="70dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
                     android:layout_height="match_parent"
-                    android:layout_toStartOf="@id/filter"
                     android:id="@+id/live_video"
                     android:gravity="center"
                     android:visibility="visible"
@@ -77,13 +76,21 @@
                 </LinearLayout>
 
                 <ImageButton
-                    android:id="@+id/filter"
-                    android:layout_width="55dp"
+                    android:id="@+id/search"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.5"
                     android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/search_icon" />
+
+                <ImageButton
+                    android:id="@+id/filter"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.5"
+                    android:layout_height="match_parent"
                     android:background="@android:color/transparent"
                     android:src="@drawable/filter_icon" />
-            </RelativeLayout>
+            </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -97,14 +104,48 @@
         android:textSize="30sp"
         android:visibility="visible" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appBarLayout"
+        android:id="@+id/search_layout"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/search_txt"
+            android:layout_width="0dp"
+            android:layout_weight="8"
+            android:layout_height="@dimen/_30sdp"
+            android:background="@drawable/et_background_design"
+            android:gravity="center_vertical"
+            android:hint="Enter Search Text"
+            android:paddingStart="10dp"
+            android:maxLines="1"
+            android:paddingEnd="10dp"
+            android:textSize="@dimen/siz14" />
+
+        <ImageButton
+            android:id="@+id/search_btn"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="@dimen/_30sdp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/search_icon"
+            android:tint="@color/colorPrimary"/>
+
+    </LinearLayout>
+
     <Spinner
         android:id="@+id/batch_spinner"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
-        android:layout_below="@id/appBarLayout"
+        android:layout_below="@id/search_layout"
         android:layout_margin="@dimen/_10sdp"
         android:background="@drawable/et_background_design"
-        android:fontFamily="ROBOTO-REGULAR.TTF"
         android:gravity="center_vertical"
         android:popupBackground="@android:drawable/dialog_holo_light_frame"
         android:textSize="@dimen/siz14" />

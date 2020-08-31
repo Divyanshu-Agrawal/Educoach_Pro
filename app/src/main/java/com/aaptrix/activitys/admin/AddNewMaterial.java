@@ -811,7 +811,7 @@ public class AddNewMaterial extends AppCompatActivity {
                     @Override
                     public void onFinish() {
                         Intent i = new Intent(ctx, StudyMaterial.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).
-                                putExtra("sub", "All");
+                                putExtra("sub", "All Subjects");
                         startActivity(i);
                         finish();
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

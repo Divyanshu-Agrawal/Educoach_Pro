@@ -107,7 +107,7 @@ public class StudyMaterialDetail extends AppCompatActivity {
 		if (strTags.equals("null") || strTags.equals("")) {
 			gridView.setVisibility(View.GONE);
 		} else {
-			String[] tag = strTags.replace("[", "").replace("]", "").split(",");
+			String[] tag = strTags.replace("[", "").replace("]", "").trim().split(",");
 			TagsAdapter adapter = new TagsAdapter(this, tag);
 			gridView.setAdapter(adapter);
 			adapter.notifyDataSetChanged();
@@ -198,13 +198,17 @@ public class StudyMaterialDetail extends AppCompatActivity {
 
 		@Override
 		public void onBindViewHolder(@NotNull ViewHolder holder, final int position) {
-			holder.tagsName.setText(tags[position]);
-			holder.tagsName.setOnClickListener(v -> {
-				Intent intent = new Intent(context, MaterialByTag.class);
-				intent.putExtra("subject",strSubject);
-				intent.putExtra("tag", tags[position]);
-				context.startActivity(intent);
-			});
+			if (!tags[position].isEmpty()) {
+				holder.tagsName.setText(tags[position].trim());
+				holder.tagsName.setOnClickListener(v -> {
+					Intent intent = new Intent(context, MaterialByTag.class);
+					intent.putExtra("subject", strSubject);
+					intent.putExtra("tag", tags[position]);
+					context.startActivity(intent);
+				});
+			} else {
+				holder.itemView.setVisibility(View.GONE);
+			}
 		}
 
 		@Override

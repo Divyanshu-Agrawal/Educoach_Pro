@@ -491,9 +491,6 @@
             android:name=".activitys.admin.AdminTimeTableActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activitys.admin.IntermidiateScreenActivityPublication"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activitys.admin.ResultIntermidiateScreenActivity"
             android:screenOrientation="portrait" />
         <activity

@@ -412,7 +412,6 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
             File directory = this.getFilesDir();
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(directory, "instituteBuzz")));
             String json = in.readObject().toString();
-            Log.e("Json", "" + json);
             in.close();
             JSONObject jsonRootObject = new JSONObject(json);
             JSONArray jsonArray = jsonRootObject.getJSONArray("result");
@@ -513,6 +512,7 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            activitiesArray.clear();
         }
 
         @Override
@@ -577,6 +577,7 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
                         DataBeanActivities dbact = new DataBeanActivities();
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         dbact.setActiviTitle(jsonObject.getString("tbl_school_activities_title"));
+                        dbact.setActiviId(jsonObject.getString("tbl_school_activities_id"));
                         activitiesArray.add(dbact);
                     }
                 } catch (JSONException e) {
@@ -594,7 +595,22 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
     }
 
     private void setAnnouncements() {
-        ActivityAdapter adapter = new ActivityAdapter(this, R.layout.list_announcement, activitiesArray, "announcements");
+        ArrayList<DataBeanActivities> arrayList = new ArrayList<>();
+        ArrayList<String> ids = new ArrayList<>();
+        for (int i = 0; i < activitiesArray.size(); i++) {
+            if (!ids.contains(activitiesArray.get(i).getActiviId())) {
+                ids.add(activitiesArray.get(i).getActiviId());
+            }
+        }
+        for (int i = 0; i < ids.size(); i++) {
+            for (int j = 0; j < activitiesArray.size(); j++) {
+                if (ids.get(i).equals(activitiesArray.get(j).getActiviId())) {
+                    arrayList.add(activitiesArray.get(j));
+                    break;
+                }
+            }
+        }
+        ActivityAdapter adapter = new ActivityAdapter(this, R.layout.list_announcement, arrayList, "announcements");
         announcements.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -706,128 +722,6 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
             }
         }).start();
     }
-
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == 1 && resultCode == RESULT_OK) {
-//            Uri filePath = data.getData();
-//
-//            assert filePath != null;
-//            CropImage.activity(filePath)
-//                    .setGuidelines(CropImageView.Guidelines.ON)
-//                    .setAspectRatio(150, 150)
-//                    .setGuidelines(CropImageView.Guidelines.ON)
-//                    .setCropShape(CropImageView.CropShape.OVAL)
-//                    .start(this);
-//        }
-//
-//        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-//            if (resultCode == RESULT_OK) {
-//                Uri filePath = result.getUri();
-//                try {
-//                    // bitmap = MediaStore.Images.Media.getBitmap(ChildProfileActivity.this.getContentResolver(), filePath);
-//                    File actualImage = FileUtil.from(InstituteBuzzActivity.this, filePath);
-//                    File compressedImage = new Compressor(InstituteBuzzActivity.this)
-//                            .setMaxWidth(640)
-//                            .setMaxHeight(480)
-//                            .setQuality(75)
-//                            .setCompressFormat(Bitmap.CompressFormat.WEBP)
-//                            .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
-//                                    Environment.DIRECTORY_PICTURES).getAbsolutePath())
-//                            .compressToFile(actualImage);
-//                    bitmap = MediaStore.Images.Media.getBitmap(InstituteBuzzActivity.this.getContentResolver(), Uri.fromFile(compressedImage));
-//                    iv_user_img.setImageBitmap(bitmap);
-//                    prof_logo1.setImageBitmap(bitmap);
-//                    header_img.setImageBitmap(bitmap);
-//
-//                    UpdateProfileImage updateProfileImage = new UpdateProfileImage(InstituteBuzzActivity.this, compressedImage);
-//                    updateProfileImage.execute(userId);
-//
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-//                Exception error = result.getError();
-//                Toast.makeText(InstituteBuzzActivity.this, "" + error, Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
-//
-//
-//    @SuppressLint("StaticFieldLeak")
-//    public class UpdateProfileImage extends AsyncTask<String, String, String> {
-//        Context ctx;
-//        File image;
-//
-//        UpdateProfileImage(Context ctx, File image) {
-//            this.ctx = ctx;
-//            this.image = image;
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            Toast.makeText(ctx, "Please wait we are updating your profile", Toast.LENGTH_SHORT).show();
-//            super.onPreExecute();
-//
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//
-//            String userId = params[0];
-//
-//            try {
-//
-//                SSLContext sslContext = SSLContexts.custom().useTLS().build();
-//                SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
-//                        sslContext,
-//                        new String[]{"TLSv1.1", "TLSv1.2"},
-//                        null,
-//                        BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
-//                HttpClient httpclient = HttpClients.custom().setSSLSocketFactory(f).build();
-//                HttpPost httppost = new HttpPost(UPDATE_USER_PRO_IMAGE);
-//                MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
-//                entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-//                FileBody newImage = new FileBody(image);
-//                entityBuilder.addPart("image", newImage);
-//                entityBuilder.addTextBody("userId", userId);
-//                HttpEntity entity = entityBuilder.build();
-//                httppost.setEntity(entity);
-//                HttpResponse response = httpclient.execute(httppost);
-//                HttpEntity httpEntity = response.getEntity();
-//                String result = EntityUtils.toString(httpEntity);
-//                Log.e("result", result);
-//                return result;
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            Log.d("Json", "" + result);
-//            try {
-//                JSONObject jsonObject = new JSONObject(result);
-//                if (jsonObject.getString("success").equals("true")) {
-//                    editor.putString("userImg", jsonObject.getString("imageNm"));
-//                    editor.commit();
-//                    Toast.makeText(InstituteBuzzActivity.this, "Your Image is Updated", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(InstituteBuzzActivity.this, "Not uploaded image is too large", Toast.LENGTH_SHORT).show();
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            super.onPostExecute(result);
-//        }
-//
-//    }
-
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -1180,7 +1074,7 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
     private void listItms() {
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.height = (int) getResources().getDimension(R.dimen._110sdp) * (instiBuzzArray.size()/3);
+        params.height = (int) getResources().getDimension(R.dimen._101sdp) * (instiBuzzArray.size()/3);
         institue_lv.setLayoutParams(params);
 
         institueBuzzAdaptor = new InstitueBuzzAdaptor(InstituteBuzzActivity.this, R.layout.insti_buzz_list_item, instiBuzzArray);

@@ -20,6 +20,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -72,6 +75,9 @@ public class GuestVideo extends AppCompatActivity {
     Spinner batch_spinner;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     String userSchoolId, userrType, url;
+    LinearLayout search_layout;
+    ImageButton search, searchBtn;
+    EditText searchBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +95,10 @@ public class GuestVideo extends AppCompatActivity {
         batch_spinner = findViewById(R.id.batch_spinner);
         mSwipeRefreshLayout.setRefreshing(false);
         listView.setEnabled(true);
+        search = findViewById(R.id.search);
+        search_layout = findViewById(R.id.search_layout);
+        searchBox = findViewById(R.id.search_txt);
+        searchBtn = findViewById(R.id.search_btn);
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
         selToolColor = settingsColor.getString("tool", "");
@@ -347,6 +357,7 @@ public class GuestVideo extends AppCompatActivity {
                         videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
                         videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
                         videosData.setSubject(jsonObject.getString("subject_name"));
+                        videosData.setTotalTime(jsonObject.getString("video_total_time"));
                         videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
                         videosData.setBatch(jsonObject.getString("tbl_course_name"));
                         videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
@@ -429,6 +440,27 @@ public class GuestVideo extends AppCompatActivity {
         videoAdapter.notifyDataSetChanged();
         mSwipeRefreshLayout.setRefreshing(false);
 
+        search.setOnClickListener(v -> {
+            if (search_layout.getVisibility() == View.VISIBLE) {
+                search_layout.setVisibility(View.GONE);
+                videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
+                listView.setAdapter(videoAdapter);
+                videoAdapter.notifyDataSetChanged();
+            } else {
+                search_layout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        searchBtn.setOnClickListener(v -> {
+            if (searchBox.getText().toString().isEmpty()) {
+                videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
+                listView.setAdapter(videoAdapter);
+                videoAdapter.notifyDataSetChanged();
+            } else {
+                filterSearch(arrayList, searchBox.getText().toString());
+            }
+        });
+
         listView.setOnItemClickListener((parent, view, position, id) -> {
             if (isInternetOn()) {
                 Intent intent = new Intent(this, VideoDetails.class);
@@ -439,11 +471,26 @@ public class GuestVideo extends AppCompatActivity {
                 intent.putExtra("endDate", arrayList.get(position).getEnd());
                 intent.putExtra("tags", arrayList.get(position).getTags());
                 intent.putExtra("subject", arrayList.get(position).getSubject());
+                intent.putExtra("time", arrayList.get(position).getTotalTime());
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void filterSearch(ArrayList<VideosData> array, String searchTxt) {
+        ArrayList<VideosData> arrayList = new ArrayList<>();
+        for (int i = 0; i < array.size(); i++) {
+            if (array.get(i).getTitle().toLowerCase().contains(searchTxt.toLowerCase())) {
+                arrayList.add(array.get(i));
+            }
+        }
+        listView.setEnabled(true);
+        videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
+        listView.setAdapter(videoAdapter);
+        videoAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     public final boolean isInternetOn() {

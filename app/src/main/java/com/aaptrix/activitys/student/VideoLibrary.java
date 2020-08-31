@@ -27,6 +27,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,12 +46,9 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -90,17 +88,18 @@ public class VideoLibrary extends AppCompatActivity {
     String selToolColor, selStatusColor, selTextColor1;
     TextView tool_title, noVideos;
     SharedPreferences sp;
-    LinearLayout add_layout;
+    LinearLayout add_layout, search_layout;
     String[] subjects;
     ArrayList<String> subject_array = new ArrayList<>();
     ImageView addVideo;
     String[] batch_array = {"All Batches"};
     Spinner batch_spinner;
     String selBatch = "All";
+    EditText searchBox;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     String userId, userSchoolId, userRoleId, userrType, userSection, url, userName, restricted;
-    ImageButton filter;
-    private String selSubject = "All", disable;
+    ImageButton filter, search, searchBtn;
+    private String selSubject = "All Subjects", disable;
     LinearLayout liveVideo;
 
     @Override
@@ -123,6 +122,10 @@ public class VideoLibrary extends AppCompatActivity {
         liveVideo = findViewById(R.id.live_video);
         mSwipeRefreshLayout.setRefreshing(false);
         listView.setEnabled(true);
+        search = findViewById(R.id.search);
+        search_layout = findViewById(R.id.search_layout);
+        searchBox = findViewById(R.id.search_txt);
+        searchBtn = findViewById(R.id.search_btn);
 
         selSubject = getIntent().getStringExtra("sub");
 
@@ -161,40 +164,13 @@ public class VideoLibrary extends AppCompatActivity {
             filter.setVisibility(View.GONE);
         }
 
+        ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(this, R.layout.spinner_list_item1, new String[]{"All Batches"});
+        dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
+        batch_spinner.setAdapter(dataAdapter1);
+
         if (userrType.equals("Admin") || userrType.equals("Teacher")) {
-            setBatch();
-            try {
-                File directory = getFilesDir();
-                ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(directory, "batches")));
-                String json = in.readObject().toString();
-                in.close();
-                if (!json.equals("{\"result\":null}")) {
-                    try {
-                        JSONObject jo = new JSONObject(json);
-                        JSONArray ja = jo.getJSONArray("result");
-                        batch_array = new String[ja.length() + 1];
-                        selBatch = "All Batches";
-                        batch_array[0] = "All Batches";
-                        for (int i = 0; i < ja.length(); i++) {
-                            jo = ja.getJSONObject(i);
-                            batch_array[i + 1] = jo.getString("tbl_batch_name");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    setBatch();
-                } else {
-                    String batch_array[] = {"All Batches"};
-                    ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(this, R.layout.spinner_list_item1, batch_array);
-                    dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
-                    batch_spinner.setAdapter(dataAdapter1);
-                    Toast.makeText(this, "No Batch", Toast.LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                GetAllBatches b1 = new GetAllBatches(this);
-                b1.execute(userSchoolId);
-            }
+            GetAllBatches b1 = new GetAllBatches(this);
+            b1.execute(userSchoolId);
         }
 
         SharedPreferences preferences = getSharedPreferences(PREFS_RW, 0);
@@ -226,6 +202,7 @@ public class VideoLibrary extends AppCompatActivity {
 
         if (userrType.equals("Student") || userrType.equals("Parent")) {
             liveVideo.setVisibility(View.GONE);
+            tool_title.setText(selSubject);
         }
 
         liveVideo.setOnClickListener(v -> {
@@ -249,7 +226,7 @@ public class VideoLibrary extends AppCompatActivity {
             subject.execute(userSchoolId, "All");
         } else {
             filter.setVisibility(View.GONE);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)liveVideo.getLayoutParams();
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) liveVideo.getLayoutParams();
             params.addRule(RelativeLayout.ALIGN_PARENT_END);
             liveVideo.setLayoutParams(params);
         }
@@ -515,6 +492,7 @@ public class VideoLibrary extends AppCompatActivity {
                         videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
                         videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
                         videosData.setSubject(jsonObject.getString("subject_name"));
+                        videosData.setTotalTime(jsonObject.getString("video_total_time"));
                         videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
                         videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
                         videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
@@ -542,6 +520,7 @@ public class VideoLibrary extends AppCompatActivity {
                         videosData.setUrl(url + jsonObject.getString("tbl_school_institutevideo_video"));
                         videosData.setDesc(jsonObject.getString("tbl_school_institutevideo_desc"));
                         videosData.setSubject(jsonObject.getString("subject_name"));
+                        videosData.setTotalTime(jsonObject.getString("video_total_time"));
                         videosData.setDate(jsonObject.getString("tbl_school_institutevideo_date"));
                         videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
                         videosData.setTags(jsonObject.getString("tbl_school_studyvideo_tag"));
@@ -569,6 +548,7 @@ public class VideoLibrary extends AppCompatActivity {
                             videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
                             videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
                             videosData.setSubject(jsonObject.getString("subject_name"));
+                            videosData.setTotalTime(jsonObject.getString("video_total_time"));
                             videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
                             videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
                             videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
@@ -607,6 +587,7 @@ public class VideoLibrary extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            Log.e("size 0 ", videosArray.size()+"");
             if (videosArray.size() > 0) {
                 listItems(selSubject, disable);
             } else {
@@ -624,7 +605,7 @@ public class VideoLibrary extends AppCompatActivity {
 
         ArrayList<String> ids = new ArrayList<>();
         if (!userrType.equals("Student")) {
-            if (subject.equals("All")) {
+            if (subject.equals("All Subjects")) {
                 for (int i = 0; i < videosArray.size(); i++) {
                     if (!ids.contains(videosArray.get(i).getId())) {
                         ids.add(videosArray.get(i).getId());
@@ -656,7 +637,7 @@ public class VideoLibrary extends AppCompatActivity {
                 }
             }
         } else {
-            if (subject.equals("All")) {
+            if (subject.equals("All Subjects")) {
                 for (int i = 0; i < videosArray.size(); i++) {
                     if (!ids.contains(videosArray.get(i).getId())) {
                         ids.add(videosArray.get(i).getId());
@@ -689,6 +670,7 @@ public class VideoLibrary extends AppCompatActivity {
             }
         }
 
+        Log.e("size", arrayList.size()+"");
         if (arrayList.size() > 0) {
             noVideos.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
@@ -707,6 +689,27 @@ public class VideoLibrary extends AppCompatActivity {
             return 0;
         });
         Collections.reverse(arrayList);
+
+        search.setOnClickListener(v -> {
+            if (search_layout.getVisibility() == View.VISIBLE) {
+                search_layout.setVisibility(View.GONE);
+                videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
+                listView.setAdapter(videoAdapter);
+                videoAdapter.notifyDataSetChanged();
+            } else {
+                search_layout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        searchBtn.setOnClickListener(v -> {
+            if (searchBox.getText().toString().isEmpty()) {
+                videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
+                listView.setAdapter(videoAdapter);
+                videoAdapter.notifyDataSetChanged();
+            } else {
+                filterSearch(arrayList, searchBox.getText().toString());
+            }
+        });
 
         listView.setEnabled(true);
         videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
@@ -731,6 +734,7 @@ public class VideoLibrary extends AppCompatActivity {
                     intent.putExtra("endDate", arrayList.get(position).getEnd());
                     intent.putExtra("tags", arrayList.get(position).getTags());
                     intent.putExtra("subject", arrayList.get(position).getSubject());
+                    intent.putExtra("time", arrayList.get(position).getTotalTime());
                     if (!start.equals("0000-00-00 00:00:00")) {
                         if (calendar.getTime().equals(startdate) || (calendar.getTime().after(startdate))) {
                             startActivity(intent);
@@ -791,6 +795,19 @@ public class VideoLibrary extends AppCompatActivity {
         }
     }
 
+    private void filterSearch(ArrayList<VideosData> array, String searchTxt) {
+        ArrayList<VideosData> arrayList = new ArrayList<>();
+        for (int i = 0; i < array.size(); i++) {
+            if (array.get(i).getTitle().toLowerCase().contains(searchTxt.toLowerCase())) {
+                arrayList.add(array.get(i));
+            }
+        }
+        listView.setEnabled(true);
+        videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
+        listView.setAdapter(videoAdapter);
+        videoAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
 
     @SuppressLint("StaticFieldLeak")
     public class GetSubject extends AsyncTask<String, String, String> {
@@ -811,6 +828,11 @@ public class VideoLibrary extends AppCompatActivity {
             String school_id = params[0];
             String batchArray = params[1];
             String data;
+
+            Log.e("batch", batchArray);
+            Log.e("user id", userId);
+            Log.e("user name", userName);
+            Log.e("res", restricted);
 
             try {
 
@@ -960,7 +982,7 @@ public class VideoLibrary extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if (!result.isEmpty()) {
-                startActivity(new Intent(ctx, VideoLibrary.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).putExtra("sub", "All"));
+                startActivity(new Intent(ctx, VideoLibrary.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).putExtra("sub", "All Subjects"));
             } else {
                 Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();
             }

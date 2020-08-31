@@ -88,7 +88,6 @@ import static com.aaptrix.tools.SPClass.PREF_COLOR;
 import static com.aaptrix.tools.SPClass.PREF_ROLE;
 import static cz.msebera.android.httpclient.conn.ssl.SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
 
-
 public class SplashScreen extends Activity {
 
     LinearLayout school_logo_layout, official_logo_layout;
@@ -103,6 +102,7 @@ public class SplashScreen extends Activity {
     public static final String TNC = BuildConfig.TNC;
     CountDownTimer mTimer;
 
+    @SuppressLint("HardwareIds")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,7 +148,7 @@ public class SplashScreen extends Activity {
  
         settings.getString("token", "");
         user_token_id = settings.getString("token", "");
-        android_id = Settings.Secure.ANDROID_ID;
+        android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         if (!roleId.equals("") && !schoolId.equals("0") && !userId.equals("")) {
             GetAllInstituteBuzz b = new GetAllInstituteBuzz(this);

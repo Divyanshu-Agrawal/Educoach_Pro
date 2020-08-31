@@ -25,6 +25,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -87,6 +88,9 @@ public class VideoByTag extends AppCompatActivity {
     String selToolColor, selStatusColor, selTextColor1;
     TextView tool_title, noVideos;
     SharedPreferences sp;
+    LinearLayout search_layout;
+    EditText searchBox;
+    ImageButton search, searchBtn;
     String[] batch_array = {"All Batches"};
     Spinner batch_spinner;
     String selBatch = "All";
@@ -110,6 +114,10 @@ public class VideoByTag extends AppCompatActivity {
         batch_spinner = findViewById(R.id.batch_spinner);
         mSwipeRefreshLayout.setRefreshing(false);
         listView.setEnabled(true);
+        search = findViewById(R.id.search);
+        search_layout = findViewById(R.id.search_layout);
+        searchBox = findViewById(R.id.search_txt);
+        searchBtn = findViewById(R.id.search_btn);
 
         selSubject = getIntent().getStringExtra("subject");
         strTag = getIntent().getStringExtra("tag");
@@ -418,6 +426,7 @@ public class VideoByTag extends AppCompatActivity {
                             videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
                             videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
                             videosData.setSubject(jsonObject.getString("subject_name"));
+                            videosData.setTotalTime(jsonObject.getString("video_total_time"));
                             videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
                             videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
                             videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
@@ -447,6 +456,7 @@ public class VideoByTag extends AppCompatActivity {
                             videosData.setUrl(url + jsonObject.getString("tbl_school_institutevideo_video"));
                             videosData.setDesc(jsonObject.getString("tbl_school_institutevideo_desc"));
                             videosData.setSubject(jsonObject.getString("subject_name"));
+                            videosData.setTotalTime(jsonObject.getString("video_total_time"));
                             videosData.setDate(jsonObject.getString("tbl_school_institutevideo_date"));
                             videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
                             videosData.setTags(jsonObject.getString("tbl_school_studyvideo_tag"));
@@ -476,6 +486,7 @@ public class VideoByTag extends AppCompatActivity {
                                 videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
                                 videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
                                 videosData.setSubject(jsonObject.getString("subject_name"));
+                                videosData.setTotalTime(jsonObject.getString("video_total_time"));
                                 videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
                                 videosData.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
                                 videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
@@ -590,6 +601,27 @@ public class VideoByTag extends AppCompatActivity {
         videoAdapter.notifyDataSetChanged();
         mSwipeRefreshLayout.setRefreshing(false);
 
+        search.setOnClickListener(v -> {
+            if (search_layout.getVisibility() == View.VISIBLE) {
+                search_layout.setVisibility(View.GONE);
+                videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
+                listView.setAdapter(videoAdapter);
+                videoAdapter.notifyDataSetChanged();
+            } else {
+                search_layout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        searchBtn.setOnClickListener(v -> {
+            if (searchBox.getText().toString().isEmpty()) {
+                videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
+                listView.setAdapter(videoAdapter);
+                videoAdapter.notifyDataSetChanged();
+            } else {
+                filterSearch(arrayList, searchBox.getText().toString());
+            }
+        });
+
         listView.setOnItemClickListener((parent, view, position, id) -> {
             if (isInternetOn()) {
                 try {
@@ -627,6 +659,20 @@ public class VideoByTag extends AppCompatActivity {
                 Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void filterSearch(ArrayList<VideosData> array, String searchTxt) {
+        ArrayList<VideosData> arrayList = new ArrayList<>();
+        for (int i = 0; i < array.size(); i++) {
+            if (array.get(i).getTitle().toLowerCase().contains(searchTxt.toLowerCase())) {
+                arrayList.add(array.get(i));
+            }
+        }
+        listView.setEnabled(true);
+        videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
+        listView.setAdapter(videoAdapter);
+        videoAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     public final boolean isInternetOn() {

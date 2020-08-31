@@ -2,6 +2,7 @@ package com.aaptrix.activitys.student;
 
 import com.aaptrix.activitys.admin.AddNewMaterial;
 import com.aaptrix.adaptor.StudyMaterialAdaptor;
+import com.aaptrix.adaptor.VideoAdapter;
 import com.aaptrix.databeans.StudyMaterialData;
 import com.aaptrix.R;
 
@@ -30,6 +31,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,6 +42,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aaptrix.databeans.VideosData;
 import com.google.android.material.appbar.AppBarLayout;
 
 import org.json.JSONArray;
@@ -84,6 +87,7 @@ public class StudyMaterial extends AppCompatActivity {
     ImageView addMaterial;
     String userId, userSchoolId, userRoleId, userrType, userSection, userName, restricted;
     String skip;
+    StudyMaterialAdaptor studyMaterialAdaptor;
     String[] batch_array = {"All Batches"};
     Spinner batch_spinner;
     String selBatch = "All";
@@ -92,7 +96,10 @@ public class StudyMaterial extends AppCompatActivity {
     ArrayList<StudyMaterialData> studyMaterialArray = new ArrayList<>(), array = new ArrayList<>();
     StudyMaterialData data;
     ImageButton filter;
-    private String selSubject = "All", disable;
+    private String selSubject = "All Subjects", disable;
+    LinearLayout search_layout;
+    ImageButton search, searchBtn;
+    EditText searchBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +120,10 @@ public class StudyMaterial extends AppCompatActivity {
         batch_spinner = findViewById(R.id.batch_spinner);
         mSwipeRefreshLayout.setRefreshing(false);
         listView.setEnabled(true);
+        search = findViewById(R.id.search);
+        search_layout = findViewById(R.id.search_layout);
+        searchBox = findViewById(R.id.search_txt);
+        searchBtn = findViewById(R.id.search_btn);
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         userId = settings.getString("userID", "");
@@ -125,40 +136,17 @@ public class StudyMaterial extends AppCompatActivity {
 
         selSubject = getIntent().getStringExtra("sub");
 
+        if (userrType.equals("Student")) {
+            tool_title.setText(selSubject);
+        }
+
+        ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(this, R.layout.spinner_list_item1, new String[]{"All Batches"});
+        dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
+        batch_spinner.setAdapter(dataAdapter1);
+
         if (userrType.equals("Admin") || userrType.equals("Teacher")) {
-            setBatch();
-            try {
-                File directory = getFilesDir();
-                ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(directory, "batches")));
-                String json = in.readObject().toString();
-                in.close();
-                if (!json.equals("{\"result\":null}")) {
-                    try {
-                        JSONObject jo = new JSONObject(json);
-                        JSONArray ja = jo.getJSONArray("result");
-                        batch_array = new String[ja.length() + 1];
-                        selBatch = "All";
-                        batch_array[0] = "All Batches";
-                        for (int i = 0; i < ja.length(); i++) {
-                            jo = ja.getJSONObject(i);
-                            batch_array[i + 1] = jo.getString("tbl_batch_name");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    setBatch();
-                } else {
-                    String batch_array[] = {"All Batches"};
-                    ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(this, R.layout.spinner_list_item1, batch_array);
-                    dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
-                    batch_spinner.setAdapter(dataAdapter1);
-                    Toast.makeText(this, "No Batch", Toast.LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                GetAllBatches b1 = new GetAllBatches(this);
-                b1.execute(userSchoolId);
-            }
+            GetAllBatches b1 = new GetAllBatches(this);
+            b1.execute(userSchoolId);
         }
 
         SharedPreferences sp = getSharedPreferences(PREFS_RW, 0);
@@ -529,7 +517,7 @@ public class StudyMaterial extends AppCompatActivity {
         listView.setVisibility(View.VISIBLE);
         ArrayList<String> ids = new ArrayList<>();
         if (!userrType.equals("Student")) {
-            if (subject.equals("All")) {
+            if (subject.equals("All Subjects")) {
                 for (int i = 0; i < studyMaterialArray.size(); i++) {
                     if (!ids.contains(studyMaterialArray.get(i).getId())) {
                         ids.add(studyMaterialArray.get(i).getId());
@@ -561,7 +549,7 @@ public class StudyMaterial extends AppCompatActivity {
                 }
             }
         } else {
-            if (subject.equals("All")) {
+            if (subject.equals("All Subjects")) {
                 for (int i = 0; i < studyMaterialArray.size(); i++) {
                     if (!ids.contains(studyMaterialArray.get(i).getId())) {
                         ids.add(studyMaterialArray.get(i).getId());
@@ -603,9 +591,30 @@ public class StudyMaterial extends AppCompatActivity {
         }
 
         listView.setEnabled(true);
-        StudyMaterialAdaptor studyMaterialAdaptor = new StudyMaterialAdaptor(this, R.layout.list_study_material, arrayList);
+        studyMaterialAdaptor = new StudyMaterialAdaptor(this, R.layout.list_study_material, arrayList);
         listView.setAdapter(studyMaterialAdaptor);
         studyMaterialAdaptor.notifyDataSetChanged();
+
+        search.setOnClickListener(v -> {
+            if (search_layout.getVisibility() == View.VISIBLE) {
+                search_layout.setVisibility(View.GONE);
+                studyMaterialAdaptor = new StudyMaterialAdaptor(this, R.layout.list_study_material, arrayList);
+                listView.setAdapter(studyMaterialAdaptor);
+                studyMaterialAdaptor.notifyDataSetChanged();
+            } else {
+                search_layout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        searchBtn.setOnClickListener(v -> {
+            if (searchBox.getText().toString().isEmpty()) {
+                studyMaterialAdaptor = new StudyMaterialAdaptor(this, R.layout.list_study_material, arrayList);
+                listView.setAdapter(studyMaterialAdaptor);
+                studyMaterialAdaptor.notifyDataSetChanged();
+            } else {
+                filterSearch(arrayList, searchBox.getText().toString());
+            }
+        });
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(this, StudyMaterialDetail.class);
@@ -655,6 +664,20 @@ public class StudyMaterial extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void filterSearch(ArrayList<StudyMaterialData> array, String searchTxt) {
+        ArrayList<StudyMaterialData> arrayList = new ArrayList<>();
+        for (int i = 0; i < array.size(); i++) {
+            if (array.get(i).getTitle().toLowerCase().contains(searchTxt.toLowerCase())) {
+                arrayList.add(array.get(i));
+            }
+        }
+        listView.setEnabled(true);
+        studyMaterialAdaptor = new StudyMaterialAdaptor(this, R.layout.list_study_material, arrayList);
+        listView.setAdapter(studyMaterialAdaptor);
+        studyMaterialAdaptor.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -848,7 +871,7 @@ public class StudyMaterial extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if (!result.isEmpty()) {
-                startActivity(new Intent(ctx, StudyMaterial.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                startActivity(new Intent(ctx, StudyMaterial.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).putExtra("sub", "All Subjects"));
             } else {
                 Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();
             }

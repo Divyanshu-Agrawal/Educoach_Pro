@@ -35,6 +35,7 @@ import com.aaptrix.activitys.FullScreenImageActivity;
 import com.aaptrix.activitys.GetHelp;
 import com.aaptrix.activitys.InactiveInstitute;
 import com.aaptrix.activitys.ReferralActivity;
+import com.aaptrix.activitys.SplashScreen;
 import com.aaptrix.activitys.UserProfile;
 import com.aaptrix.activitys.UserSelfRegistration;
 import com.aaptrix.activitys.WelcomeActivity;
@@ -119,6 +120,7 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -248,7 +250,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
     LinearLayout announceLayout, testimonialLayout;
     ArrayList<DataBeanActivities> activitiesArray = new ArrayList<>();
     int pos = 0;
-    TextView noAnnounce;
+    TextView noAnnounce, read_more;
 
     @SuppressLint({"SetTextI18n", "HardwareIds"})
     @Override
@@ -274,6 +276,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         noAnnounce = findViewById(R.id.no_announcement);
         testimonials = findViewById(R.id.testimonials);
         testimonialLayout = findViewById(R.id.testimonial_layout);
+        read_more = findViewById(R.id.read_more);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         announcements.setLayoutManager(mLayoutManager);
@@ -359,9 +362,14 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
             b.execute(userSchoolId, "All Batches", userrType);
         } else {
             announceLayout.setVisibility(View.GONE);
-            GetTestmonials getTestmonials = new GetTestmonials(this);
-            getTestmonials.execute(userSchoolId);
         }
+
+        announceLayout.setOnClickListener(v1 -> {
+            mp.start();
+            Intent i = new Intent(this, ActivitiesActivity.class);
+            startActivity(i);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
 
         if (!userrType.equals("Guest")) {
             RateThisApp.onStart(this);
@@ -402,6 +410,48 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
             getMoreInfo.setOnClickListener(v1 -> startActivity(new Intent(this, AddUserForm.class)));
         } else {
             login.setVisible(false);
+        }
+
+        if (userrType.equals("Guest")) {
+            SharedPreferences notiPrefs = getSharedPreferences("noti_prefs", MODE_PRIVATE);
+            if (!notiPrefs.getString("status", "").equals("")) {
+                LayoutInflater factory = LayoutInflater.from(this);
+                @SuppressLint("InflateParams") final View view = factory.inflate(R.layout.registration_dialog, null);
+
+                TextView title = view.findViewById(R.id.title);
+                title.setText(notiPrefs.getString("status", ""));
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.DialogTheme);
+
+                alert.setView(view).setPositiveButton("Login",
+                        (dialog, whichButton) -> {
+                            if (isInternetOn()) {
+                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                                Intent i = new Intent(this, AppLogin.class);
+                                i.putExtra("status", "Online");
+                                startActivity(i);
+                                finish();
+                            } else {
+                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                                Intent i = new Intent(this, AppLogin.class);
+                                i.putExtra("status", "Offline");
+                                startActivity(i);
+                                finish();
+                                Toast.makeText(this, "Please Connect Internet for better experience", Toast.LENGTH_SHORT).show();
+                            }
+                        }).setNegativeButton("Cancel",
+                        (dialog, whichButton) -> {
+
+                        });
+                AlertDialog alertDialog = alert.create();
+                alertDialog.show();
+                Button theButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                Button theButton1 = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                theButton.setTextColor(getResources().getColor(R.color.text_gray));
+                theButton1.setTextColor(getResources().getColor(R.color.text_gray));
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                        .setEnabled(true);
+            }
         }
 
         SharedPreferences settingsUser = getSharedPreferences(PREFS_USER, 0);
@@ -643,6 +693,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            activitiesArray.clear();
         }
 
         @Override
@@ -725,7 +776,22 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
     }
 
     private void setAnnouncements() {
-        ActivityAdapter adapter = new ActivityAdapter(this, R.layout.list_announcement, activitiesArray, "announcements");
+        ArrayList<DataBeanActivities> arrayList = new ArrayList<>();
+        ArrayList<String> ids = new ArrayList<>();
+        for (int i = 0; i < activitiesArray.size(); i++) {
+            if (!ids.contains(activitiesArray.get(i).getActiviId())) {
+                ids.add(activitiesArray.get(i).getActiviId());
+            }
+        }
+        for (int i = 0; i < ids.size(); i++) {
+            for (int j = 0; j < activitiesArray.size(); j++) {
+                if (ids.get(i).equals(activitiesArray.get(j).getActiviId())) {
+                    arrayList.add(activitiesArray.get(j));
+                    break;
+                }
+            }
+        }
+        ActivityAdapter adapter = new ActivityAdapter(this, R.layout.list_announcement, arrayList, "announcements");
         announcements.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -765,6 +831,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            activitiesArray.clear();
         }
 
         @Override
@@ -840,10 +907,34 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void setTestmonials() {
         ActivityAdapter adapter = new ActivityAdapter(this, R.layout.list_announcement, activitiesArray, "testimonials");
         testimonials.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        read_more.setOnClickListener(v -> {
+            LayoutInflater factory = LayoutInflater.from(this);
+            @SuppressLint("InflateParams") final View textEntryView = factory.inflate(R.layout.list_testimonial, null);
+
+            TextView detail = textEntryView.findViewById(R.id.title);
+            if (pos < activitiesArray.size()) {
+                String title = StringEscapeUtils.unescapeHtml(activitiesArray.get(pos - 1).getActiviTitle());
+                detail.setText("\" " + title + " \"");
+            }
+            else {
+                String title = StringEscapeUtils.unescapeHtml(activitiesArray.get(0).getActiviTitle());
+                detail.setText("\" " + title + " \"");
+            }
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.DialogTheme);
+            alert.setView(textEntryView).setNegativeButton("Close",
+                    (dialog, whichButton) -> {
+
+                    });
+            AlertDialog alertDialog = alert.create();
+            alertDialog.show();
+        });
 
         new CountDownTimer(4000, 4000) {
 
@@ -1305,11 +1396,16 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
     private void listItms() {
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.height = (int) getResources().getDimension(R.dimen._110sdp) * (instiBuzzArray.size()/3);
+        params.height = (int) getResources().getDimension(R.dimen._101sdp) * (instiBuzzArray.size() / 3);
         institue_lv.setLayoutParams(params);
 
         institueBuzzAdaptor = new InstitueBuzzAdaptor(InstituteBuzzActivityDiff.this, R.layout.insti_buzz_list_item, instiBuzzArray);
         institue_lv.setAdapter(institueBuzzAdaptor);
+
+        if (userrType.equals("Guest")) {
+            GetTestmonials getTestmonials = new GetTestmonials(this);
+            getTestmonials.execute(userSchoolId);
+        }
 
         institue_lv.setOnItemClickListener((parent, view, position, id) -> {
             String hobbiesName = instiBuzzArray.get(position).getInstBuzzName();
@@ -1407,7 +1503,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         } else {
                             Intent i = new Intent(InstituteBuzzActivityDiff.this, StudyMaterial.class);
-                            i.putExtra("sub", "All");
+                            i.putExtra("sub", "All Subjects");
                             startActivity(i);
                             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         }
@@ -1421,7 +1517,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         } else {
                             Intent i = new Intent(InstituteBuzzActivityDiff.this, VideoLibrary.class);
-                            i.putExtra("sub", "All");
+                            i.putExtra("sub", "All Subjects");
                             startActivity(i);
                             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         }

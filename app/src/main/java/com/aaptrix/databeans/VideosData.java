@@ -4,7 +4,15 @@ import java.io.Serializable;
 
 public class VideosData implements Serializable {
 	
-	private String title, url, id, subject, batch, date, desc, comments, stream, start, end, tags;
+	private String title, url, id, subject, batch, date, desc, comments, stream, start, end, tags, totalTime;
+
+	public String getTotalTime() {
+		return totalTime;
+	}
+
+	public void setTotalTime(String totalTime) {
+		this.totalTime = totalTime;
+	}
 
 	public String getTags() {
 		return tags;

@@ -775,6 +775,7 @@ public class AppLogin extends AppCompatActivity {
                     Toast.makeText(AppLogin.this, result, Toast.LENGTH_SHORT).show();
                     break;
                 default:
+                    getSharedPreferences("noti_prefs", MODE_PRIVATE).edit().clear().apply();
                     try {
                         SharedPreferences settingsUser = getSharedPreferences(PREFS_USER, 0);
                         SharedPreferences.Editor editorUser = settingsUser.edit();

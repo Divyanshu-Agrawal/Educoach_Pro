@@ -28,6 +28,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -287,14 +288,35 @@ public class StaffDetails extends AppCompatActivity {
         Collections.sort(ratingArray, (o1, o2) -> o1.getFeatured().compareTo(o2.getFeatured()));
         Collections.reverse(ratingArray);
 
-        int size = (int) getResources().getDimension(R.dimen._90sdp) * ratingArray.size();
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.height = size;
-        listView.setLayoutParams(params);
-
         RateAdapter adapter = new RateAdapter(this, R.layout.list_reviews, ratingArray);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        getTotalHeightofListView();
+    }
+
+    public void getTotalHeightofListView() {
+
+        ListAdapter mAdapter = listView.getAdapter();
+
+        int totalHeight = 0;
+
+        for (int i = 0; i < mAdapter.getCount(); i++) {
+            View mView = mAdapter.getView(i, null, listView);
+
+            mView.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+
+            totalHeight += mView.getMeasuredHeight() * 2;
+
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + ((int) getResources().getDimension(R.dimen._10sdp) * ratingArray.size());
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
     private void rateStaff() {

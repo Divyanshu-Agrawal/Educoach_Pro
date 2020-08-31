@@ -784,7 +784,7 @@ public class AddNewVideo extends AppCompatActivity {
                     @Override
                     public void onFinish() {
                         Intent i = new Intent(context, VideoLibrary.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        i.putExtra("sub", "All");
+                        i.putExtra("sub", "All Subjects");
                         startActivity(i);
                         finish();
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

@@ -1,16 +1,11 @@
 package com.aaptrix.activitys.admin;
 
 import com.aaptrix.activitys.student.ActivitiesActivity;
-import com.aaptrix.adaptor.GridImageAdapter;
 import com.aaptrix.R;
-import com.aaptrix.tools.FileUtil;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.PermissionChecker;
 
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.HttpResponse;
@@ -20,55 +15,53 @@ import cz.msebera.android.httpclient.conn.ssl.SSLConnectionSocketFactory;
 import cz.msebera.android.httpclient.conn.ssl.SSLContexts;
 import cz.msebera.android.httpclient.entity.mime.HttpMultipartMode;
 import cz.msebera.android.httpclient.entity.mime.MultipartEntityBuilder;
-import cz.msebera.android.httpclient.entity.mime.content.FileBody;
 import cz.msebera.android.httpclient.impl.client.HttpClients;
 import cz.msebera.android.httpclient.util.EntityUtils;
-import id.zelory.compressor.Compressor;
 import pl.droidsonroids.gif.GifImageView;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.GridView;
-import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.aaptrix.adaptor.BatchListAdaptor;
+import com.aaptrix.databeans.DataBeanStudent;
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -86,6 +79,8 @@ import java.util.Objects;
 
 import javax.net.ssl.SSLContext;
 
+import static com.aaptrix.tools.HttpUrl.ALL_BATCHS;
+import static com.aaptrix.tools.HttpUrl.BATCH_BY_COURSE;
 import static com.aaptrix.tools.SPClass.PREFS_DAIRY;
 import static com.aaptrix.tools.HttpUrl.ADD_ACTIVITY;
 import static com.aaptrix.tools.HttpUrl.REMOVE_ACTIVITY;
@@ -96,34 +91,27 @@ import static cz.msebera.android.httpclient.conn.ssl.SSLConnectionSocketFactory.
 
 public class AddNewActivity extends AppCompatActivity {
 
-    ArrayList<File> imageArray = new ArrayList<>();
-    String file_extn;
-    ArrayList<String> filepath = new ArrayList<>();
-    ArrayList<Uri> image = new ArrayList<>();
-    GridView gridView;
-    ImageButton imageView;
     RelativeLayout layout;
     Toolbar toolbar;
     AppBarLayout appBarLayout;
-    EditText title, description, date;
+    EditText title;
     ProgressBar progressBar;
     Button save, delete;
-    String type, strTitle, strDesc, strDate, strImage, strId;
-    Uri addImageUri = Uri.parse("android.resource://com.aaptrix/drawable/add_image");
-    InputStream stream;
+    String type, strTitle, strId;
     String selToolColor, selStatusColor, selTextColor1, userSchoolId, userId;
-    String[] oldImage;
-    ArrayList<String> sendOldImage = new ArrayList<>();
     MediaPlayer mp;
     CardView cardView;
     GifImageView taskStatus;
+    BatchListAdaptor batchListAdaptor;
+    EditText batch_spinner;
+    AlertDialog.Builder alert;
+    AlertDialog alertDialog;
+    private ArrayList<DataBeanStudent> studentArray = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new);
-        gridView = findViewById(R.id.choose_img_grid);
-        imageView = findViewById(R.id.sel_image);
         toolbar = findViewById(R.id.toolbar);
         appBarLayout = findViewById(R.id.appBarLayout);
         setSupportActionBar(toolbar);
@@ -136,26 +124,14 @@ public class AddNewActivity extends AppCompatActivity {
         cardView = findViewById(R.id.card_view);
         taskStatus = findViewById(R.id.task_status);
         layout = findViewById(R.id.layout);
+        batch_spinner = findViewById(R.id.batch_spinner);
 
         title = findViewById(R.id.tv_achive_title);
-        description = findViewById(R.id.tv_achive_desc);
-        date = findViewById(R.id.tv_achive_date);
         progressBar = findViewById(R.id.loader);
         save = findViewById(R.id.save_btn);
         delete = findViewById(R.id.remove_btn);
-        date.setFocusable(false);
 
         title.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus)
-                hideKeyboard(v);
-        });
-
-        description.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus)
-                hideKeyboard(v);
-        });
-
-        date.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus)
                 hideKeyboard(v);
         });
@@ -174,17 +150,15 @@ public class AddNewActivity extends AppCompatActivity {
         save.setTextColor(Color.parseColor(selTextColor1));
         delete.setTextColor(Color.parseColor(selTextColor1));
 
+        GetAllBatches getAllBatches = new GetAllBatches(this);
+        getAllBatches.execute(userSchoolId);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.parseColor(selStatusColor));
         }
 
-        try {
-            stream = getContentResolver().openInputStream(addImageUri);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
 
         layout.setOnClickListener(v -> {
 
@@ -195,113 +169,34 @@ public class AddNewActivity extends AppCompatActivity {
         if (type.equals("update")) {
             setTitle("Update Announcement");
             strTitle = getIntent().getStringExtra("title");
-            strDesc = getIntent().getStringExtra("description");
-            strDate = getIntent().getStringExtra("date");
-            strImage = getIntent().getStringExtra("image");
             strId = getIntent().getStringExtra("id");
 
             title.setText(strTitle);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                description.setText(Html.fromHtml(strDesc, Html.FROM_HTML_MODE_COMPACT));
-            } else {
-                description.setText(Html.fromHtml(strDesc));
-            }
-            date.setText(strDate);
             save.setText("Update");
             delete.setVisibility(View.VISIBLE);
-
-            oldImage = strImage.split(",");
-            for (String anOldImage : oldImage) {
-                sendOldImage.add(anOldImage.replace("\"", "").replace("[", "").replace("]", ""));
-            }
-
-            for (int i = 0; i < sendOldImage.size(); i++) {
-                Uri uri = Uri.parse(sp_user.getString("imageUrl", "") + sp_user.getString("userSchoolId", "") + "/activities/" + sendOldImage.get(i));
-                image.add(uri);
-            }
-            if (image.size() != 4) {
-                image.add(addImageUri);
-            }
-            GridImageAdapter addAdapter = new GridImageAdapter(this, R.layout.image_add_grid, image);
-            gridView.setAdapter(addAdapter);
-            imageView.setVisibility(View.GONE);
-            addAdapter.notifyDataSetChanged();
         }
-
-        imageView.bringToFront();
-        imageView.setOnClickListener(v -> {
-            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED) {
-                Intent photoPickerIntent = new Intent();
-                photoPickerIntent.setType("image/*");
-                photoPickerIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(photoPickerIntent, 1);
-            } else {
-                isPermissionGranted();
-            }
-        });
-
-        gridView.setOnItemClickListener((parent, view, position, id) -> {
-            image.remove(addImageUri);
-            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED) {
-                Intent photoPickerIntent = new Intent();
-                photoPickerIntent.setType("image/*");
-                photoPickerIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(photoPickerIntent, 1);
-            } else {
-                isPermissionGranted();
-            }
-        });
-
-        date.setOnClickListener(v -> {
-            final Calendar mcurrentDate = Calendar.getInstance();
-            int mYear = mcurrentDate.get(Calendar.YEAR);
-            int mMonth = mcurrentDate.get(Calendar.MONTH);
-            int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
-            DatePickerDialog mDatePicker = new DatePickerDialog(
-                    this, R.style.AlertDialogCustom1, (datepicker, selectedyear, selectedmonth, selectedday) -> {
-                mcurrentDate.set(Calendar.YEAR, selectedyear);
-                mcurrentDate.set(Calendar.MONTH, selectedmonth);
-                mcurrentDate.set(Calendar.DAY_OF_MONTH,
-                        selectedday);
-                SimpleDateFormat sdf = new SimpleDateFormat(
-                        getResources().getString(
-                                R.string.date_card_formate_dairy5),
-                        Locale.US);
-                date.setText(sdf.format(mcurrentDate
-                        .getTime()));
-            }, mYear, mMonth, mDay);
-            mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-            mDatePicker.show();
-        });
 
         save.setOnClickListener(v -> {
             mp.start();
-            if (!TextUtils.isEmpty(title.getText().toString())) {
-                if (!TextUtils.isEmpty(description.getText().toString())) {
-                    if (!TextUtils.isEmpty(date.getText().toString())) {
-                        layout.setVisibility(View.VISIBLE);
-                        layout.bringToFront();
-                        if (type.equals("add")) {
-                            SharedPreferences sp = getSharedPreferences(PREFS_DAIRY, 0);
-                            String studentArray = sp.getString("studentArray", "");
-                            UploadActivity uploadActivity = new UploadActivity(this);
-                            uploadActivity.execute(userSchoolId, title.getText().toString(),
-                                    description.getText().toString(), date.getText().toString(), studentArray, sp_user.getString("userID", ""));
-                        } else {
-                            UpdateActivity updateActivity = new UpdateActivity(this);
-                            updateActivity.execute(userId, title.getText().toString(),
-                                    description.getText().toString(), date.getText().toString(), strId, sp_user.getString("userSection", ""));
-                        }
-                    } else {
-                        Toast.makeText(this, "Please enter Date", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(this, "Please enter Description", Toast.LENGTH_SHORT).show();
-                }
+            SharedPreferences sp = getSharedPreferences(PREFS_DAIRY, 0);
+            String studentArray = sp.getString("studentArray", "");
+            if (TextUtils.isEmpty(title.getText().toString())) {
+                title.setError("Please Enter Details");
+                title.requestFocus();
+            } else if (studentArray.isEmpty()) {
+                Toast.makeText(this, "Please select batch", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Please enter Title", Toast.LENGTH_SHORT).show();
+                layout.setVisibility(View.VISIBLE);
+                layout.bringToFront();
+                if (type.equals("add")) {
+                    UploadActivity uploadActivity = new UploadActivity(this);
+                    uploadActivity.execute(userSchoolId, title.getText().toString(),
+                            studentArray, sp_user.getString("userID", ""));
+                } else {
+                    UpdateActivity updateActivity = new UpdateActivity(this);
+                    updateActivity.execute(userId, title.getText().toString(),
+                            strId, sp_user.getString("userSection", ""));
+                }
             }
         });
 
@@ -322,6 +217,152 @@ public class AddNewActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("StaticFieldLeak")
+    public class GetAllBatches extends AsyncTask<String, String, String> {
+        Context ctx;
+
+        GetAllBatches(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String school_id = params[0];
+            String data;
+
+            try {
+
+                URL url = new URL(ALL_BATCHS);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
+                data = URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_users_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8");
+                outputStream.write(data.getBytes());
+
+                bufferedWriter.write(data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.flush();
+                outputStream.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    response.append(line);
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                return response.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.e("result", result);
+            if (result.equals("{\"result\":null}")) {
+                studentArray.clear();
+                Toast.makeText(ctx, "No Value", Toast.LENGTH_SHORT).show();
+            } else {
+                try {
+                    JSONObject jsonRootObject = new JSONObject(result);
+                    JSONArray jsonArray = jsonRootObject.getJSONArray("result");
+                    studentArray.clear();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        DataBeanStudent dbs = new DataBeanStudent();
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        dbs.setUserID(jsonObject.getString("tbl_batch_detail_id"));
+                        dbs.setUserName(jsonObject.getString("tbl_batch_name"));
+                        studentArray.add(dbs);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                setBatch();
+                super.onPostExecute(result);
+            }
+        }
+    }
+
+    private void setBatch() {
+        batch_spinner.setOnClickListener(v -> setNumberOfUsers(studentArray));
+    }
+
+    private void setNumberOfUsers(final ArrayList<DataBeanStudent> studentArray) {
+        LayoutInflater factory = LayoutInflater.from(this);
+        final View textEntryView = factory.inflate(R.layout.tudent_select_dialog, null);
+
+        ListView user_list = textEntryView.findViewById(R.id.user_list);
+        CheckBox cb_selectAll = textEntryView.findViewById(R.id.cb_selectAll);
+        batchListAdaptor = new BatchListAdaptor(this, R.layout.user_select_dialog, studentArray, false);
+        user_list.setAdapter(batchListAdaptor);
+
+        cb_selectAll.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                batchListAdaptor = new BatchListAdaptor(this, R.layout.user_select_dialog, studentArray, b);
+                user_list.setAdapter(batchListAdaptor);
+                batchListAdaptor.notifyDataSetChanged();
+                saveDataInSP(studentArray);
+            } else {
+                batchListAdaptor = new BatchListAdaptor(this, R.layout.user_select_dialog, studentArray, b);
+                user_list.setAdapter(batchListAdaptor);
+                batchListAdaptor.notifyDataSetChanged();
+                SharedPreferences.Editor se_dairy = getSharedPreferences(PREFS_DAIRY, 0).edit();
+                se_dairy.clear();
+                se_dairy.apply();
+            }
+        });
+
+        alert = new AlertDialog.Builder(this, R.style.DialogTheme);
+
+        alert.setTitle("Select Batch").setView(textEntryView).setPositiveButton("Ok",
+                (dialog, whichButton) -> {
+                    alertDialog.dismiss();
+                    String studentArray1 = getSharedPreferences("dairy", 0).getString("studentArray", "");
+                    if (!studentArray1.isEmpty()) {
+                        batch_spinner.setHint("Selected");
+                    }
+                }).setNegativeButton("Cancel",
+                (dialog, whichButton) -> {
+                });
+        alertDialog = alert.create();
+        alertDialog.show();
+        Button theButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        Button theButton1 = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        theButton.setTextColor(getResources().getColor(R.color.text_gray));
+        theButton1.setTextColor(getResources().getColor(R.color.text_gray));
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setEnabled(true);
+    }
+
+    private void saveDataInSP(ArrayList<DataBeanStudent> studentArray) {
+        Gson gson = new GsonBuilder().create();
+        JsonArray studentArray1 = gson.toJsonTree(studentArray).getAsJsonArray();
+        SharedPreferences sp_dairy = getSharedPreferences(PREFS_DAIRY, 0);
+        SharedPreferences.Editor se_dairy = sp_dairy.edit();
+        se_dairy.clear();
+        se_dairy.putString("studentArray", "" + studentArray1);
+        se_dairy.apply();
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -332,118 +373,6 @@ public class AddNewActivity extends AppCompatActivity {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         assert inputMethodManager != null;
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1)
-            if (resultCode == Activity.RESULT_OK) {
-                ClipData clipData = data.getClipData();
-                if (clipData != null) {
-                    int size = 4;
-                    if (type.equals("update")) {
-                        if (sendOldImage.size() == 1) {
-                            size = 3;
-                        } else if (sendOldImage.size() == 2) {
-                            size = 2;
-                        } else if (sendOldImage.size() == 3) {
-                            size = 1;
-                        }
-                    }
-                    if (filepath.size() > size) {
-                        Toast.makeText(this, "Please select upto only " + size + " images", Toast.LENGTH_SHORT).show();
-                    } else if (clipData.getItemCount() > size) {
-                        Toast.makeText(this, "Please select upto only " + size + " images", Toast.LENGTH_SHORT).show();
-                    } else {
-                        for (int i = 0; i < clipData.getItemCount(); i++) {
-                            image.add(clipData.getItemAt(i).getUri());
-                        }
-                        for (int i = 0; i < image.size(); i++) {
-                            filepath.add(FileUtil.getFileName(this, image.get(i)));
-                            file_extn = filepath.get(i).substring(filepath.get(i).lastIndexOf(".") + 1);
-                            try {
-                                if (file_extn.equals("jpg") || file_extn.equals("jpeg") || file_extn.equals("png")) {
-                                    imageArray.add(new Compressor(this)
-                                            .setMaxWidth(1280)
-                                            .setMaxHeight(720)
-                                            .setQuality(25)
-                                            .setCompressFormat(Bitmap.CompressFormat.JPEG)
-                                            .compressToFile(FileUtil.from(this, image.get(i))));
-                                } else {
-                                    FileNotFoundException fe = new FileNotFoundException();
-                                    Toast.makeText(this, "File not in required format.", Toast.LENGTH_SHORT).show();
-                                    throw fe;
-                                }
-                            } catch (IOException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                        }
-                        if (image.size() != 4) {
-                            image.add(addImageUri);
-                        }
-                        GridImageAdapter addAdapter = new GridImageAdapter(this, R.layout.image_add_grid, image);
-                        gridView.setAdapter(addAdapter);
-                        imageView.setVisibility(View.GONE);
-                        addAdapter.notifyDataSetChanged();
-                    }
-                } else {
-                    if (filepath.size() > 4) {
-                        Toast.makeText(this, "Please select upto only 4 images", Toast.LENGTH_SHORT).show();
-                    } else {
-                        image.add(data.getData());
-                        for (int i = 0; i < image.size(); i++) {
-                            filepath.add(FileUtil.getFileName(this, image.get(i)));
-                            file_extn = filepath.get(i).substring(filepath.get(i).lastIndexOf(".") + 1);
-                            try {
-                                if (file_extn.equals("jpg") || file_extn.equals("jpeg") || file_extn.equals("png")) {
-                                    imageArray.add(new Compressor(this)
-                                            .setMaxWidth(1280)
-                                            .setMaxHeight(720)
-                                            .setQuality(25)
-                                            .setCompressFormat(Bitmap.CompressFormat.JPEG)
-                                            .compressToFile(FileUtil.from(this, image.get(i))));
-                                } else {
-                                    FileNotFoundException fe = new FileNotFoundException();
-                                    Toast.makeText(this, "File not in required format.", Toast.LENGTH_SHORT).show();
-                                    throw fe;
-                                }
-                            } catch (IOException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                        }
-                        if (image.size() != 4) {
-                            image.add(addImageUri);
-                        }
-                        GridImageAdapter addAdapter = new GridImageAdapter(this, R.layout.image_add_grid, image);
-                        gridView.setAdapter(addAdapter);
-                        imageView.setVisibility(View.GONE);
-                        addAdapter.notifyDataSetChanged();
-                    }
-                }
-            }
-    }
-
-    public void isPermissionGranted() {
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -466,42 +395,11 @@ public class AddNewActivity extends AppCompatActivity {
 
             String schoolId = params[0];
             String str_title = params[1];
-            String str_desc = params[2];
-            String str_date = params[3];
-            String userSection = params[4];
-            String userId = params[5];
+            String userSection = params[2];
+            String userId = params[4];
             String notiImage = "0";
 
             try {
-                ArrayList<String> imageNames = new ArrayList<>();
-                for (int i = 0; i < imageArray.size(); i++) {
-                    try {
-                        SSLContext sslContext = SSLContexts.custom().useTLS().build();
-                        SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
-                                sslContext,
-                                new String[]{"TLSv1.1", "TLSv1.2"},
-                                null,
-                                BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
-                        HttpClient httpclient = HttpClients.custom().setSSLSocketFactory(f).build();
-                        HttpPost httppost = new HttpPost(ADD_ACTIVITY);
-                        MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
-                        entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-                        FileBody image = new FileBody(imageArray.get(i));
-                        entityBuilder.addPart("image", image);
-                        entityBuilder.addTextBody("schoolId", schoolId);
-                        HttpEntity entity = entityBuilder.build();
-                        httppost.setEntity(entity);
-                        HttpResponse response = httpclient.execute(httppost);
-                        HttpEntity httpEntity = response.getEntity();
-                        String result = EntityUtils.toString(httpEntity);
-                        JSONObject jsonObject = new JSONObject(result);
-                        imageNames.add("\"" + jsonObject.getString("imageNm") + "\"");
-                        if (i == 0)
-                            notiImage = jsonObject.getString("imageNm");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
                 try {
                     SSLContext sslContext = SSLContexts.custom().useTLS().build();
                     SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
@@ -513,11 +411,8 @@ public class AddNewActivity extends AppCompatActivity {
                     HttpPost httppost = new HttpPost(ADD_ACTIVITY);
                     MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
                     entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-                    entityBuilder.addTextBody("str_img", imageNames.toString().replace(" ", ""));
                     entityBuilder.addTextBody("schoolId", schoolId);
                     entityBuilder.addTextBody("str_title", str_title);
-                    entityBuilder.addTextBody("str_desc", str_desc);
-                    entityBuilder.addTextBody("str_date", str_date);
                     entityBuilder.addTextBody("userSection", userSection);
                     entityBuilder.addTextBody("userId", userId);
                     entityBuilder.addTextBody("noti_image", notiImage);
@@ -583,44 +478,10 @@ public class AddNewActivity extends AppCompatActivity {
 
             String userId = params[0];
             String str_title = params[1];
-            String str_desc = params[2];
-            String str_date = params[3];
-            String achivId = params[4];
-            String userSection = params[5];
+            String achivId = params[2];
+            String userSection = params[3];
 
             try {
-                ArrayList<String> imageNames = new ArrayList<>();
-                for (int i = 0; i < imageArray.size(); i++) {
-                    try {
-                        SSLContext sslContext = SSLContexts.custom().useTLS().build();
-                        SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
-                                sslContext,
-                                new String[]{"TLSv1.1", "TLSv1.2"},
-                                null,
-                                BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
-                        HttpClient httpclient = HttpClients.custom().setSSLSocketFactory(f).build();
-                        HttpPost httppost = new HttpPost(UPDATE_ACTIVITY);
-                        MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
-                        entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-                        FileBody image = new FileBody(imageArray.get(i));
-                        entityBuilder.addPart("image", image);
-                        entityBuilder.addTextBody("schoolId", userSchoolId);
-                        HttpEntity entity = entityBuilder.build();
-                        httppost.setEntity(entity);
-                        HttpResponse response = httpclient.execute(httppost);
-                        HttpEntity httpEntity = response.getEntity();
-                        String result = EntityUtils.toString(httpEntity);
-                        JSONObject jsonObject = new JSONObject(result);
-                        imageNames.add("\"" + jsonObject.getString("imageNm") + "\"");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                for (String aSendOldImage : sendOldImage) {
-                    imageNames.add("\"" + aSendOldImage + "\"");
-                }
-
                 try {
                     SSLContext sslContext = SSLContexts.custom().useTLS().build();
                     SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
@@ -632,11 +493,8 @@ public class AddNewActivity extends AppCompatActivity {
                     HttpPost httppost = new HttpPost(UPDATE_ACTIVITY);
                     MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
                     entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-                    entityBuilder.addTextBody("str_img", imageNames.toString().replace(" ", ""));
                     entityBuilder.addTextBody("userId", userId);
                     entityBuilder.addTextBody("str_title", str_title);
-                    entityBuilder.addTextBody("str_desc", str_desc);
-                    entityBuilder.addTextBody("str_date", str_date);
                     entityBuilder.addTextBody("userSection", userSection);
                     entityBuilder.addTextBody("actiId", achivId);
                     HttpEntity entity = entityBuilder.build();

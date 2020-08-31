@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/title"
         android:textSize="16sp"
-        android:maxLines="3"
+        android:maxLines="2"
         android:marqueeRepeatLimit="marquee_forever"
         android:ellipsize="end"
         android:text="Announcement Title"

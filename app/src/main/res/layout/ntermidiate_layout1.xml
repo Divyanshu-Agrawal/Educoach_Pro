@@ -180,7 +180,6 @@
                             android:paddingLeft="@dimen/siz10"
                             android:layout_width="match_parent"
                             android:popupBackground="@android:drawable/dialog_holo_light_frame"
-                            android:fontFamily="ROBOTO-REGULAR.TTF"
                             android:layout_height="45dp"
                             android:text="Selected Batch"
                             android:background="@drawable/et_background_design"

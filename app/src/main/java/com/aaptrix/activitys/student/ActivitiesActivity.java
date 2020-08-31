@@ -14,7 +14,6 @@ import android.os.Bundle;
 import com.google.android.material.appbar.AppBarLayout;
 
 import com.aaptrix.activitys.admin.AddNewActivity;
-import com.aaptrix.activitys.admin.IntermidiateScreenActivityPublication;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
@@ -72,10 +71,8 @@ import static com.aaptrix.tools.SPClass.PREF_COLOR;
  */
 
 public class ActivitiesActivity extends AppCompatActivity {
-    SharedPreferences.Editor editor;
     String userId, userSchoolId, userSchoolLogo, userRoleId, userSection, userrType;
     AppBarLayout appBarLayout;
-    SharedPreferences.Editor editorColor;
     String selToolColor, selDrawerColor, selStatusColor, selTextColor1, selTextColor2;
     TextView tool_title;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -154,7 +151,7 @@ public class ActivitiesActivity extends AppCompatActivity {
                     }
                     setBatch();
                 } else {
-                    String batch_array[] = {"All Batches"};
+                    String[] batch_array = {"All Batches"};
                     ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(this, R.layout.spinner_list_item1, batch_array);
                     dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
                     batch_spinner.setAdapter(dataAdapter1);
@@ -182,7 +179,7 @@ public class ActivitiesActivity extends AppCompatActivity {
             });
         } else {
             batch_spinner.setVisibility(View.GONE);
-            if (acti != null && !acti.equals("null") && !acti.isEmpty() && acti.length() > 5) {
+            if (!acti.equals("null") && !acti.isEmpty() && acti.length() > 5) {
                 getAllActivities(acti);
                 snack.setVisibility(View.VISIBLE);
                 new CountDownTimer(3000, 1000) {
@@ -237,8 +234,8 @@ public class ActivitiesActivity extends AppCompatActivity {
 
         iv_add_more_activities.setOnClickListener(view -> {
             if (isInternetOn()) {
-                Intent i = new Intent(ActivitiesActivity.this, IntermidiateScreenActivityPublication.class);
-                i.putExtra("str_tool_title", "Add Announcement");
+                Intent i = new Intent(ActivitiesActivity.this, AddNewActivity.class);
+                i.putExtra("type", "add");
                 startActivity(i);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             } else {
@@ -392,15 +389,10 @@ public class ActivitiesActivity extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     activiId = jsonObject.getString("tbl_school_activities_id");
                     activiTitle = jsonObject.getString("tbl_school_activities_title");
-                    activiDesc = jsonObject.getString("tbl_school_activities_desc");
-                    activiDate = jsonObject.getString("tbl_school_activities_date");
-                    activiImg = jsonObject.getString("tbl_school_activities_img");
                     dbact.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
                     dbact.setActiviId(activiId);
                     dbact.setActiviTitle(activiTitle);
-                    dbact.setActiviDesc(activiDesc);
                     dbact.setActiviDate(activiDate);
-                    dbact.setActiviImg(activiImg);
                     activitiesArray.add(dbact);
                 }
             } catch (JSONException e) {
@@ -411,7 +403,6 @@ public class ActivitiesActivity extends AppCompatActivity {
             }
         }
     }
-
 
     @SuppressLint("StaticFieldLeak")
     public class GetAllActivities extends AsyncTask<String, String, String> {
@@ -506,15 +497,10 @@ public class ActivitiesActivity extends AppCompatActivity {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         activiId = jsonObject.getString("tbl_school_activities_id");
                         activiTitle = jsonObject.getString("tbl_school_activities_title");
-                        activiDesc = jsonObject.getString("tbl_school_activities_desc");
-                        activiDate = jsonObject.getString("tbl_school_activities_date");
-                        activiImg = jsonObject.getString("tbl_school_activities_img");
                         dbact.setBatch(jsonObject.getString("tbl_stnt_prsnl_data_section"));
                         dbact.setActiviId(activiId);
                         dbact.setActiviTitle(activiTitle);
-                        dbact.setActiviDesc(activiDesc);
                         dbact.setActiviDate(activiDate);
-                        dbact.setActiviImg(activiImg);
                         activitiesArray.add(dbact);
                     }
                 } catch (JSONException e) {
@@ -561,18 +547,12 @@ public class ActivitiesActivity extends AppCompatActivity {
         activities_list.removeFooterView(footerView);//Add view to list view as footer view
         activities_list.setOnItemClickListener((adapterView, view, i, l) -> {
             String achId = arrayList.get(i).getActiviId();
-            String achImg = arrayList.get(i).getActiviImg();
             String achCate = "activities";
             String achTitle = arrayList.get(i).getActiviTitle();
-            String achDesc = arrayList.get(i).getActiviDesc();
-            String acgDate = arrayList.get(i).getActiviDate();
             Intent i11 = new Intent(ActivitiesActivity.this, AchievmentDetailsActivity.class);
             i11.putExtra("activiId", achId);
-            i11.putExtra("achImg", achImg);
             i11.putExtra("achCate", achCate);
             i11.putExtra("achTitle", achTitle);
-            i11.putExtra("achDesc", achDesc);
-            i11.putExtra("acgDate", acgDate);
             startActivity(i11);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
@@ -596,9 +576,6 @@ public class ActivitiesActivity extends AppCompatActivity {
                                 Intent intent = new Intent(ActivitiesActivity.this, AddNewActivity.class);
                                 intent.putExtra("type", "update");
                                 intent.putExtra("title", arrayList.get(pos).getActiviTitle());
-                                intent.putExtra("description", arrayList.get(pos).getActiviDesc());
-                                intent.putExtra("date", arrayList.get(pos).getActiviDate());
-                                intent.putExtra("image", arrayList.get(pos).getActiviImg());
                                 intent.putExtra("id", arrayList.get(pos).getActiviId());
                                 startActivity(intent);
                             } else {

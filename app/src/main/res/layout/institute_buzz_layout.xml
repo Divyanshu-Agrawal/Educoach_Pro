@@ -323,14 +323,14 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:gravity="center"
                                 android:orientation="horizontal">
 
                                 <ImageView
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="@dimen/_20sdp"
                                     android:layout_weight="0.2"
-                                    android:paddingStart="5dp"
-                                    android:paddingEnd="5dp"
+                                    android:padding="3dp"
                                     android:src="@drawable/announcement" />
 
                                 <TextView
@@ -394,6 +394,7 @@
                             android:dividerHeight="0dp"
                             android:gravity="center"
                             android:horizontalSpacing="0dp"
+                            android:nestedScrollingEnabled="false"
                             android:numColumns="3"
                             android:scrollbars="none"
                             android:stretchMode="columnWidth"

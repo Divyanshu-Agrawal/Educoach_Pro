@@ -349,18 +349,20 @@ public class AboutUsActivity extends AppCompatActivity implements BaseSliderView
 
     private void listItms() {
 
-        if (strYt.equals("null"))
+        if (strYt != null && strYt.equals("null"))
             youtube.setVisibility(View.GONE);
-        if (strTwitter.equals("null"))
+        if (strTwitter != null && strTwitter.equals("null"))
             twitter.setVisibility(View.GONE);
-        if (strInsta.equals("null"))
+        if (strInsta != null && strInsta.equals("null"))
             instagram.setVisibility(View.GONE);
-        if (strfb.equals("null"))
+        if (strfb != null && strfb.equals("null"))
             facebook.setVisibility(View.GONE);
-        if (strWA.equals("null"))
+        if (strWA != null && strWA.equals("null"))
             whatsapp.setVisibility(View.GONE);
 
-        if (strWA.equals("null") && strfb.equals("null") && strInsta.equals("null") && strTwitter.equals("null") && strYt.equals("null"))
+        if (strWA != null && strYt != null && strfb != null && strInsta != null && strTwitter != null &&
+                strWA.equals("null") && strfb.equals("null") && strInsta.equals("null") &&
+                strTwitter.equals("null") && strYt.equals("null"))
             connect.setVisibility(View.GONE);
 
         facebook.setOnClickListener(v -> {

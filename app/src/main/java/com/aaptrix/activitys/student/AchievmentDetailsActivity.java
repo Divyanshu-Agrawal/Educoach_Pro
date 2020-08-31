@@ -108,7 +108,6 @@ public class AchievmentDetailsActivity extends AppCompatActivity implements Base
     CircleImageView iv_edit;
     AppBarLayout appBarLayout;
 
-    SharedPreferences.Editor editorColor;
     String selToolColor, selDrawerColor, selStatusColor, selTextColor1, selTextColor2;
     LinearLayout date_layout;
 
@@ -182,12 +181,19 @@ public class AchievmentDetailsActivity extends AppCompatActivity implements Base
         edit_layout = findViewById(R.id.edit_layout);
 
 
-        achImg = getIntent().getStringExtra("achImg");
         //Log.e( "imgurl",achImg );
         achCate = getIntent().getStringExtra("achCate");
         achTitle = getIntent().getStringExtra("achTitle");
-        achDesc = getIntent().getStringExtra("achDesc");
-        acgDate = getIntent().getStringExtra("acgDate");
+        if (!achCate.equals("activities")) {
+            achImg = getIntent().getStringExtra("achImg");
+            achDesc = getIntent().getStringExtra("achDesc");
+            acgDate = getIntent().getStringExtra("acgDate");
+        } else {
+            achDesc = "";
+            details.setVisibility(View.GONE);
+            sliderLayout.setVisibility(View.GONE);
+            image_main.setVisibility(View.GONE);
+        }
 
         switch (achCate) {
             case "event": {
@@ -345,58 +351,9 @@ public class AchievmentDetailsActivity extends AppCompatActivity implements Base
             case "activities": {
                 activiId = getIntent().getStringExtra("activiId");
                 tool_title.setText(achTitle);
-
-                String date1 = acgDate;
-                setDate(date1);
                 sliderLayout.setVisibility(View.GONE);
                 image_main.setVisibility(View.GONE);
-
-                if (achImg != null && !achImg.equals("null") && !achImg.equals("0")) {
-                    image = achImg.split(",");
-
-                    if (achImg.equals("[]") || image.length == 0) {
-                        sliderLayout.setVisibility(View.GONE);
-                        image_main.setVisibility(View.GONE);
-                    } else {
-                        activiArraySlider.clear();
-                        if (image.length == 1) {
-                            image_main.setVisibility(View.VISIBLE);
-                            sliderLayout.setVisibility(View.GONE);
-
-                            for (String anImage : image) {
-                                SharedPreferences sp = this.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-                                String url = sp.getString("imageUrl", "") + sp.getString("userSchoolId", "");
-                                dbau = new DataBeanAboutUs();
-                                aboutMoreImages = url + "/activities/" + anImage.replace("\"", "").
-                                        replace("[", "").replace(" ", "").replace("]", "").replace(" ", "");
-                                dbau.setAboutMoreImages(aboutMoreImages);
-                                activiArraySlider.add(dbau);
-                            }
-                            if (aboutMoreImages.equals("0")) {
-                                image_main.setVisibility(View.GONE);
-                            } else {
-                                Picasso.with(this).load(aboutMoreImages).error(R.drawable.dummy).placeholder(R.drawable.dummy).into(image_main);
-                            }
-
-                        } else {
-                            sliderLayout.setVisibility(View.VISIBLE);
-                            image_main.setVisibility(View.GONE);
-                            for (String anImage : image) {
-                                SharedPreferences sp = this.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-                                String url = sp.getString("imageUrl", "") + sp.getString("userSchoolId", "");
-                                dbau = new DataBeanAboutUs();
-                                aboutMoreImages = url + "/activities/" + anImage.replace("\"", "").
-                                        replace("[", "").replace(" ", "").replace("]", "").replace(" ", "");
-                                dbau.setAboutMoreImages(aboutMoreImages);
-                                activiArraySlider.add(dbau);
-                            }
-                            slider();
-                        }
-                    }
-                } else {
-                    image_main.setVisibility(View.GONE);
-                    sliderLayout.setVisibility(View.GONE);
-                }
+                date_layout.setVisibility(View.GONE);
                 break;
             }
             case "publication": {

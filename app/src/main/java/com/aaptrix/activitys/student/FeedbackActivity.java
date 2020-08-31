@@ -34,6 +34,8 @@ import com.aaptrix.R;
 import com.google.android.material.appbar.AppBarLayout;
 import com.squareup.picasso.Picasso;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import java.util.Objects;
 
 import javax.net.ssl.SSLContext;
@@ -154,10 +156,10 @@ public class FeedbackActivity extends AppCompatActivity {
                 submit.setClickable(false);
                 if (anonymous.isChecked()) {
                     SendFeedback sendFeedback = new SendFeedback(this);
-                    sendFeedback.execute(schoolId, userId, feedback.getText().toString(), "1");
+                    sendFeedback.execute(schoolId, userId, feedback.getText().toString(), "1", String.valueOf(ratingBar.getRating()));
                 } else {
                     SendFeedback sendFeedback = new SendFeedback(this);
-                    sendFeedback.execute(schoolId, userId, feedback.getText().toString(), "0");
+                    sendFeedback.execute(schoolId, userId, feedback.getText().toString(), "0", String.valueOf(ratingBar.getRating()));
                 }
             }
         });
@@ -205,6 +207,7 @@ public class FeedbackActivity extends AppCompatActivity {
             String userId = params[1];
             String feedback = params[2];
             String anon = params[3];
+            String rating = params[4];
 
             try {
                 SSLContext sslContext = SSLContexts.custom().useTLS().build();
@@ -219,9 +222,9 @@ public class FeedbackActivity extends AppCompatActivity {
                 entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
                 entityBuilder.addTextBody("tbl_school_id", schoolId);
                 entityBuilder.addTextBody("tbl_users_id", userId);
-                entityBuilder.addTextBody("comment", feedback);
+                entityBuilder.addTextBody("comment", StringEscapeUtils.escapeHtml(feedback));
                 entityBuilder.addTextBody("anonymous", anon);
-                entityBuilder.addTextBody("rating", String.valueOf(ratingBar.getRating()));
+                entityBuilder.addTextBody("rating", rating);
                 HttpEntity entity = entityBuilder.build();
                 httppost.setEntity(entity);
                 HttpResponse response = httpclient.execute(httppost);

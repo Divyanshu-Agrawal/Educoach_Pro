@@ -292,14 +292,14 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="center"
                             android:orientation="horizontal">
 
                             <ImageView
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_height="@dimen/_20sdp"
                                 android:layout_weight="0.2"
-                                android:paddingStart="5dp"
-                                android:paddingEnd="5dp"
+                                android:padding="3dp"
                                 android:src="@drawable/announcement" />
 
                             <TextView
@@ -354,6 +354,104 @@
 
                         </androidx.cardview.widget.CardView>
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:id="@+id/testimonial_layout">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_weight="0.2"
+                                android:padding="3dp"
+                                android:src="@drawable/quote" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Testimonials" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.8"
+                                android:gravity="end"
+                                android:id="@+id/read_more"
+                                android:textColor="@color/colorPrimary"
+                                android:paddingStart="10dp"
+                                android:paddingEnd="10dp"
+                                android:text="Read More >" />
+
+                        </LinearLayout>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/testimonial_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/siz5"
+                            android:layout_marginEnd="@dimen/siz5"
+                            android:layout_marginBottom="@dimen/siz5"
+                            android:background="@color/white"
+                            android:clipChildren="false"
+                            android:clipToPadding="false"
+                            android:divider="@android:color/transparent"
+                            android:dividerHeight="0.0px"
+                            android:elevation="8dp"
+                            android:visibility="visible"
+                            app:cardCornerRadius="10dp"
+                            app:cardElevation="5dp"
+                            app:cardPreventCornerOverlap="false">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.1"
+                                    android:scaleType="fitStart"
+                                    android:padding="5dp"
+                                    android:alpha="0.5"
+                                    android:layout_height="match_parent"
+                                    android:src="@drawable/quote"
+                                    app:tint="@color/colorPrimary" />
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/testimonials"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.8"
+                                    android:layout_height="@dimen/_50sdp"
+                                    android:layout_margin="5dp" />
+
+                                <ImageView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.1"
+                                    android:scaleType="fitStart"
+                                    android:rotation="180"
+                                    android:padding="5dp"
+                                    android:alpha="0.5"
+                                    android:layout_height="match_parent"
+                                    android:src="@drawable/quote"
+                                    app:tint="@color/colorPrimary" />
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -375,6 +473,7 @@
                             android:divider="@null"
                             android:dividerHeight="0dp"
                             android:gravity="center"
+                            android:nestedScrollingEnabled="false"
                             android:horizontalSpacing="0dp"
                             android:numColumns="3"
                             android:scrollbars="none"
@@ -392,93 +491,6 @@
                             android:visibility="gone" />
 
                     </RelativeLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:id="@+id/testimonial_layout">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/_17sdp"
-                            android:layout_weight="0.11"
-                            android:paddingStart="5dp"
-                            android:paddingEnd="5dp"
-                            android:src="@drawable/quote" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Testimonials" />
-
-                    </LinearLayout>
-
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/testimonial_card"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/siz5"
-                        android:layout_marginEnd="@dimen/siz5"
-                        android:layout_marginBottom="@dimen/_10sdp"
-                        android:background="@color/white"
-                        android:clipChildren="false"
-                        android:clipToPadding="false"
-                        android:divider="@android:color/transparent"
-                        android:dividerHeight="0.0px"
-                        android:elevation="8dp"
-                        android:visibility="visible"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="5dp"
-                        app:cardPreventCornerOverlap="false">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.1"
-                                android:scaleType="fitStart"
-                                android:padding="5dp"
-                                android:alpha="0.5"
-                                android:tint="@color/colorPrimary"
-                                android:layout_height="match_parent"
-                                android:src="@drawable/quote"/>
-
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/testimonials"
-                                android:layout_width="0dp"
-                                android:layout_weight="0.8"
-                                android:layout_height="@dimen/_50sdp"
-                                android:layout_margin="5dp" />
-
-                            <ImageView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.1"
-                                android:scaleType="fitStart"
-                                android:rotation="180"
-                                android:padding="5dp"
-                                android:tint="@color/colorPrimary"
-                                android:alpha="0.5"
-                                android:layout_height="match_parent"
-                                android:src="@drawable/quote"/>
-
-                        </LinearLayout>
-
-                    </androidx.cardview.widget.CardView>
-
                 </LinearLayout>
 
             </LinearLayout>

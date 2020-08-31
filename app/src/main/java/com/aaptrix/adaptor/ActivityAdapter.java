@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.aaptrix.R;
 import com.aaptrix.activitys.student.ActivitiesActivity;
 import com.aaptrix.databeans.DataBeanActivities;
+
+import org.apache.commons.lang.StringEscapeUtils;
+
 import java.util.ArrayList;
 
 public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ViewHolder> {
@@ -52,7 +57,14 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ViewHo
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ActivityAdapter.ViewHolder holder, int position) {
-        holder.title.setText(objects.get(position).getActiviTitle());
+
+        String title = StringEscapeUtils.unescapeHtml(objects.get(position).getActiviTitle());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            holder.title.setText(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
+        } else {
+            holder.title.setText(Html.fromHtml(title));
+        }
+
         if (type.equals("announcements")) {
             holder.itemView.setOnClickListener(v -> {
                 Intent i = new Intent(context, ActivitiesActivity.class);

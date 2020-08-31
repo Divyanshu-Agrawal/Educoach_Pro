@@ -47,6 +47,7 @@ import android.widget.Toast;
 import com.aaptrix.youtubeview.core.player.YouTubePlayer;
 import com.aaptrix.youtubeview.core.player.listeners.AbstractYouTubePlayerListener;
 import com.aaptrix.youtubeview.core.player.listeners.YouTubePlayerFullScreenListener;
+import com.aaptrix.youtubeview.core.player.utils.YouTubePlayerTracker;
 import com.aaptrix.youtubeview.core.player.views.YouTubePlayerView;
 import com.aaptrix.youtubeview.core.ui.menu.YouTubePlayerMenu;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -69,6 +70,8 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.aaptrix.activitys.SplashScreen.SCHOOL_NAME;
 import static com.aaptrix.tools.HttpUrl.REMOVE_VIDEOS;
+import static com.aaptrix.tools.HttpUrl.VIDEO_SEEN_TIME;
+import static com.aaptrix.tools.HttpUrl.VIDEO_TOTAL_TIME;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
 import static com.aaptrix.tools.SPClass.PREFS_RW;
 import static com.aaptrix.tools.SPClass.PREF_COLOR;
@@ -86,16 +89,17 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 
 public class VideoDetails extends AppCompatActivity {
 
-    String strTitle, url, id, strDesc, strEnd, strSubject, strTags;
+    String strTitle, url, id, strDesc, strEnd, strSubject, strTags, strTime;
     TextView title, desc, endDate;
     AppBarLayout appBarLayout;
-    String selToolColor, selStatusColor, selTextColor1, userrType, userSchoolId, rollNo;
+    String selToolColor, selStatusColor, selTextColor1, userrType, userSchoolId, rollNo, userId;
     TextView tool_title;
     ImageButton delete;
     boolean fullscr = false;
@@ -116,8 +120,9 @@ public class VideoDetails extends AppCompatActivity {
     FrameLayout mainframe, yt_frame;
     RelativeLayout yt_layout, exo_layout;
     HorizontalGridView gridView;
+    YouTubePlayerTracker tracker;
 
-    @SuppressLint("NewApi")
+    @SuppressLint({"NewApi", "SetTextI18n"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -182,7 +187,9 @@ public class VideoDetails extends AppCompatActivity {
         strEnd = getIntent().getStringExtra("endDate");
         strSubject = getIntent().getStringExtra("subject");
         strTags = getIntent().getStringExtra("tags");
+        strTime = getIntent().getStringExtra("time");
 
+        assert strTags != null;
         if (strTags.equals("null") || strTags.equals("")) {
             gridView.setVisibility(View.GONE);
         } else {
@@ -198,6 +205,7 @@ public class VideoDetails extends AppCompatActivity {
                 Date end = sdf.parse(strEnd);
                 sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm aa", Locale.getDefault());
                 endDate.setVisibility(View.VISIBLE);
+                assert end != null;
                 endDate.setText("Visible Till : " + sdf.format(end));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -223,6 +231,7 @@ public class VideoDetails extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         userrType = settings.getString("userrType", "");
         userSchoolId = settings.getString("userSchoolId", "");
+        userId = settings.getString("userID", "");
         if (getResources().getString(R.string.watermark).equals("full")) {
             rollNo = SCHOOL_NAME + "\n" + settings.getString("userName", "") + ", " + settings.getString("userPhone", "");
         } else {
@@ -285,6 +294,8 @@ public class VideoDetails extends AppCompatActivity {
                     super.onReady(youTubePlayer);
                     ytPlayer = youTubePlayer;
                     youTubePlayer.loadVideo(videoKey, 0);
+                    tracker = new YouTubePlayerTracker();
+                    youTubePlayer.addListener(tracker);
                     youTubeView.addFullScreenListener(new YouTubePlayerFullScreenListener() {
                         @Override
                         public void onYouTubePlayerEnterFullScreen() {
@@ -300,6 +311,19 @@ public class VideoDetails extends AppCompatActivity {
                             showSystemUi(decorView);
                         }
                     });
+                }
+
+                @Override
+                public void onVideoDuration(@NotNull YouTubePlayer youTubePlayer, float duration) {
+                    super.onVideoDuration(youTubePlayer, duration);
+                    if (strTime == null || strTime.equals("null")) {
+                        int hours = (int) duration / 3600;
+                        int minutes = (int) (duration % 3600) / 60;
+                        int seconds = (int) duration % 60;
+                        @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+                        AddTotalTime addTotalTime = new AddTotalTime(VideoDetails.this);
+                        addTotalTime.execute(userSchoolId, id, time);
+                    }
                 }
             });
 
@@ -377,14 +401,17 @@ public class VideoDetails extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NotNull TagsAdapter.ViewHolder holder, final int position) {
-            holder.tagsName.setText(tags[position]);
-
-            holder.tagsName.setOnClickListener(v -> {
-                Intent intent = new Intent(context, VideoByTag.class);
-                intent.putExtra("subject", strSubject);
-                intent.putExtra("tag", tags[position]);
-                context.startActivity(intent);
-            });
+            if (!tags[position].isEmpty()) {
+                holder.tagsName.setText(tags[position].trim());
+                holder.tagsName.setOnClickListener(v -> {
+                    Intent intent = new Intent(context, VideoByTag.class);
+                    intent.putExtra("subject", strSubject);
+                    intent.putExtra("tag", tags[position]);
+                    context.startActivity(intent);
+                });
+            } else {
+                holder.itemView.setVisibility(View.GONE);
+            }
         }
 
         @Override
@@ -420,6 +447,14 @@ public class VideoDetails extends AppCompatActivity {
         exoPlayer.setPlayWhenReady(playWhenReady);
         exoPlayer.seekTo(currentWindow, playbackPosition);
         exoPlayer.prepare(mediaSource, false, false);
+        if (strTime == null || strTime.equals("null")) {
+            long hours = exoPlayer.getDuration() / (60 * 60 * 1000) % 24;
+            long minutes = exoPlayer.getDuration() / (60 * 1000) % 60;
+            long seconds = exoPlayer.getDuration() / 1000 % 60;
+            @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+            AddTotalTime addTotalTime = new AddTotalTime(VideoDetails.this);
+            addTotalTime.execute(userSchoolId, id, time);
+        }
         initFullscreenDialog();
         initFullscreenButton();
     }
@@ -491,19 +526,38 @@ public class VideoDetails extends AppCompatActivity {
         };
     }
 
-
     @Override
     public void onDestroy() {
         if (timer != null) {
             timer.cancel();
         }
-        ClipboardManager clipService = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
-        assert clipService != null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            clipService.clearPrimaryClip();
-        } else {
-            clipService.setPrimaryClip(ClipData.newPlainText("", ""));
+
+        if (tracker != null) {
+            float duration = tracker.getCurrentSecond();
+            int hours = (int) duration / 3600;
+            int minutes = (int) (duration % 3600) / 60;
+            int seconds = (int) duration % 60;
+            @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+            AddSeenTime addSeenTime = new AddSeenTime(this);
+            addSeenTime.execute(userSchoolId, id, userId, time);
+        } else if (exoPlayer != null){
+            long hours = exoPlayer.getCurrentPosition() / (60 * 60 * 1000) % 24;
+            long minutes = exoPlayer.getCurrentPosition() / (60 * 1000) % 60;
+            long seconds = exoPlayer.getCurrentPosition() / 1000 % 60;
+            @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+            AddSeenTime addSeenTime = new AddSeenTime(this);
+            addSeenTime.execute(userSchoolId, id, userId, time);
         }
+
+        ClipboardManager clipService = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipService != null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                if (clipService.hasPrimaryClip()) {
+                    clipService.clearPrimaryClip();
+                }
+            } else {
+                clipService.setPrimaryClip(ClipData.newPlainText("", ""));
+            }
         youTubeView.release();
         super.onDestroy();
     }
@@ -609,13 +663,33 @@ public class VideoDetails extends AppCompatActivity {
         if (timer != null) {
             timer.cancel();
         }
-        ClipboardManager clipService = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
-        assert clipService != null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            clipService.clearPrimaryClip();
-        } else {
-            clipService.setPrimaryClip(ClipData.newPlainText("", ""));
+
+        if (tracker != null) {
+            float duration = tracker.getCurrentSecond();
+            int hours = (int) duration / 3600;
+            int minutes = (int) (duration % 3600) / 60;
+            int seconds = (int) duration % 60;
+            @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+            AddSeenTime addSeenTime = new AddSeenTime(this);
+            addSeenTime.execute(userSchoolId, id, userId, time);
+        } else if (exoPlayer != null){
+            long hours = exoPlayer.getCurrentPosition() / (60 * 60 * 1000) % 24;
+            long minutes = exoPlayer.getCurrentPosition() / (60 * 1000) % 60;
+            long seconds = exoPlayer.getCurrentPosition() / 1000 % 60;
+            @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+            AddSeenTime addSeenTime = new AddSeenTime(this);
+            addSeenTime.execute(userSchoolId, id, userId, time);
         }
+
+        ClipboardManager clipService = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipService != null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                if (clipService.hasPrimaryClip()) {
+                    clipService.clearPrimaryClip();
+                }
+            } else {
+                clipService.setPrimaryClip(ClipData.newPlainText("", ""));
+            }
         super.onPause();
     }
 
@@ -645,13 +719,33 @@ public class VideoDetails extends AppCompatActivity {
                 mFullScreenDialog.dismiss();
             finish();
         }
-        ClipboardManager clipService = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
-        assert clipService != null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            clipService.clearPrimaryClip();
-        } else {
-            clipService.setPrimaryClip(ClipData.newPlainText("", ""));
+
+        if (tracker != null) {
+            float duration = tracker.getCurrentSecond();
+            int hours = (int) duration / 3600;
+            int minutes = (int) (duration % 3600) / 60;
+            int seconds = (int) duration % 60;
+            @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+            AddSeenTime addSeenTime = new AddSeenTime(this);
+            addSeenTime.execute(userSchoolId, id, userId, time);
+        } else if (exoPlayer != null){
+            long hours = exoPlayer.getCurrentPosition() / (60 * 60 * 1000) % 24;
+            long minutes = exoPlayer.getCurrentPosition() / (60 * 1000) % 60;
+            long seconds = exoPlayer.getCurrentPosition() / 1000 % 60;
+            @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+            AddSeenTime addSeenTime = new AddSeenTime(this);
+            addSeenTime.execute(userSchoolId, id, userId, time);
         }
+
+        ClipboardManager clipService = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipService != null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                if (clipService.hasPrimaryClip()) {
+                    clipService.clearPrimaryClip();
+                }
+            } else {
+                clipService.setPrimaryClip(ClipData.newPlainText("", ""));
+            }
         super.onBackPressed();
     }
 
@@ -686,6 +780,149 @@ public class VideoDetails extends AppCompatActivity {
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
                 data = URLEncoder.encode("schoolId", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
                         URLEncoder.encode("studyVideoId", "UTF-8") + "=" + URLEncoder.encode(videoId, "UTF-8");
+                outputStream.write(data.getBytes());
+
+                bufferedWriter.write(data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.flush();
+                outputStream.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    response.append(line);
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                return response.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (!result.isEmpty()) {
+                finish();
+            } else {
+                Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    class AddTotalTime extends AsyncTask<String, String, String> {
+        Context ctx;
+
+        AddTotalTime(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String schId = params[0];
+            String videoId = params[1];
+            String time = params[2];
+
+            Log.e("sch id", schId);
+            Log.e("video id", videoId);
+            Log.e("time", time);
+            String data;
+
+            try {
+                URL url = new URL(VIDEO_TOTAL_TIME);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
+                data = URLEncoder.encode("tbl_school_id", "UTF-8") + "=" + URLEncoder.encode(schId, "UTF-8") + "&" +
+                        URLEncoder.encode("video_id", "UTF-8") + "=" + URLEncoder.encode(videoId, "UTF-8") + "&" +
+                        URLEncoder.encode("video_total_time", "UTF-8") + "=" + URLEncoder.encode(time, "UTF-8");
+                outputStream.write(data.getBytes());
+
+                bufferedWriter.write(data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.flush();
+                outputStream.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    response.append(line);
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                return response.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.e("res", result);
+//            if (!result.isEmpty()) {
+//                finish();
+//            } else {
+//                Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();
+//            }
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    class AddSeenTime extends AsyncTask<String, String, String> {
+        Context ctx;
+
+        AddSeenTime(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String schoolId = params[0];
+            String videoId = params[1];
+            String userId = params[2];
+            String time = params[3];
+            String data;
+
+            try {
+                URL url = new URL(VIDEO_SEEN_TIME);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
+                data = URLEncoder.encode("video_id", "UTF-8") + "=" + URLEncoder.encode(videoId, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_users_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_school_id", "UTF-8") + "=" + URLEncoder.encode(schoolId, "UTF-8") + "&" +
+                        URLEncoder.encode("video_seen_time", "UTF-8") + "=" + URLEncoder.encode(time, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);

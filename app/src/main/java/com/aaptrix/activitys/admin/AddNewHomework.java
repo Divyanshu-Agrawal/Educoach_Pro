@@ -87,6 +87,7 @@ import java.util.Objects;
 
 import javax.net.ssl.SSLContext;
 
+import static com.aaptrix.tools.HttpUrl.ALL_BATCHS;
 import static com.aaptrix.tools.HttpUrl.LIST_OF_SUBJECTS;
 import static com.aaptrix.tools.HttpUrl.TEACHER_ADD_HOMEWORK;
 import static com.aaptrix.tools.HttpUrl.TEACHER_UPDATE_HOMEWORK;
@@ -107,7 +108,7 @@ public class AddNewHomework extends AppCompatActivity {
 	EditText title, description, date;
 	Spinner subject;
 	Button save;
-	String type, strTitle, strDesc, strDate, strImage, strId, batch;
+	String type, strTitle, strDesc, strDate, strImage, strId, batch = "Select Batch";
 	Uri addImageUri = Uri.parse("android.resource://com.aaptrix/drawable/add_image");
 	InputStream stream;
 	String selToolColor, selStatusColor, selTextColor1, userSchoolId, userId, userClass;
@@ -115,6 +116,8 @@ public class AddNewHomework extends AppCompatActivity {
 	ArrayList<String> sendOldImage = new ArrayList<>();
 	String[] subject_array = {"Select Subject"};
 	String[] state_id = {"0"};
+	Spinner batch_spinner;
+	String[] batch_array;
 	String sel_subject;
 	RelativeLayout layout;
 	MediaPlayer mp;
@@ -139,7 +142,6 @@ public class AddNewHomework extends AppCompatActivity {
 		userClass = sp_user.getString("userClass", "");
 		userId = sp_user.getString("userID", "");
 		type = getIntent().getStringExtra("type");
-		batch = getIntent().getStringExtra("batch");
 		mp = MediaPlayer.create(this, R.raw.button_click);
 		cardView = findViewById(R.id.card_view);
 		layout = findViewById(R.id.layout);
@@ -147,10 +149,12 @@ public class AddNewHomework extends AppCompatActivity {
 		title = findViewById(R.id.hw_title);
 		description = findViewById(R.id.hw_desc);
 		date = findViewById(R.id.hw_date);
+		batch_spinner = findViewById(R.id.batch_spinner);
 		save = findViewById(R.id.save_btn);
 		subject = findViewById(R.id.hw_subject);
-		ListOfSubjects listOfSubjects = new ListOfSubjects(this);
-		listOfSubjects.execute(userSchoolId, userClass, batch);
+
+		GetAllBatches b1 = new GetAllBatches(this);
+		b1.execute(userSchoolId);
 
 		title.setOnFocusChangeListener((v, hasFocus) -> {
 			if (!hasFocus) {
@@ -189,6 +193,10 @@ public class AddNewHomework extends AppCompatActivity {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, R.layout.spinner_list_item1, new String[]{"Select Subject"});
+		dataAdapter.setDropDownViewResource(R.layout.spinner_list_item1);
+		subject.setAdapter(dataAdapter);
 		
 		if (type.equals("update")) {
 			setTitle("Update Assignment");
@@ -278,28 +286,32 @@ public class AddNewHomework extends AppCompatActivity {
 		
 		save.setOnClickListener(v -> {
 			mp.start();
-			if (!TextUtils.isEmpty(title.getText().toString())) {
-				if (!TextUtils.isEmpty(sel_subject) || !sel_subject.equals("Select Subject")) {
-					if (!TextUtils.isEmpty(date.getText().toString())) {
-						layout.setVisibility(View.VISIBLE);
-						layout.bringToFront();
-						if (type.equals("add")) {
-							UploadHomework uploadHomework = new UploadHomework(this);
-							uploadHomework.execute(userId, title.getText().toString(), sel_subject, date.getText().toString(),
-									batch, userSchoolId, description.getText().toString());
+			if (!TextUtils.isEmpty(batch) || !batch.equals("Select Batch")) {
+				if (!TextUtils.isEmpty(title.getText().toString())) {
+					if (!TextUtils.isEmpty(sel_subject) || !sel_subject.equals("Select Subject")) {
+						if (!TextUtils.isEmpty(date.getText().toString())) {
+							layout.setVisibility(View.VISIBLE);
+							layout.bringToFront();
+							if (type.equals("add")) {
+								UploadHomework uploadHomework = new UploadHomework(this);
+								uploadHomework.execute(userId, title.getText().toString(), sel_subject, date.getText().toString(),
+										batch, userSchoolId, description.getText().toString());
+							} else {
+								UpdateHomework updateHomework = new UpdateHomework(this);
+								updateHomework.execute(userId, title.getText().toString(), sel_subject,
+										date.getText().toString(), strId, description.getText().toString());
+							}
 						} else {
-							UpdateHomework updateHomework = new UpdateHomework(this);
-							updateHomework.execute(userId, title.getText().toString(), sel_subject,
-									date.getText().toString(), strId, description.getText().toString());
+							Toast.makeText(this, "Please enter Date", Toast.LENGTH_SHORT).show();
 						}
 					} else {
-						Toast.makeText(this, "Please enter Date", Toast.LENGTH_SHORT).show();
+						Toast.makeText(this, "Please select subject", Toast.LENGTH_SHORT).show();
 					}
 				} else {
-					Toast.makeText(this, "Please select subject", Toast.LENGTH_SHORT).show();
+					Toast.makeText(this, "Please enter Title", Toast.LENGTH_SHORT).show();
 				}
 			} else {
-				Toast.makeText(this, "Please enter Title", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "Please Select Batch", Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
@@ -314,6 +326,111 @@ public class AddNewHomework extends AppCompatActivity {
 		InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
 		assert inputMethodManager != null;
 		inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+	}
+
+	@SuppressLint("StaticFieldLeak")
+	public class GetAllBatches extends AsyncTask<String, String, String> {
+		Context ctx;
+
+		GetAllBatches(Context ctx) {
+			this.ctx = ctx;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+
+			String school_id = params[0];
+			String data;
+
+			try {
+
+				URL url = new URL(ALL_BATCHS);
+				HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+				httpURLConnection.setRequestMethod("POST");
+				httpURLConnection.setDoOutput(true);
+				httpURLConnection.setDoInput(true);
+
+				OutputStream outputStream = httpURLConnection.getOutputStream();
+
+				BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
+				data = URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
+						URLEncoder.encode("tbl_users_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8");
+				outputStream.write(data.getBytes());
+
+				bufferedWriter.write(data);
+				bufferedWriter.flush();
+				bufferedWriter.close();
+				outputStream.flush();
+				outputStream.close();
+
+				InputStream inputStream = httpURLConnection.getInputStream();
+				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
+				StringBuilder response = new StringBuilder();
+				String line;
+
+				while ((line = bufferedReader.readLine()) != null) {
+					response.append(line);
+				}
+				bufferedReader.close();
+				inputStream.close();
+				httpURLConnection.disconnect();
+				return response.toString();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			Log.d("result", result);
+			if (!result.equals("{\"result\":null}")) {
+				try {
+					JSONObject jo = new JSONObject(result);
+					JSONArray ja = jo.getJSONArray("result");
+					batch_array = new String[ja.length() + 1];
+					batch_array[0] = "Select Batch";
+					for (int i = 0; i < ja.length(); i++) {
+						jo = ja.getJSONObject(i);
+						batch_array[i + 1] = jo.getString("tbl_batch_name");
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				setBatch();
+			} else {
+				Toast.makeText(ctx, "No Batch", Toast.LENGTH_SHORT).show();
+			}
+
+			super.onPostExecute(result);
+		}
+
+	}
+
+	private void setBatch() {
+		ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(this, R.layout.spinner_list_item1, batch_array);
+		dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
+		batch_spinner.setAdapter(dataAdapter1);
+		batch_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+				if (!batch_array[i].equals("Select Batch")) {
+					batch = batch_array[i];
+					ListOfSubjects listOfSubjects = new ListOfSubjects(AddNewHomework.this);
+					listOfSubjects.execute(userSchoolId, userClass, batch);
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> adapterView) {
+
+			}
+		});
 	}
 	
 	@SuppressLint("StaticFieldLeak")
