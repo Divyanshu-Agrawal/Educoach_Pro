@@ -453,6 +453,8 @@ public class GuestVideo extends AppCompatActivity {
         searchBox.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 if (searchBox.getText().toString().isEmpty()) {
+                    listView.setVisibility(View.VISIBLE);
+                    noVideos.setVisibility(View.GONE);
                     videoAdapter = new VideoAdapter(GuestVideo.this, R.layout.list_item_video, arrayList, "video");
                     listView.setAdapter(videoAdapter);
                     videoAdapter.notifyDataSetChanged();
@@ -471,6 +473,8 @@ public class GuestVideo extends AppCompatActivity {
                 videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
                 listView.setAdapter(videoAdapter);
                 videoAdapter.notifyDataSetChanged();
+                listView.setVisibility(View.VISIBLE);
+                noVideos.setVisibility(View.GONE);
                 search.setImageResource(R.drawable.search_icon);
             } else {
                 search_layout.setVisibility(View.VISIBLE);
@@ -480,6 +484,8 @@ public class GuestVideo extends AppCompatActivity {
 
         searchBtn.setOnClickListener(v -> {
             if (searchBox.getText().toString().isEmpty()) {
+                listView.setVisibility(View.VISIBLE);
+                noVideos.setVisibility(View.GONE);
                 videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
                 listView.setAdapter(videoAdapter);
                 videoAdapter.notifyDataSetChanged();
@@ -523,8 +529,11 @@ public class GuestVideo extends AppCompatActivity {
         if (arrayList.size() == 0) {
             noVideos.setVisibility(View.VISIBLE);
             noVideos.setText("Nothing Found");
+            listView.setVisibility(View.GONE);
         } else {
             listView.setEnabled(true);
+            listView.setVisibility(View.VISIBLE);
+            noVideos.setVisibility(View.GONE);
             videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
             listView.setAdapter(videoAdapter);
             videoAdapter.notifyDataSetChanged();

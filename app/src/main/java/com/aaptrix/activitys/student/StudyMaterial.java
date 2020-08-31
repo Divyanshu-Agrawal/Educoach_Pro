@@ -608,6 +608,8 @@ public class StudyMaterial extends AppCompatActivity {
         searchBox.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 if (searchBox.getText().toString().isEmpty()) {
+                    listView.setVisibility(View.VISIBLE);
+                    no_material.setVisibility(View.GONE);
                     studyMaterialAdaptor = new StudyMaterialAdaptor(StudyMaterial.this, R.layout.list_study_material, arrayList);
                     listView.setAdapter(studyMaterialAdaptor);
                     studyMaterialAdaptor.notifyDataSetChanged();
@@ -626,6 +628,8 @@ public class StudyMaterial extends AppCompatActivity {
                 studyMaterialAdaptor = new StudyMaterialAdaptor(this, R.layout.list_study_material, arrayList);
                 listView.setAdapter(studyMaterialAdaptor);
                 studyMaterialAdaptor.notifyDataSetChanged();
+                listView.setVisibility(View.VISIBLE);
+                no_material.setVisibility(View.GONE);
                 search.setImageResource(R.drawable.search_icon);
             } else {
                 search_layout.setVisibility(View.VISIBLE);
@@ -635,6 +639,8 @@ public class StudyMaterial extends AppCompatActivity {
 
         searchBtn.setOnClickListener(v -> {
             if (searchBox.getText().toString().isEmpty()) {
+                listView.setVisibility(View.VISIBLE);
+                no_material.setVisibility(View.GONE);
                 studyMaterialAdaptor = new StudyMaterialAdaptor(this, R.layout.list_study_material, arrayList);
                 listView.setAdapter(studyMaterialAdaptor);
                 studyMaterialAdaptor.notifyDataSetChanged();
@@ -704,8 +710,11 @@ public class StudyMaterial extends AppCompatActivity {
         if (arrayList.size() == 0) {
             no_material.setVisibility(View.VISIBLE);
             no_material.setText("Nothing Found");
+            listView.setVisibility(View.GONE);
         } else {
             listView.setEnabled(true);
+            listView.setVisibility(View.VISIBLE);
+            no_material.setVisibility(View.GONE);
             studyMaterialAdaptor = new StudyMaterialAdaptor(this, R.layout.list_study_material, arrayList);
             listView.setAdapter(studyMaterialAdaptor);
             studyMaterialAdaptor.notifyDataSetChanged();
