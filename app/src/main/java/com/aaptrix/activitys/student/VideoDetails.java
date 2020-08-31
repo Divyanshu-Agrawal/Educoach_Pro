@@ -540,7 +540,7 @@ public class VideoDetails extends AppCompatActivity {
             @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
             AddSeenTime addSeenTime = new AddSeenTime(this);
             addSeenTime.execute(userSchoolId, id, userId, time);
-        } else if (exoPlayer != null){
+        } else if (exoPlayer != null) {
             long hours = exoPlayer.getCurrentPosition() / (60 * 60 * 1000) % 24;
             long minutes = exoPlayer.getCurrentPosition() / (60 * 1000) % 60;
             long seconds = exoPlayer.getCurrentPosition() / 1000 % 60;
@@ -551,13 +551,7 @@ public class VideoDetails extends AppCompatActivity {
 
         ClipboardManager clipService = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipService != null)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                if (clipService.hasPrimaryClip()) {
-                    clipService.clearPrimaryClip();
-                }
-            } else {
-                clipService.setPrimaryClip(ClipData.newPlainText("", ""));
-            }
+            clipService.setPrimaryClip(ClipData.newPlainText("", ""));
         youTubeView.release();
         super.onDestroy();
     }
@@ -672,7 +666,7 @@ public class VideoDetails extends AppCompatActivity {
             @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
             AddSeenTime addSeenTime = new AddSeenTime(this);
             addSeenTime.execute(userSchoolId, id, userId, time);
-        } else if (exoPlayer != null){
+        } else if (exoPlayer != null) {
             long hours = exoPlayer.getCurrentPosition() / (60 * 60 * 1000) % 24;
             long minutes = exoPlayer.getCurrentPosition() / (60 * 1000) % 60;
             long seconds = exoPlayer.getCurrentPosition() / 1000 % 60;
@@ -683,13 +677,7 @@ public class VideoDetails extends AppCompatActivity {
 
         ClipboardManager clipService = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipService != null)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                if (clipService.hasPrimaryClip()) {
-                    clipService.clearPrimaryClip();
-                }
-            } else {
-                clipService.setPrimaryClip(ClipData.newPlainText("", ""));
-            }
+            clipService.setPrimaryClip(ClipData.newPlainText("", ""));
         super.onPause();
     }
 
@@ -728,7 +716,7 @@ public class VideoDetails extends AppCompatActivity {
             @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
             AddSeenTime addSeenTime = new AddSeenTime(this);
             addSeenTime.execute(userSchoolId, id, userId, time);
-        } else if (exoPlayer != null){
+        } else if (exoPlayer != null) {
             long hours = exoPlayer.getCurrentPosition() / (60 * 60 * 1000) % 24;
             long minutes = exoPlayer.getCurrentPosition() / (60 * 1000) % 60;
             long seconds = exoPlayer.getCurrentPosition() / 1000 % 60;
@@ -739,13 +727,7 @@ public class VideoDetails extends AppCompatActivity {
 
         ClipboardManager clipService = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipService != null)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                if (clipService.hasPrimaryClip()) {
-                    clipService.clearPrimaryClip();
-                }
-            } else {
-                clipService.setPrimaryClip(ClipData.newPlainText("", ""));
-            }
+            clipService.setPrimaryClip(ClipData.newPlainText("", ""));
         super.onBackPressed();
     }
 
@@ -879,12 +861,7 @@ public class VideoDetails extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.e("res", result);
-//            if (!result.isEmpty()) {
-//                finish();
-//            } else {
-//                Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();
-//            }
+
         }
     }
 
@@ -950,11 +927,7 @@ public class VideoDetails extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            if (!result.isEmpty()) {
-                finish();
-            } else {
-                Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();
-            }
+
         }
     }
 }

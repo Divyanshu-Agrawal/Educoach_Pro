@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,11 +14,15 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -30,9 +35,11 @@ import android.widget.Toast;
 
 import com.aaptrix.R;
 import com.aaptrix.activitys.student.VideoDetails;
+import com.aaptrix.activitys.student.VideoLibrary;
 import com.aaptrix.adaptor.VideoAdapter;
 import com.aaptrix.databeans.VideosData;
 import com.google.android.material.appbar.AppBarLayout;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -440,14 +447,34 @@ public class GuestVideo extends AppCompatActivity {
         videoAdapter.notifyDataSetChanged();
         mSwipeRefreshLayout.setRefreshing(false);
 
+        searchBox.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+        searchBox.setSingleLine(true);
+        searchBox.setInputType(InputType.TYPE_CLASS_TEXT);
+        searchBox.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                if (searchBox.getText().toString().isEmpty()) {
+                    videoAdapter = new VideoAdapter(GuestVideo.this, R.layout.list_item_video, arrayList, "video");
+                    listView.setAdapter(videoAdapter);
+                    videoAdapter.notifyDataSetChanged();
+                } else {
+                    filterSearch(arrayList, searchBox.getText().toString());
+                }
+                hideKeyboard(v);
+                return true;
+            }
+            return false;
+        });
+
         search.setOnClickListener(v -> {
             if (search_layout.getVisibility() == View.VISIBLE) {
                 search_layout.setVisibility(View.GONE);
                 videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
                 listView.setAdapter(videoAdapter);
                 videoAdapter.notifyDataSetChanged();
+                search.setImageResource(R.drawable.search_icon);
             } else {
                 search_layout.setVisibility(View.VISIBLE);
+                search.setImageResource(R.drawable.back_icon);
             }
         });
 
@@ -459,6 +486,7 @@ public class GuestVideo extends AppCompatActivity {
             } else {
                 filterSearch(arrayList, searchBox.getText().toString());
             }
+            hideKeyboard(v);
         });
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
@@ -479,6 +507,12 @@ public class GuestVideo extends AppCompatActivity {
         });
     }
 
+    private void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        assert inputMethodManager != null;
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
     private void filterSearch(ArrayList<VideosData> array, String searchTxt) {
         ArrayList<VideosData> arrayList = new ArrayList<>();
         for (int i = 0; i < array.size(); i++) {
@@ -486,11 +520,16 @@ public class GuestVideo extends AppCompatActivity {
                 arrayList.add(array.get(i));
             }
         }
-        listView.setEnabled(true);
-        videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
-        listView.setAdapter(videoAdapter);
-        videoAdapter.notifyDataSetChanged();
-        mSwipeRefreshLayout.setRefreshing(false);
+        if (arrayList.size() == 0) {
+            noVideos.setVisibility(View.VISIBLE);
+            noVideos.setText("Nothing Found");
+        } else {
+            listView.setEnabled(true);
+            videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
+            listView.setAdapter(videoAdapter);
+            videoAdapter.notifyDataSetChanged();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     public final boolean isInternetOn() {

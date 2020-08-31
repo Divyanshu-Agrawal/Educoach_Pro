@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,11 +20,14 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -33,7 +37,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -226,9 +229,6 @@ public class VideoLibrary extends AppCompatActivity {
             subject.execute(userSchoolId, "All");
         } else {
             filter.setVisibility(View.GONE);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) liveVideo.getLayoutParams();
-            params.addRule(RelativeLayout.ALIGN_PARENT_END);
-            liveVideo.setLayoutParams(params);
         }
 
         filter.setOnClickListener(v -> {
@@ -282,6 +282,12 @@ public class VideoLibrary extends AppCompatActivity {
                 listView.setEnabled(true);
             }
         });
+    }
+
+    private void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        assert inputMethodManager != null;
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -670,7 +676,6 @@ public class VideoLibrary extends AppCompatActivity {
             }
         }
 
-        Log.e("size", arrayList.size()+"");
         if (arrayList.size() > 0) {
             noVideos.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
@@ -690,14 +695,34 @@ public class VideoLibrary extends AppCompatActivity {
         });
         Collections.reverse(arrayList);
 
+        searchBox.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+        searchBox.setSingleLine(true);
+        searchBox.setInputType(InputType.TYPE_CLASS_TEXT);
+        searchBox.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                if (searchBox.getText().toString().isEmpty()) {
+                    videoAdapter = new VideoAdapter(VideoLibrary.this, R.layout.list_item_video, arrayList, "video");
+                    listView.setAdapter(videoAdapter);
+                    videoAdapter.notifyDataSetChanged();
+                } else {
+                    filterSearch(arrayList, searchBox.getText().toString());
+                }
+                hideKeyboard(v);
+                return true;
+            }
+            return false;
+        });
+
         search.setOnClickListener(v -> {
             if (search_layout.getVisibility() == View.VISIBLE) {
                 search_layout.setVisibility(View.GONE);
                 videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
                 listView.setAdapter(videoAdapter);
                 videoAdapter.notifyDataSetChanged();
+                search.setImageResource(R.drawable.search_icon);
             } else {
                 search_layout.setVisibility(View.VISIBLE);
+                search.setImageResource(R.drawable.back_icon);
             }
         });
 
@@ -709,6 +734,7 @@ public class VideoLibrary extends AppCompatActivity {
             } else {
                 filterSearch(arrayList, searchBox.getText().toString());
             }
+            hideKeyboard(v);
         });
 
         listView.setEnabled(true);
@@ -802,11 +828,16 @@ public class VideoLibrary extends AppCompatActivity {
                 arrayList.add(array.get(i));
             }
         }
-        listView.setEnabled(true);
-        videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
-        listView.setAdapter(videoAdapter);
-        videoAdapter.notifyDataSetChanged();
-        mSwipeRefreshLayout.setRefreshing(false);
+        if (arrayList.size() == 0) {
+            noVideos.setVisibility(View.VISIBLE);
+            noVideos.setText("Nothing Found");
+        } else {
+            listView.setEnabled(true);
+            videoAdapter = new VideoAdapter(this, R.layout.list_item_video, arrayList, "video");
+            listView.setAdapter(videoAdapter);
+            videoAdapter.notifyDataSetChanged();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     @SuppressLint("StaticFieldLeak")
