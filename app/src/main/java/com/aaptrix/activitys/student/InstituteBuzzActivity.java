@@ -41,7 +41,6 @@ import com.aaptrix.databeans.PermissionData;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ShareCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -50,9 +49,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -69,7 +66,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -146,7 +142,7 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
     ImageView iv_edit;
     CircleImageView header_img;
     CircleImageView iv_user_img, prof_logo1;
-    TextView tv_std_id, tv_std_class, tv_std_rollnumber, tv_std_cls_teacher, tv_today_day_date;
+    TextView tv_std_id, tv_std_cls_teacher, tv_today_day_date;
     SharedPreferences.Editor editor;
     String userId, roleId, schoolId, userSection, userRollNumber, userClassTeacher;
     GridView institue_lv;
@@ -168,9 +164,9 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
     LinearLayout announce_layout;
 
     SharedPreferences.Editor editorColor;
-    String selToolColor, selDrawerColor, selStatusColor, selTextColor1, selTextColor2, userJson, numberOfUser, userSchoolSchoolLogo3;
+    String selToolColor, selDrawerColor, selStatusColor, selTextColor1, selTextColor2, userJson, userSchoolSchoolLogo3;
     AppBarLayout appBarLayout;
-    TextView tvID, tvCLASS, tvROLLNO, tvCLSTEACH, tool_title;
+    TextView tvID, tvCLSTEACH, tool_title;
     SharedPreferences.Editor editorUser;
 
     ArrayList<DataBeanStudent> studentArray = new ArrayList<>();
@@ -192,8 +188,9 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
     ArrayList<DataBeanActivities> activitiesArray = new ArrayList<>();
     RecyclerView.LayoutManager mLayoutManager;
     int pos = 0;
+    String deviceID;
 
-    @SuppressLint({"CommitPrefEdits", "SetTextI18n", "HardwareIds"})
+    @SuppressLint({"CommitPrefEdits", "SetTextI18n", "HardwareIds", "UseCompatLoadingForDrawables"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -222,6 +219,8 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         selTextColor1 = settingsColor.getString("text1", "");
         selTextColor2 = settingsColor.getString("text2", "");
 
+        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
         mDrawerLayout = findViewById(R.id.drawer);
         mp = MediaPlayer.create(this, R.raw.button_click);
 
@@ -246,12 +245,13 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
 
         RateThisApp.onStart(this);
         RateThisApp.Config config = new RateThisApp.Config(3, 15);
+//        config.setMessage(R.string.message);
         RateThisApp.init(config);
         if (RateThisApp.shouldShowRateDialog()) {
             new AlertDialog.Builder(this)
-                    .setMessage("Enjoying this app!")
-                    .setPositiveButton("Yes", (dialog, which) -> RateThisApp.showRateDialogIfNeeded(this))
-                    .setNegativeButton("No", null)
+                    .setMessage(R.string.message)
+                    .setPositiveButton("Rate Now", (dialog, which) -> RateThisApp.showRateDialogIfNeeded(this))
+                    .setNegativeButton("Later", null)
                     .show();
         }
 
@@ -263,10 +263,6 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
 
         tv_std_id = findViewById(R.id.tv_std_id);
         tvID = findViewById(R.id.tvID);
-        tvCLASS = findViewById(R.id.tvCLASS);
-        tv_std_class = findViewById(R.id.tv_std_class);
-        tvROLLNO = findViewById(R.id.tvROLLNO);
-        tv_std_rollnumber = findViewById(R.id.tv_std_rollnumber);
         tvCLSTEACH = findViewById(R.id.tvCLSTEACH);
         tv_std_cls_teacher = findViewById(R.id.tv_std_cls_teacher);
         tv_today_day_date = findViewById(R.id.tv_today_day_date);
@@ -296,7 +292,6 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         userrType = settings.getString("userrType", "");
         roleId = settings.getString("str_role_id", "");
         schoolId = settings.getString("str_school_id", "");
-        numberOfUser = settings.getString("numberOfUser", "");
 
         GetAllActivities b = new GetAllActivities(this);
         b.execute(schoolId, userSection, userrType);
@@ -314,8 +309,6 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         userSchoolSchoolLogo3 = settings.getString("userSchoolLogo1", "");
         //popup
         tv_std_id.setText(userName);
-        tv_std_class.setText(userSection);
-        tv_std_rollnumber.setText(userRollNumber);
         tv_std_cls_teacher.setText(userPhone);
         tv_today_day_date.setText(dayOfTheWeek + ", " + formattedDate);
 
@@ -328,41 +321,6 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         editor.apply();
         editor = settings.edit();
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        if (numberOfUser.equals("multiple")) {
-            prof_logo1.setVisibility(View.VISIBLE);
-
-            if (userImg.equals("0")) {
-                prof_logo1.setImageDrawable(getResources().getDrawable(R.drawable.user_place_hoder));
-            } else if (!TextUtils.isEmpty(userImg)) {
-                String url;
-                switch (userrType) {
-                    case "Parent":
-                    case "Student":
-                        url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/users/students/profile/" + userImg;
-                        Picasso.with(this).load(url).error(R.drawable.dummy).placeholder(R.drawable.dummy).into(prof_logo1);
-                        break;
-                    case "Admin":
-                        url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/users/admin/profile/" + userImg;
-                        Picasso.with(this).load(url).error(R.drawable.dummy).placeholder(R.drawable.dummy).into(prof_logo1);
-                        break;
-                    case "Staff":
-                        url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/users/staff/profile/" + userImg;
-                        Picasso.with(this).load(url).error(R.drawable.dummy).placeholder(R.drawable.dummy).into(prof_logo1);
-                        break;
-                    case "Teacher":
-                        url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/users/teachers/profile/" + userImg;
-                        Picasso.with(this).load(url).error(R.drawable.dummy).placeholder(R.drawable.dummy).into(prof_logo1);
-                        break;
-                }
-            } else {
-                prof_logo1.setImageDrawable(getResources().getDrawable(R.drawable.user_place_hoder));
-            }
-        } else if (numberOfUser.equals("single")) {
-            prof_logo1.setVisibility(View.GONE);
-            logo_layout.setVisibility(View.GONE);
-        }
-
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         assert notificationManager != null;
@@ -424,6 +382,29 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
                 }
             }
 
+            ArrayList<String> user = new ArrayList<>();
+            JSONArray array = jsonRootObject.getJSONArray("UserList");
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject object = array.getJSONObject(i);
+                user.add(object.getString("tbl_users_id"));
+            }
+
+            if (user.size() == 0) {
+                logout(userPhone);
+            } else if (user.size() == 1) {
+                SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, 0).edit();
+                editor.putString("numberOfUser", "single");
+                editor.apply();
+            } else {
+                SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, 0).edit();
+                editor.putString("numberOfUser", "multiple");
+                editor.apply();
+            }
+
+            if (!user.contains(userId)) {
+                logout(userPhone);
+            }
+
             instiBuzzArray.clear();
 
             ArrayList<String> name = new ArrayList<>();
@@ -467,6 +448,40 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
             b1.execute(id, schoolId, user_token_id, android_id, userId);
         }
 
+        if (getSharedPreferences(PREFS_NAME, 0).getString("numberOfUser", "").equals("multiple")) {
+            prof_logo1.setVisibility(View.VISIBLE);
+
+            if (userImg.equals("0")) {
+                prof_logo1.setImageDrawable(getResources().getDrawable(R.drawable.user_place_hoder));
+            } else if (!TextUtils.isEmpty(userImg)) {
+                String url;
+                switch (userrType) {
+                    case "Parent":
+                    case "Student":
+                        url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/users/students/profile/" + userImg;
+                        Picasso.with(this).load(url).error(R.drawable.dummy).placeholder(R.drawable.dummy).into(prof_logo1);
+                        break;
+                    case "Admin":
+                        url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/users/admin/profile/" + userImg;
+                        Picasso.with(this).load(url).error(R.drawable.dummy).placeholder(R.drawable.dummy).into(prof_logo1);
+                        break;
+                    case "Staff":
+                        url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/users/staff/profile/" + userImg;
+                        Picasso.with(this).load(url).error(R.drawable.dummy).placeholder(R.drawable.dummy).into(prof_logo1);
+                        break;
+                    case "Teacher":
+                        url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/users/teachers/profile/" + userImg;
+                        Picasso.with(this).load(url).error(R.drawable.dummy).placeholder(R.drawable.dummy).into(prof_logo1);
+                        break;
+                }
+            } else {
+                prof_logo1.setImageDrawable(getResources().getDrawable(R.drawable.user_place_hoder));
+            }
+        } else {
+            prof_logo1.setVisibility(View.GONE);
+            logo_layout.setVisibility(View.GONE);
+        }
+
         logo_layout.setOnClickListener(view -> {
             if (isInternetOn()) {
                 GetUserLoginCheck b1 = new GetUserLoginCheck(InstituteBuzzActivity.this);
@@ -482,8 +497,6 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         headerlayout.setBackgroundColor(Color.parseColor(selDrawerColor));
         tv_today_day_date.setBackgroundColor(Color.parseColor(selToolColor));
         tvID.setTextColor(Color.parseColor(selToolColor));
-        tvCLASS.setTextColor(Color.parseColor(selToolColor));
-        tvROLLNO.setTextColor(Color.parseColor(selToolColor));
         tvCLSTEACH.setTextColor(Color.parseColor(selToolColor));
         mNavigationView.setBackgroundColor(Color.parseColor(selDrawerColor));
         header_role.setTextColor(Color.parseColor(selToolColor));
@@ -499,6 +512,14 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         mNavigationView.setItemTextColor(ColorStateList.valueOf(Color.parseColor(selTextColor1)));
         tv_today_day_date.setTextColor(Color.parseColor(selTextColor1));
 
+        Menu menu = mNavigationView.getMenu();
+        MenuItem exam = menu.findItem(R.id.online_exam);
+        MenuItem fee = menu.findItem(R.id.pay_fee);
+        MenuItem live = menu.findItem(R.id.live_stream);
+
+        exam.setVisible(false);
+        fee.setVisible(false);
+        live.setVisible(false);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -646,6 +667,8 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         file.delete();
         file = new File(directory, "batches");
         file.delete();
+        file = new File(directory, "subject");
+        file.delete();
         getSharedPreferences(PREF_COLOR, 0).edit().clear().apply();
         getSharedPreferences(PREF_ROLE, 0).edit().clear().apply();
         getSharedPreferences(PREFS_NAME, 0).edit().clear().apply();
@@ -689,12 +712,6 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         editorColor.putString("text1", getResources().getString(R.string.text1));
         editorColor.putString("text2", getResources().getString(R.string.text2));
         editorColor.apply();
-
-
-        Intent i = new Intent(this, InstituteBuzzActivityDiff.class);
-        startActivity(i);
-        finish();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         new Thread(() -> {
             try {
                 SSLContext sslContext = SSLContexts.custom().useTLS().build();
@@ -721,6 +738,11 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
                 e.printStackTrace();
             }
         }).start();
+        Intent i = new Intent(this, InstituteBuzzActivityDiff.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
@@ -875,45 +897,47 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
                         Date startdate = sdf.parse(start + " " + startTime);
                         Date enddate = sdf.parse(end + " " + endTime);
                         if (calendar.getTime().equals(startdate) || calendar.getTime().before(startdate) || (calendar.getTime().after(startdate) && calendar.getTime().before(enddate))) {
-                            @SuppressLint("SimpleDateFormat")
-                            String date = new SimpleDateFormat("dd-MM-yyyy").format(Calendar.getInstance().getTime());
-                            if (!sp.getString("date", "").equals(date)) {
-                                LayoutInflater factory = LayoutInflater.from(ctx);
-                                @SuppressLint("InflateParams") final View view = factory.inflate(R.layout.online_exam_dialog, null);
+                           if (!object.getString("user_exam_taken_status").equals("1")) {
+                               @SuppressLint("SimpleDateFormat")
+                               String date = new SimpleDateFormat("dd-MM-yyyy").format(Calendar.getInstance().getTime());
+                               if (!sp.getString("date", "").equals(date)) {
+                                   LayoutInflater factory = LayoutInflater.from(ctx);
+                                   @SuppressLint("InflateParams") final View view = factory.inflate(R.layout.online_exam_dialog, null);
 
-                                TextView time = view.findViewById(R.id.start_time);
+                                   TextView time = view.findViewById(R.id.start_time);
 
-                                sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-                                StringBuilder sb = new StringBuilder();
-                                sb.append("On ").append(sdf.format(startdate)).append(" at ");
-                                sdf = new SimpleDateFormat("hh:mm:ss", Locale.getDefault());
-                                Date sttime = sdf.parse(startTime);
-                                sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
-                                sb.append(sdf.format(sttime));
-                                time.setText(sb.toString());
+                                   sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                                   StringBuilder sb = new StringBuilder();
+                                   assert startdate != null;
+                                   sb.append("On ").append(sdf.format(startdate)).append(" at ");
+                                   sdf = new SimpleDateFormat("hh:mm:ss", Locale.getDefault());
+                                   Date sttime = sdf.parse(startTime);
+                                   sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+                                   assert sttime != null;
+                                   sb.append(sdf.format(sttime));
+                                   time.setText(sb.toString());
 
-                                AlertDialog.Builder alert = new AlertDialog.Builder(ctx, R.style.DialogTheme);
+                                   AlertDialog.Builder alert = new AlertDialog.Builder(ctx, R.style.DialogTheme);
 
-                                alert.setView(view).setPositiveButton("Show Exam",
-                                        (dialog, whichButton) -> {
-                                            sp.edit().putString("date", date).apply();
-                                            Intent intent = new Intent(InstituteBuzzActivity.this, OnlineExam.class);
-                                            startActivity(intent);
-                                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                                        }).setNegativeButton("Ok",
-                                        (dialog, whichButton) -> {
-                                            sp.edit().putString("date", date).apply();
-                                        });
-                                AlertDialog alertDialog = alert.create();
-                                alertDialog.show();
-                                Button theButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                                Button theButton1 = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                                theButton.setTextColor(getResources().getColor(R.color.text_gray));
-                                theButton1.setTextColor(getResources().getColor(R.color.text_gray));
-                                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                                        .setEnabled(true);
-                                break;
-                            }
+                                   alert.setView(view).setPositiveButton("Show Exam",
+                                           (dialog, whichButton) -> {
+                                               sp.edit().putString("date", date).apply();
+                                               Intent intent = new Intent(InstituteBuzzActivity.this, OnlineExam.class);
+                                               startActivity(intent);
+                                               overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                                           }).setNegativeButton("Ok",
+                                           (dialog, whichButton) -> sp.edit().putString("date", date).apply());
+                                   AlertDialog alertDialog = alert.create();
+                                   alertDialog.show();
+                                   Button theButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                                   Button theButton1 = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                                   theButton.setTextColor(getResources().getColor(R.color.text_gray));
+                                   theButton1.setTextColor(getResources().getColor(R.color.text_gray));
+                                   alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                                           .setEnabled(true);
+                                   break;
+                               }
+                           }
                         }
                     }
                 } catch (Exception e) {
@@ -967,7 +991,8 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
                         URLEncoder.encode("tokenId", "UTF-8") + "=" + URLEncoder.encode(tokenId, "UTF-8") + "&" +
                         URLEncoder.encode("androidId", "UTF-8") + "=" + URLEncoder.encode(androidId, "UTF-8") + "&" +
                         URLEncoder.encode("userId", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
-                        URLEncoder.encode("android_build_no", "UTF-8") + "=" + URLEncoder.encode(android_version, "UTF-8");
+                        URLEncoder.encode("android_build_no", "UTF-8") + "=" + URLEncoder.encode(android_version, "UTF-8") + "&" +
+                        URLEncoder.encode("str_user_phone", "UTF-8") + "=" + URLEncoder.encode(userPhone, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);
@@ -1000,6 +1025,33 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
             Log.e("Json", "" + result);
             //	pDialog.dismiss();
             loader.setVisibility(View.GONE);
+
+            try {
+                ArrayList<String> user = new ArrayList<>();
+                JSONArray array = new JSONObject(result).getJSONArray("UserList");
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject object = array.getJSONObject(i);
+                    user.add(object.getString("tbl_users_id"));
+                }
+
+                if (user.size() == 0) {
+                    logout(userPhone);
+                } else if (user.size() == 1) {
+                    SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, 0).edit();
+                    editor.putString("numberOfUser", "single");
+                    editor.apply();
+                } else {
+                    SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, 0).edit();
+                    editor.putString("numberOfUser", "multiple");
+                    editor.apply();
+                }
+
+                if (!user.contains(userId)) {
+                    logout(userPhone);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             if (!result.contains("\"result\":null")) {
                 try {
@@ -1317,14 +1369,14 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
     public final boolean isInternetOn() {
         ConnectivityManager connec = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         assert connec != null;
-        if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTED ||
-                connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTING ||
-                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTING ||
-                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTED) {
+        if (Objects.requireNonNull(connec.getNetworkInfo(0)).getState() == android.net.NetworkInfo.State.CONNECTED ||
+                Objects.requireNonNull(connec.getNetworkInfo(0)).getState() == android.net.NetworkInfo.State.CONNECTING ||
+                Objects.requireNonNull(connec.getNetworkInfo(1)).getState() == android.net.NetworkInfo.State.CONNECTING ||
+                Objects.requireNonNull(connec.getNetworkInfo(1)).getState() == android.net.NetworkInfo.State.CONNECTED) {
             return true;
         } else if (
-                connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.DISCONNECTED ||
-                        connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.DISCONNECTED) {
+                Objects.requireNonNull(connec.getNetworkInfo(0)).getState() == android.net.NetworkInfo.State.DISCONNECTED ||
+                        Objects.requireNonNull(connec.getNetworkInfo(1)).getState() == android.net.NetworkInfo.State.DISCONNECTED) {
             return false;
         }
         return false;
@@ -1460,6 +1512,9 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
                             dbs.setInstStatus(jsonObject.getString("tbl_school_status"));
                             dbs.setUniqueId(jsonObject.getString("sch_unique_id"));
                             dbs.setRestricted(jsonObject.getString("restricted_access"));
+                            dbs.setStudentDevice(jsonObject.getString("student_device_id"));
+                            dbs.setParentDevice(jsonObject.getString("parent_device_id"));
+                            dbs.setDeviceLock(jsonObject.getString("androidid_lock_permission"));
                             dbs.setUserSchoolRoleName(userSchoolRoleName);
                             dbs.setUserID(userID);
                             dbs.setUserrType(userrType);
@@ -1562,66 +1617,78 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
                 userSchoolRoleName1 = studentArray.get(position).getUserSchoolRoleName();
                 alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
 
+                String studentId, parentId;
+                if (studentArray.get(position).getDeviceLock().equals("0")) {
+                    studentId = "0";
+                    parentId = "0";
+                } else {
+                    studentId = studentArray.get(position).getStudentDevice();
+                    parentId = studentArray.get(position).getParentDevice();
+                }
 
                 switch (userrType1) {
                     case "Student":
-                        if (status.equalsIgnoreCase("1")) {
-                            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                            SharedPreferences.Editor editor = settings.edit();
-                            editor.remove("refer_code");
-                            editor.remove("refer_offer");
-                            editor.putString("logged", "logged");
-                            editor.putString("userID", userID1);
-                            editor.putString("userLoginId", userLoginId1);
-                            editor.putString("userName", userName1);
-                            editor.putString("userPhone", userPhone1);
-                            editor.putString("userEmailId", userEmailId1);
-                            editor.putString("userDob", userDob1);
-                            editor.putString("userGender", userGender1);
-                            editor.putString("userImg", userImg1);
-                            editor.putString("userPhoneStatus", userPhoneStatus1);
-                            editor.putString("userrType", userrType1);
-                            editor.putString("userClass", str_class1);
-                            editor.putString("userSection", str_section1);
-                            editor.putString("userRollNumber", str_roll_number1);
-                            editor.putString("userTeacherName", str_teacher_name1);
-                            editor.putString("userSchoolId", userSchoolId1);
-                            editor.putString("userSchoolLogo", userSchoolSchoolLogo11);
-                            editor.putString("userSchoolLogo1", userSchoolSchoolLogo12);
-                            editor.putString("userSchoolLogo3", userSchoolSchoolLogo13);
-                            editor.putString("numberOfUser", "multiple");
-                            editor.putString("unique_id", studentArray.get(position).getUniqueId());
-                            editor.putString("restricted", studentArray.get(position).getRestricted());
+                        if (studentId.equals(deviceID) || studentId.equals("0") || parentId.equals(deviceID) || parentId.equals("0") || studentId.equals("") || parentId.equals("")) {
+                            if (status.equalsIgnoreCase("1")) {
+                                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                                SharedPreferences.Editor editor = settings.edit();
+                                editor.remove("refer_code");
+                                editor.remove("refer_offer");
+                                editor.putString("logged", "logged");
+                                editor.putString("userID", userID1);
+                                editor.putString("userLoginId", userLoginId1);
+                                editor.putString("userName", userName1);
+                                editor.putString("userPhone", userPhone1);
+                                editor.putString("userEmailId", userEmailId1);
+                                editor.putString("userDob", userDob1);
+                                editor.putString("userGender", userGender1);
+                                editor.putString("userImg", userImg1);
+                                editor.putString("userPhoneStatus", userPhoneStatus1);
+                                editor.putString("userrType", userrType1);
+                                editor.putString("userClass", str_class1);
+                                editor.putString("userSection", str_section1);
+                                editor.putString("userRollNumber", str_roll_number1);
+                                editor.putString("userTeacherName", str_teacher_name1);
+                                editor.putString("userSchoolId", userSchoolId1);
+                                editor.putString("userSchoolLogo", userSchoolSchoolLogo11);
+                                editor.putString("userSchoolLogo1", userSchoolSchoolLogo12);
+                                editor.putString("userSchoolLogo3", userSchoolSchoolLogo13);
+                                editor.putString("numberOfUser", "multiple");
+                                editor.putString("unique_id", studentArray.get(position).getUniqueId());
+                                editor.putString("restricted", studentArray.get(position).getRestricted());
 
-                            //
-                            editor.putString("userSchoolName", userSchoolName1);
-                            editor.putString("userSchoolRoleName", userSchoolRoleName1);
-                            editor.putString("str_school_id", userSchoolId1);
-                            editor.putString("str_role_id", userSchoolRoleId1);
-                            editor.apply();
+                                //
+                                editor.putString("userSchoolName", userSchoolName1);
+                                editor.putString("userSchoolRoleName", userSchoolRoleName1);
+                                editor.putString("str_school_id", userSchoolId1);
+                                editor.putString("str_role_id", userSchoolRoleId1);
+                                editor.apply();
 
-                            //color set
-                            SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
-                            SharedPreferences.Editor editorColor = settingsColor.edit();
-                            editorColor.putString("tool", selToolColor1);
-                            editorColor.putString("drawer", selDrawerColor1);
-                            editorColor.putString("status", selStatusColor1);
-                            editorColor.putString("text1", selTextColor11);
-                            editorColor.putString("text2", selTextColor22);
+                                //color set
+                                SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
+                                SharedPreferences.Editor editorColor = settingsColor.edit();
+                                editorColor.putString("tool", selToolColor1);
+                                editorColor.putString("drawer", selDrawerColor1);
+                                editorColor.putString("status", selStatusColor1);
+                                editorColor.putString("text1", selTextColor11);
+                                editorColor.putString("text2", selTextColor22);
 
-                            editorColor.apply();
+                                editorColor.apply();
 
-                            Intent i1 = new Intent(InstituteBuzzActivity.this, WelcomeActivity.class);
-                            i1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(i1);
-                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                            finish();
+                                Intent i1 = new Intent(InstituteBuzzActivity.this, WelcomeActivity.class);
+                                i1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(i1);
+                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                                finish();
+                            } else {
+                                Intent i = new Intent(InstituteBuzzActivity.this, MobileNumberActivity.class);
+                                i.putExtra("userID", userID1);
+                                i.putExtra("userPhone", userPhone1);
+                                startActivity(i);
+                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            }
                         } else {
-                            Intent i = new Intent(InstituteBuzzActivity.this, MobileNumberActivity.class);
-                            i.putExtra("userID", userID1);
-                            i.putExtra("userPhone", userPhone1);
-                            startActivity(i);
-                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            Toast.makeText(this, "Device is not registered for this account", Toast.LENGTH_SHORT).show();
                         }
                         break;
                     case "Teacher":
@@ -1664,59 +1731,71 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         } else {
             status = studentArray.get(0).getInstStatus();
         }
+        String studentId, parentId;
+        if (studentArray.get(0).getDeviceLock().equals("0")) {
+            studentId = "0";
+            parentId = "0";
+        } else {
+            studentId = studentArray.get(0).getStudentDevice();
+            parentId = studentArray.get(0).getParentDevice();
+        }
         if (status.equals("1")) {
             switch (userrType) {
                 case "Student": {
-                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.remove("refer_code");
-                    editor.remove("refer_offer");
-                    editor.putString("logged", "logged");
-                    editor.putString("userID", userID);
-                    editor.putString("userLoginId", userLoginId);
-                    editor.putString("userName", userName);
-                    editor.putString("userPhone", userPhone);
-                    editor.putString("userEmailId", userEmailId);
-                    editor.putString("userDob", userDob);
-                    editor.putString("userGender", userGender);
-                    editor.putString("userImg", userImg);
-                    editor.putString("userPhoneStatus", userPhoneStatus);
-                    editor.putString("userrType", userrType);
-                    editor.putString("userClass", str_class);
-                    editor.putString("userSection", str_section);
-                    editor.putString("userRollNumber", str_roll_number);
-                    editor.putString("userTeacherName", str_teacher_name);
-                    editor.putString("userSchoolId", userSchoolId);
-                    editor.putString("userSchoolLogo", userSchoolSchoolLogo);
-                    editor.putString("userSchoolLogo1", userSchoolSchoolLogo1);
-                    editor.putString("userSchoolLogo3", userSchoolSchoolLogo3);
-                    editor.putString("numberOfUser", "single");
+                    if (studentId.equals(deviceID) || studentId.equals("0") || parentId.equals(deviceID) || parentId.equals("0") || studentId.equals("") || parentId.equals("")) {
+                        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.remove("refer_code");
+                        editor.remove("refer_offer");
+                        editor.putString("logged", "logged");
+                        editor.putString("userID", userID);
+                        editor.putString("userLoginId", userLoginId);
+                        editor.putString("userName", userName);
+                        editor.putString("userPhone", userPhone);
+                        editor.putString("userEmailId", userEmailId);
+                        editor.putString("userDob", userDob);
+                        editor.putString("userGender", userGender);
+                        editor.putString("userImg", userImg);
+                        editor.putString("userPhoneStatus", userPhoneStatus);
+                        editor.putString("userrType", userrType);
+                        editor.putString("userClass", str_class);
+                        editor.putString("userSection", str_section);
+                        editor.putString("userRollNumber", str_roll_number);
+                        editor.putString("userTeacherName", str_teacher_name);
+                        editor.putString("userSchoolId", userSchoolId);
+                        editor.putString("userSchoolLogo", userSchoolSchoolLogo);
+                        editor.putString("userSchoolLogo1", userSchoolSchoolLogo1);
+                        editor.putString("userSchoolLogo3", userSchoolSchoolLogo3);
+                        editor.putString("numberOfUser", "single");
 
-                    //
-                    editor.putString("userSchoolName", userSchoolName);
-                    editor.putString("userSchoolRoleName", userSchoolRoleName);
-                    editor.putString("str_school_id", userSchoolId);
-                    editor.putString("unique_id", studentArray.get(0).getUniqueId());
-                    editor.putString("restricted", studentArray.get(0).getRestricted());
-                    editor.putString("str_role_id", userSchoolRoleId);
-                    editor.apply();
+                        //
+                        editor.putString("userSchoolName", userSchoolName);
+                        editor.putString("userSchoolRoleName", userSchoolRoleName);
+                        editor.putString("str_school_id", userSchoolId);
+                        editor.putString("unique_id", studentArray.get(0).getUniqueId());
+                        editor.putString("restricted", studentArray.get(0).getRestricted());
+                        editor.putString("str_role_id", userSchoolRoleId);
+                        editor.apply();
 
-                    //color set
-                    SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
-                    SharedPreferences.Editor editorColor = settingsColor.edit();
-                    editorColor.putString("tool", selToolColor);
-                    editorColor.putString("drawer", selDrawerColor);
-                    editorColor.putString("status", selStatusColor);
-                    editorColor.putString("text1", selTextColor1);
-                    editorColor.putString("text2", selTextColor2);
-                    editorColor.apply();
+                        //color set
+                        SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
+                        SharedPreferences.Editor editorColor = settingsColor.edit();
+                        editorColor.putString("tool", selToolColor);
+                        editorColor.putString("drawer", selDrawerColor);
+                        editorColor.putString("status", selStatusColor);
+                        editorColor.putString("text1", selTextColor1);
+                        editorColor.putString("text2", selTextColor2);
+                        editorColor.apply();
 
 
-                    Intent i = new Intent(InstituteBuzzActivity.this, WelcomeActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(i);
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    finish();
+                        Intent i = new Intent(InstituteBuzzActivity.this, WelcomeActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(i);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Device is not registered for this account", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
                 case "Teacher":
@@ -1931,10 +2010,6 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         MenuItem exam = menu.findItem(R.id.online_exam);
         MenuItem fee = menu.findItem(R.id.pay_fee);
         MenuItem live = menu.findItem(R.id.live_stream);
-
-        exam.setVisible(false);
-        fee.setVisible(false);
-        live.setVisible(false);
 
         for (int i = 0; i < arrayList.size(); i++) {
             PermissionData data = arrayList.get(i);
