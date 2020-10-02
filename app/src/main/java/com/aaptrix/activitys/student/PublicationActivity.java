@@ -63,11 +63,9 @@ import static com.aaptrix.tools.SPClass.PREF_COLOR;
  */
 
 public class PublicationActivity extends AppCompatActivity {
-	
-	SharedPreferences.Editor editor;
+
 	String userId, userSchoolId, userSchoolLogo, userRoleId, userSection, userrType;
 	AppBarLayout appBarLayout;
-	SharedPreferences.Editor editorColor;
 	String selToolColor, selDrawerColor, selStatusColor, selTextColor1, selTextColor2;
 	TextView tool_title;
 	private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -85,7 +83,6 @@ public class PublicationActivity extends AppCompatActivity {
 	SharedPreferences.Editor se_acti;
 	public static final String PREFS_ACTI = "json_acti";
 	TextView no_publication;
-	int a = 10;
 	TextView snack;
 	View footerView;
 	String skip;
@@ -117,7 +114,6 @@ public class PublicationActivity extends AppCompatActivity {
 		selTextColor2 = settingsColor.getString("text2", "");
 		
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-		editor = settings.edit();
 		userId = settings.getString("userID", "");
 		userSchoolId = settings.getString("str_school_id", "");
 		userSchoolLogo = settings.getString("userSchoolLogo", "");
@@ -126,29 +122,12 @@ public class PublicationActivity extends AppCompatActivity {
 		userrType = settings.getString("userrType", "");
 
 		sp_acti = getSharedPreferences(PREFS_ACTI, 0);
-		se_acti = sp_acti.edit();
 		String acti = sp_acti.getString("json_acti", "");
 		mSwipeRefreshLayout.setRefreshing(false);
 		publication_list.setEnabled(true);
 
-		if (acti != null && !acti.equals("null") && !acti.isEmpty() && acti.length() > 5) {
-			getAllPublication(acti);
-			snack.setVisibility(View.VISIBLE);
-			new CountDownTimer(3000, 1000) {
-				@Override
-				public void onTick(long millisUntilFinished) {
-
-				}
-
-				@Override
-				public void onFinish() {
-					snack.setVisibility(View.GONE);
-				}
-			}.start();
-		} else {
-			GetAllPublication b1 = new GetAllPublication(PublicationActivity.this);
-			b1.execute(userSchoolId, userSection, userrType, "0");
-		}
+		GetAllPublication b1 = new GetAllPublication(PublicationActivity.this);
+		b1.execute(userSchoolId, userSection, userrType, "0");
 
 		SharedPreferences sp = getSharedPreferences(PREFS_RW, 0);
 		String json = sp.getString("result", "");
@@ -186,8 +165,8 @@ public class PublicationActivity extends AppCompatActivity {
 			if (isInternetOn()) {
 				publication_list.setEnabled(false);
 				activitiesArray.clear();
-				GetAllPublication b1 = new GetAllPublication(PublicationActivity.this);
-				b1.execute(userSchoolId, userSection, userrType, "0");
+				GetAllPublication b = new GetAllPublication(PublicationActivity.this);
+				b.execute(userSchoolId, userSection, userrType, "0");
 			} else {
 				Toast.makeText(PublicationActivity.this, "No network Please connect with network for update", Toast.LENGTH_SHORT).show();
 				mSwipeRefreshLayout.setRefreshing(false);
@@ -406,7 +385,6 @@ public class PublicationActivity extends AppCompatActivity {
 								intent.putExtra("image", activitiesArray.get(pos).getActiviImg());
 								intent.putExtra("id", activitiesArray.get(pos).getActiviId());
 								startActivity(intent);
-								Log.v("long clicked", "pos: " + pos);
 							} else {
 								Toast.makeText(PublicationActivity.this, "No network Please connect with network for update", Toast.LENGTH_SHORT).show();
 							}

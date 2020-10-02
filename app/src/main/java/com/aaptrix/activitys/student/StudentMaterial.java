@@ -4,16 +4,21 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +35,7 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aaptrix.R;
 import com.aaptrix.databeans.StudyMaterialData;
@@ -41,9 +47,15 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -72,10 +84,10 @@ public class StudentMaterial extends AppCompatActivity {
     SharedPreferences sp;
     String[] subjects;
     ArrayList<String> subject_array = new ArrayList<>();
-    String userId, userSchoolId, userRoleId, userrType, userSection, url, userName, restricted;
+    String userId, userSchoolId, userRoleId, userrType, userSection, userName, restricted;
     GridView subjectGrid;
     ProgressBar progressBar;
-    LinearLayout mainLayout, viewAll, viewAllSubjects;
+    LinearLayout viewAll, viewAllSubjects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +103,6 @@ public class StudentMaterial extends AppCompatActivity {
         noVideos = findViewById(R.id.no_videos);
         subjectGrid = findViewById(R.id.subject_grid);
         progressBar = findViewById(R.id.progress);
-        mainLayout = findViewById(R.id.main_layout);
         viewAll = findViewById(R.id.view_all);
         viewAllSubjects = findViewById(R.id.view_all_subject);
         recyclerView.setEnabled(true);
@@ -119,9 +130,36 @@ public class StudentMaterial extends AppCompatActivity {
         }
         tool_title.setTextColor(Color.parseColor(selTextColor1));
 
-        String section = "[{\"userName\":\"" + userSection + "\"}]";
-        GetSubject subject = new GetSubject(this);
-        subject.execute(userSchoolId, section);
+        try {
+            File directory = this.getFilesDir();
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(directory, "subjects")));
+            String res = in.readObject().toString();
+            in.close();
+            JSONObject jsonRootObject = new JSONObject(res);
+            JSONArray jsonArray = jsonRootObject.getJSONArray("SubjectList");
+            subjects = new String[jsonArray.length()];
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                subjects[i] = jsonObject.getString("tbl_batch_subjct_name");
+            }
+            String object = jsonRootObject.getString("DisableSubject");
+            for (String subject : subjects) {
+                if (!object.contains(subject)) {
+                    subject_array.add(subject);
+                }
+            }
+            setSubject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (isInternetOn()) {
+                String section = "[{\"userName\":\"" + userSection + "\"}]";
+                GetSubject subject = new GetSubject(this);
+                subject.execute(userSchoolId, section);
+            } else {
+                Toast.makeText(this, "Please connect to internet to refresh subjects", Toast.LENGTH_SHORT).show();
+                noVideos.setVisibility(View.VISIBLE);
+            }
+        }
 
         GetMaterial getMaterial = new GetMaterial(this);
         getMaterial.execute(userSchoolId, userSection, userrType);
@@ -257,12 +295,12 @@ public class StudentMaterial extends AppCompatActivity {
                     }
                 }
                 if (materialArray.size() > 0) {
-                    noVideos.setVisibility(View.GONE);
-                    mainLayout.setVisibility(View.VISIBLE);
+                    viewAll.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.VISIBLE);
                     listItems();
                 } else {
-                    noVideos.setVisibility(View.VISIBLE);
-                    mainLayout.setVisibility(View.GONE);
+                    viewAll.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.GONE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -294,11 +332,11 @@ public class StudentMaterial extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
 
         if (arrayList.size() == 0) {
-            noVideos.setVisibility(View.VISIBLE);
-            mainLayout.setVisibility(View.GONE);
+            viewAll.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
         } else {
-            noVideos.setVisibility(View.GONE);
-            mainLayout.setVisibility(View.VISIBLE);
+            viewAll.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
         }
 
         Collections.sort(arrayList, (o1, o2) -> {
@@ -469,6 +507,7 @@ public class StudentMaterial extends AppCompatActivity {
                 try {
                     subject_array.clear();
                     JSONObject jsonRootObject = new JSONObject(result);
+                    cacheJson(jsonRootObject, "subjects");
                     JSONArray jsonArray = jsonRootObject.getJSONArray("SubjectList");
                     subjects = new String[jsonArray.length()];
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -490,14 +529,52 @@ public class StudentMaterial extends AppCompatActivity {
         }
     }
 
+    private void cacheJson(final JSONObject jsonObject, String name) {
+        new Thread(() -> {
+            ObjectOutput out;
+            String data = jsonObject.toString();
+            try {
+                File directory = this.getFilesDir();
+                directory.mkdir();
+                out = new ObjectOutputStream(new FileOutputStream(new File(directory, name)));
+                out.writeObject(data);
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     private void setSubject() {
         SubjectAdapter adapter = new SubjectAdapter(this, R.layout.list_subject, subject_array);
         subjectGrid.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
+        if (subject_array.size() == 0)
+            noVideos.setVisibility(View.VISIBLE);
+        else
+            noVideos.setVisibility(View.GONE);
+
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.height = (int) getResources().getDimension(R.dimen._90sdp) * (subject_array.size() / 2);
         subjectGrid.setLayoutParams(params);
+    }
+
+    public final boolean isInternetOn() {
+        ConnectivityManager connec =
+                (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        assert connec != null;
+        if (Objects.requireNonNull(connec.getNetworkInfo(0)).getState() == android.net.NetworkInfo.State.CONNECTED ||
+                Objects.requireNonNull(connec.getNetworkInfo(0)).getState() == android.net.NetworkInfo.State.CONNECTING ||
+                Objects.requireNonNull(connec.getNetworkInfo(1)).getState() == android.net.NetworkInfo.State.CONNECTING ||
+                Objects.requireNonNull(connec.getNetworkInfo(1)).getState() == android.net.NetworkInfo.State.CONNECTED) {
+            return true;
+        } else if (
+                Objects.requireNonNull(connec.getNetworkInfo(0)).getState() == android.net.NetworkInfo.State.DISCONNECTED ||
+                        Objects.requireNonNull(connec.getNetworkInfo(1)).getState() == android.net.NetworkInfo.State.DISCONNECTED) {
+            return false;
+        }
+        return false;
     }
 
     class SubjectAdapter extends ArrayAdapter<String> {
@@ -529,9 +606,20 @@ public class StudentMaterial extends AppCompatActivity {
             view.setTag(holder);
 
             view.setOnClickListener(v -> {
-                Intent intent = new Intent(context, StudyMaterial.class);
-                intent.putExtra("sub", objects.get(position));
-                context.startActivity(intent);
+                if (isInternetOn()) {
+                    Intent intent = new Intent(context, StudyMaterial.class);
+                    intent.putExtra("sub", objects.get(position));
+                    context.startActivity(intent);
+                } else {
+                    if (PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED &&
+                            PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                        isPermissionGranted();
+                    } else {
+                        Intent intent = new Intent(context, OfflineMaterial.class);
+                        intent.putExtra("sub", objects.get(position));
+                        startActivity(intent);
+                    }
+                }
             });
 
             viewAllSubjects.setOnClickListener(v -> {
@@ -554,6 +642,23 @@ public class StudentMaterial extends AppCompatActivity {
         @Override
         public int getItemViewType(int position) {
             return position;
+        }
+    }
+
+    public void isPermissionGranted() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

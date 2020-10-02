@@ -102,8 +102,8 @@ public class StartSubjective extends AppCompatActivity {
             assert enddate != null;
             endDate.setText(sdf.format(enddate));
 
-            String ins = "<b>&#8226;</b> You can only submit answer with the exam period. Answers submitted after end time will not be considered for marking<br/><br/>" +
-                    "<b>&#8226;</b> You can only submit answer sheet once." +
+            String ins = "<b>&#8226;</b> You can only submit answer within the exam period. Answers submitted after end time will not be considered for marking<br/><br/>" +
+                    "<b>&#8226;</b> You can only submit answer sheet once.<br/><br/>" +
                     "<b>&#8226;</b> You will be notified once result is published.";
             instructions.setText(Html.fromHtml(ins));
         } catch (Exception e) {

@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -85,6 +86,7 @@ public class GuestVideo extends AppCompatActivity {
     LinearLayout search_layout;
     ImageButton search, searchBtn;
     EditText searchBox;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +108,7 @@ public class GuestVideo extends AppCompatActivity {
         search_layout = findViewById(R.id.search_layout);
         searchBox = findViewById(R.id.search_txt);
         searchBtn = findViewById(R.id.search_btn);
+        progressBar = findViewById(R.id.progress_bar);
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
         selToolColor = settingsColor.getString("tool", "");
@@ -134,31 +137,30 @@ public class GuestVideo extends AppCompatActivity {
         } else {
             SharedPreferences sp = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
             String result = sp.getString("studyvideos", "");
-            if (result.contains("\"result\":null") && result.contains("\"instituteVideos\":null")) {
-                noVideos.setVisibility(View.VISIBLE);
-                mSwipeRefreshLayout.setRefreshing(false);
-            } else {
+            if (!result.contains("\"guestVideos\":null")) {
+                progressBar.setVisibility(View.VISIBLE);
                 try {
                     JSONObject jsonRootObject = new JSONObject(result);
-                    if (!result.contains("\"guestVideos\":null")) {
-                        JSONArray jsonArray = jsonRootObject.getJSONArray("guestVideos");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            videosData = new VideosData();
-                            videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
-                            videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
-                            videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
-                            videosData.setSubject(jsonObject.getString("subject_name"));
-                            videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
-                            videosData.setBatch(jsonObject.getString("tbl_course_name"));
-                            videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
-                            videosArray.add(videosData);
-                        }
+                    JSONArray jsonArray = jsonRootObject.getJSONArray("guestVideos");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        videosData = new VideosData();
+                        videosData.setId(jsonObject.getString("tbl_school_studyvideo_id"));
+                        videosData.setTitle(jsonObject.getString("tbl_school_studyvideo_title"));
+                        videosData.setUrl(jsonObject.getString("tbl_school_studyvideo_video"));
+                        videosData.setSubject(jsonObject.getString("subject_name"));
+                        videosData.setDesc(jsonObject.getString("tbl_school_studyvideo_desc"));
+                        videosData.setBatch(jsonObject.getString("tbl_course_name"));
+                        videosData.setDate(jsonObject.getString("tbl_school_studyvideo_date"));
+                        videosArray.add(videosData);
                     }
+                    listItems("All Courses");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                listItems("All Courses");
+            } else {
+                noVideos.setVisibility(View.VISIBLE);
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         }
 
@@ -252,7 +254,7 @@ public class GuestVideo extends AppCompatActivity {
                 }
                 setBatch();
             } else {
-                String batch_array[] = {"All Courses"};
+                String[] batch_array = {"All Courses"};
                 ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(ctx, R.layout.spinner_list_item1, batch_array);
                 dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
                 batch_spinner.setAdapter(dataAdapter1);
@@ -296,6 +298,7 @@ public class GuestVideo extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             videosArray.clear();
+            progressBar.setVisibility(View.VISIBLE);
             super.onPreExecute();
         }
 
@@ -380,6 +383,7 @@ public class GuestVideo extends AppCompatActivity {
             if (videosArray.size() == 0) {
                 noVideos.setVisibility(View.VISIBLE);
                 mSwipeRefreshLayout.setRefreshing(false);
+                progressBar.setVisibility(View.GONE);
             } else {
                 listItems("All Courses");
             }
@@ -388,7 +392,6 @@ public class GuestVideo extends AppCompatActivity {
     }
 
     private void listItems(String course) {
-
         ArrayList<VideosData> arrayList = new ArrayList<>();
         ArrayList<String> ids = new ArrayList<>();
 
@@ -429,6 +432,7 @@ public class GuestVideo extends AppCompatActivity {
         } else {
             noVideos.setVisibility(View.GONE);
         }
+        progressBar.setVisibility(View.GONE);
 
         Collections.sort(arrayList, (o1, o2) -> {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());

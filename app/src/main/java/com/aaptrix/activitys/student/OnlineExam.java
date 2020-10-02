@@ -53,7 +53,7 @@ public class OnlineExam extends AppCompatActivity {
         tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        tabLayout.addTab(tabLayout.newTab().setText("Upcoming Exams"));
+        tabLayout.addTab(tabLayout.newTab().setText("Scheduled Exams"));
         tabLayout.addTab(tabLayout.newTab().setText("Previous Exams"));
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
@@ -124,7 +124,7 @@ public class OnlineExam extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             String title;
             if (position == 0) {
-                title = "Upcoming Exams";
+                title = "Scheduled Exams";
             } else {
                 title = "Previous Exams";
             }

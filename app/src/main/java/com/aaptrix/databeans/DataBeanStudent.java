@@ -8,7 +8,47 @@ import java.io.Serializable;
 
 public class DataBeanStudent implements Serializable {
     private String userID, userLoginId, userName, userPhone, userEmailId, userDob, userGender, userImg, userPhoneStatus, userrType, userPassword;
-    private String userClass, userSection, userRollNumber, userTeacherName, restricted;
+    private String userClass, userSection, userRollNumber, userTeacherName, restricted, studentDevice, parentDevice, winKey, batchNm, deviceLock;
+
+    public String getDeviceLock() {
+        return deviceLock;
+    }
+
+    public void setDeviceLock(String deviceLock) {
+        this.deviceLock = deviceLock;
+    }
+
+    public String getBatchNm() {
+        return batchNm;
+    }
+
+    public void setBatchNm(String batchNm) {
+        this.batchNm = batchNm;
+    }
+
+    public String getStudentDevice() {
+        return studentDevice;
+    }
+
+    public void setStudentDevice(String studentDevice) {
+        this.studentDevice = studentDevice;
+    }
+
+    public String getParentDevice() {
+        return parentDevice;
+    }
+
+    public void setParentDevice(String parentDevice) {
+        this.parentDevice = parentDevice;
+    }
+
+    public String getWinKey() {
+        return winKey;
+    }
+
+    public void setWinKey(String winKey) {
+        this.winKey = winKey;
+    }
 
     public String getRestricted() {
         return restricted;

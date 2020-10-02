@@ -121,6 +121,14 @@
 
                                 </com.daimajia.slider.library.SliderLayout>
 
+                                <ImageView
+                                    android:layout_width="@dimen/_20sdp"
+                                    android:layout_height="@dimen/_20sdp"
+                                    android:src="@drawable/ic_fullscreen_expand"
+                                    android:layout_gravity="end"
+                                    android:padding="5dp"
+                                    android:layout_margin="@dimen/_10sdp"/>
+
                             </androidx.cardview.widget.CardView>
                         </RelativeLayout>
 

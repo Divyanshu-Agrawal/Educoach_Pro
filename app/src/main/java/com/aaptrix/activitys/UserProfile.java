@@ -72,7 +72,7 @@ public class UserProfile extends AppCompatActivity {
     ImageView userProfile, editProfile;
     SharedPreferences sp;
     ProgressBar progressBar;
-    TextView gender, dob, email, number, type, name, section, roll, sectionTitle, rollTitle, schoolName, typeTitle;
+    TextView gender, dob, email, number, type, name, section, roll, sectionTitle, rollTitle, typeTitle;
     RelativeLayout fullscrLayout;
     LinearLayout edit_layout;
     ImageView edit;
@@ -103,7 +103,6 @@ public class UserProfile extends AppCompatActivity {
         sp = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         gender = findViewById(R.id.user_gender);
         dob = findViewById(R.id.user_dob);
-        schoolName = findViewById(R.id.user_school);
         type = findViewById(R.id.user_type);
         email = findViewById(R.id.user_email);
         number = findViewById(R.id.user_contact);
@@ -121,7 +120,6 @@ public class UserProfile extends AppCompatActivity {
         String userImg = sp.getString("userImg", "");
         String userType = sp.getString("userrType", "");
         String imageUrl = sp.getString("imageUrl", "") + sp.getString("userSchoolId", "");
-        String school = sp.getString("userSchoolName", "");
 
         if (userType.equals("Admin") || userType.equals("Teacher")) {
             idTitle.setVisibility(View.VISIBLE);
@@ -144,8 +142,6 @@ public class UserProfile extends AppCompatActivity {
             typeTitle.setVisibility(View.GONE);
             type.setVisibility(View.GONE);
         }
-
-        schoolName.setText(school);
 
         strPhone = sp.getString("userPhone", "");
         type.setText(userType);

@@ -431,6 +431,14 @@ public class AddNewMaterial extends AppCompatActivity {
                     strCourse = course_id[i];
                     GetAllBatches getAllBatches = new GetAllBatches(AddNewMaterial.this);
                     getAllBatches.execute(course_id[i]);
+                } else {
+                    studentArray.clear();
+                    if (batchListAdaptor != null)
+                        batchListAdaptor.notifyDataSetChanged();
+                    subject_array.clear();
+                    ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(AddNewMaterial.this, R.layout.spinner_list_item1, subject_array);
+                    dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
+                    subject_spinner.setAdapter(dataAdapter1);
                 }
             }
 
@@ -756,12 +764,10 @@ public class AddNewMaterial extends AppCompatActivity {
                         String result = EntityUtils.toString(httpEntity);
                         JSONObject jsonObject = new JSONObject(result);
                         fileNames.add("\"" + jsonObject.getString("imageNm") + "\"");
-                        Log.e("file", jsonObject.getString("imageNm"));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-                Log.e("file name", fileNames.toString());
                 try {
                     SSLContext sslContext = SSLContexts.custom().useTLS().build();
                     SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(

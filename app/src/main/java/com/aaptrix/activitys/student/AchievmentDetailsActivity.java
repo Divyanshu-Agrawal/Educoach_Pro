@@ -25,6 +25,9 @@ import com.aaptrix.activitys.FullScreenImageActivity;
 
 import androidx.annotation.RequiresApi;
 
+import com.aaptrix.activitys.admin.AddNewActivity;
+import com.aaptrix.activitys.admin.AddNewPublication;
+import com.aaptrix.activitys.admin.InstituteBuzzActivityDiff;
 import com.aaptrix.activitys.teacher.SchoolCalenderActivity;
 import com.aaptrix.activitys.teacher.TeacherDairyActivity;
 import com.google.android.material.appbar.AppBarLayout;
@@ -89,9 +92,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.aaptrix.tools.HttpUrl.REMOVE_ACTIVITY;
 import static com.aaptrix.tools.HttpUrl.REMOVE_DIARY;
 import static com.aaptrix.tools.HttpUrl.REMOVE_EVENT;
 import static com.aaptrix.tools.HttpUrl.REMOVE_HW;
+import static com.aaptrix.tools.HttpUrl.REMOVE_PUBLICATION;
 import static com.aaptrix.tools.HttpUrl.UPDAATE_EXAM_TT;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
 import static com.aaptrix.tools.SPClass.PREFS_RW;
@@ -354,6 +359,40 @@ public class AchievmentDetailsActivity extends AppCompatActivity implements Base
                 sliderLayout.setVisibility(View.GONE);
                 image_main.setVisibility(View.GONE);
                 date_layout.setVisibility(View.GONE);
+
+                SharedPreferences preferences = getSharedPreferences(PREFS_RW, 0);
+                String json = preferences.getString("result", "");
+
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    JSONArray jsonArray = jsonObject.getJSONArray("result");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        if (object.getString("tbl_insti_buzz_cate_name").equals("Activities")) {
+                            if (object.getString("tbl_scl_inst_buzz_detl_write_status").equals("Active")) {
+                                delete.setVisibility(View.VISIBLE);
+                            } else {
+                                delete.setVisibility(View.GONE);
+                            }
+                            break;
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    delete.setImageTintList(ColorStateList.valueOf(Color.parseColor(selTextColor1)));
+                }
+
+                delete.setOnClickListener(v -> new AlertDialog.Builder(this).setTitle("Are you sure you want to delete?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            if (activiId != null) {
+                                RemoveActivity event = new RemoveActivity(this);
+                                event.execute(schoolid, activiId);
+                            }
+                        }).setNegativeButton("No", null).show());
+
                 break;
             }
             case "publication": {
@@ -364,6 +403,39 @@ public class AchievmentDetailsActivity extends AppCompatActivity implements Base
                 setDate(date1);
                 sliderLayout.setVisibility(View.GONE);
                 image_main.setVisibility(View.GONE);
+
+                SharedPreferences preferences = getSharedPreferences(PREFS_RW, 0);
+                String json = preferences.getString("result", "");
+
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    JSONArray jsonArray = jsonObject.getJSONArray("result");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        if (object.getString("tbl_insti_buzz_cate_name").equals("What's New!")) {
+                            if (object.getString("tbl_scl_inst_buzz_detl_write_status").equals("Active")) {
+                                delete.setVisibility(View.VISIBLE);
+                            } else {
+                                delete.setVisibility(View.GONE);
+                            }
+                            break;
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    delete.setImageTintList(ColorStateList.valueOf(Color.parseColor(selTextColor1)));
+                }
+
+                delete.setOnClickListener(v -> new AlertDialog.Builder(this).setTitle("Are you sure you want to delete?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            if (activiId != null) {
+                                RemovePublication event = new RemovePublication(this);
+                                event.execute(schoolid, activiId);
+                            }
+                        }).setNegativeButton("No", null).show());
 
                 if (achImg != null && !achImg.equals("null") && !achImg.equals("0")) {
                     image = achImg.split(",");
@@ -759,6 +831,144 @@ public class AchievmentDetailsActivity extends AppCompatActivity implements Base
         } else {
             Toast.makeText(AchievmentDetailsActivity.this, "No network Please connect with network for update", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public class RemovePublication extends AsyncTask<String, String, String> {
+        Context ctx;
+
+        RemovePublication(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String userId=params[0];
+            String publicationId=params[1];
+            String data;
+
+            try {
+                URL url = new URL(REMOVE_PUBLICATION);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
+                data = URLEncoder.encode("userId", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8")+ "&" +
+                        URLEncoder.encode("publicationId", "UTF-8") + "=" + URLEncoder.encode(publicationId, "UTF-8");
+                outputStream.write(data.getBytes());
+
+                bufferedWriter.write(data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.flush();
+                outputStream.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    response.append(line);
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                return response.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.e("Json", result);
+            if (!result.isEmpty()) {
+                startActivity(new Intent(ctx, PublicationActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            } else {
+                Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public class RemoveActivity extends AsyncTask<String, String, String> {
+        Context ctx;
+
+        RemoveActivity(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String userId = params[0];
+            String achievId = params[1];
+            String data;
+
+            try {
+
+                URL url = new URL(REMOVE_ACTIVITY);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
+                data = URLEncoder.encode("userId", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
+                        URLEncoder.encode("achievId", "UTF-8") + "=" + URLEncoder.encode(achievId, "UTF-8");
+                outputStream.write(data.getBytes());
+
+                bufferedWriter.write(data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.flush();
+                outputStream.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    response.append(line);
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                return response.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.e("Json", "" + result);
+            if (!result.isEmpty()) {
+                startActivity(new Intent(ctx, ActivitiesActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            } else {
+                Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 
     @SuppressLint("StaticFieldLeak")

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.barteksc.pdfviewer.PDFView;
@@ -37,7 +38,7 @@ public class FullscreenAdapter extends PagerAdapter {
     private TextView watermark;
     private LinearLayout notice;
     private PDFView pdfView;
-    private String rollNo;
+    private ProgressBar progressBar;
 
     public FullscreenAdapter(Context context, ArrayList<String> studymaterial) {
         this.context = context;
@@ -54,12 +55,14 @@ public class FullscreenAdapter extends PagerAdapter {
         pdfView = view.findViewById(R.id.fullscr_pdf);
         watermark = view.findViewById(R.id.watermark);
         notice = view.findViewById(R.id.notice);
+        progressBar = view.findViewById(R.id.progress_bar);
         ImageView dismiss = view.findViewById(R.id.dismiss);
         notice.bringToFront();
 
         dismiss.setOnClickListener(v -> notice.setVisibility(View.GONE));
 
         SharedPreferences sp = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String rollNo;
         if (context.getResources().getString(R.string.watermark).equals("full")) {
             rollNo = SCHOOL_NAME + "\n" + sp.getString("userName", "") + ", " + sp.getString("userPhone", "");
         } else {
@@ -80,6 +83,7 @@ public class FullscreenAdapter extends PagerAdapter {
         if ("pdf".equals(fileExt)) {
             photoView.setVisibility(View.GONE);
             pdfView.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
             new Thread(() -> {
                 try {
                     downloadFile(url);
@@ -87,6 +91,7 @@ public class FullscreenAdapter extends PagerAdapter {
                     e.printStackTrace();
                 }
             }).start();
+            progressBar.setVisibility(View.GONE);
         } else {
             Picasso.with(context).load(url).into(photoView);
             photoView.setVisibility(View.VISIBLE);

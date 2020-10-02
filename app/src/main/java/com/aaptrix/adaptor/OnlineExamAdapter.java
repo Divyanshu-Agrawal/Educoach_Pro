@@ -65,7 +65,7 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
         SharedPreferences sp = context.getSharedPreferences(PREFS_NAME, 0);
         String userId = sp.getString("userID", "");
         String userSection = sp.getString("userSection", "");
-        String userType = sp.getString("userrType","");
+        String userType = sp.getString("userrType", "");
 
         if (objects != null) {
             OnlineExamData data = objects.get(position);
@@ -91,7 +91,8 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
                 sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
                 assert date != null;
                 assert endDate != null;
-                examDate.setText("Starts At : " + sdf.format(date));
+                String strstart = sdf.format(date);
+                String strEnd = sdf.format(endDate);
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.add(Calendar.DATE, -1);
@@ -101,7 +102,7 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
                         cardView.setCardBackgroundColor(Color.GREEN);
                         view.setOnClickListener(v -> {
                             if (!data.getStatus().equals("1")) {
-                                if(data.getType().equals("MCQ")) {
+                                if (data.getType().equals("MCQ")) {
                                     Intent intent = new Intent(context, StartExam.class);
                                     intent.putExtra("examId", data.getId());
                                     intent.putExtra("examName", data.getName());
@@ -127,18 +128,22 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
                             } else {
                                 Toast.makeText(context, "You have already taken this exam", Toast.LENGTH_SHORT).show();
                                 if (data.getResPublish().equals("1")) {
-                                    Intent intent = new Intent(context, OnlineReport.class);
-                                    intent.putExtra("userId", userId);
-                                    intent.putExtra("examId", data.getId());
-                                    intent.putExtra("examName", data.getName());
-                                    intent.putExtra("userSection", userSection);
-                                    context.startActivity(intent);
+                                    if (data.getType().equals("MCQ")) {
+                                        Intent intent = new Intent(context, OnlineReport.class);
+                                        intent.putExtra("userId", userId);
+                                        intent.putExtra("examId", data.getId());
+                                        intent.putExtra("examName", data.getName());
+                                        intent.putExtra("userSection", userSection);
+                                        context.startActivity(intent);
+                                    } else {
+                                        Intent intent = new Intent(context, SubjectiveExamResult.class);
+                                        intent.putExtra("examName", data.getName());
+                                        intent.putExtra("pdf", data.getAnsPdf());
+                                        intent.putExtra("id", data.getId());
+                                        context.startActivity(intent);
+                                    }
                                 } else {
-                                    Intent intent = new Intent(context, SubjectiveExamResult.class);
-                                    intent.putExtra("examName", data.getName());
-                                    intent.putExtra("pdf", data.getAnsPdf());
-                                    intent.putExtra("id", data.getId());
-                                    context.startActivity(intent);
+                                    Toast.makeText(context, "Result not published yet", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -147,7 +152,7 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
                     }
                 } else {
                     view.setOnClickListener(v -> {
-                        if(data.getType().equals("MCQ")) {
+                        if (data.getType().equals("MCQ")) {
                             Intent intent = new Intent(context, StartExam.class);
                             intent.putExtra("examId", data.getId());
                             intent.putExtra("examName", data.getName());
@@ -175,9 +180,12 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
 
                 sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
                 Date time = sdf.parse(data.getStartTime());
+                Date endTime = sdf.parse(data.getEndTime());
                 assert time != null;
+                assert endTime != null;
                 sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
-                examTime.setText("Starts At : " + sdf.format(time));
+                examDate.setText("Starts On : " + strstart + " At : " + sdf.format(time));
+                examTime.setText("Ends On : " + strEnd + " At : " + sdf.format(endTime));
             } catch (ParseException e) {
                 e.printStackTrace();
             }

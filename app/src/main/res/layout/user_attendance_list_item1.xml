@@ -65,20 +65,31 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="2">
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:orientation="vertical">
                         <TextView
                             android:layout_width="match_parent"
-                            android:layout_height="45dp"
+                            android:layout_height="wrap_content"
                             android:text="Hello"
                             android:gravity="center|start"
                             android:visibility="visible"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginRight="10dp"
-                            android:fontFamily="ROBOTO-REGULAR.TTF"
                             android:textSize="14sp"
                             android:textColor="@color/text_gray"
-                            android:layout_margin="@dimen/siz10"
+                            android:layout_marginStart="@dimen/siz10"
+                            android:layout_marginEnd="@dimen/siz10"
                             android:id="@+id/clgname"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Hello"
+                            android:gravity="center|start"
+                            android:visibility="gone"
+                            android:textSize="10sp"
+                            android:layout_marginTop="@dimen/siz2"
+                            android:layout_marginStart="@dimen/siz10"
+                            android:layout_marginEnd="@dimen/siz10"
+                            android:id="@+id/batch"/>
 
                     </LinearLayout>
 

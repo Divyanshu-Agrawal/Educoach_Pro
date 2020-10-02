@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,6 +82,7 @@ public class GuestMaterial extends AppCompatActivity {
     LinearLayout search_layout;
     ImageButton search, searchBtn;
     EditText searchBox;
+    ProgressBar progressBar;
     StudyMaterialAdaptor studyMaterialAdaptor;
 
     @Override
@@ -103,6 +105,7 @@ public class GuestMaterial extends AppCompatActivity {
         search_layout = findViewById(R.id.search_layout);
         searchBox = findViewById(R.id.search_txt);
         searchBtn = findViewById(R.id.search_btn);
+        progressBar = findViewById(R.id.progress_bar);
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
         selToolColor = settingsColor.getString("tool", "");
@@ -133,6 +136,7 @@ public class GuestMaterial extends AppCompatActivity {
             try {
                 JSONObject jsonRootObject = new JSONObject(json);
                 if (!json.contains("\"guestMaterials\":null")) {
+                    progressBar.setVisibility(View.VISIBLE);
                     JSONArray jsonArray = jsonRootObject.getJSONArray("guestMaterials");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         data = new StudyMaterialData();
@@ -156,6 +160,7 @@ public class GuestMaterial extends AppCompatActivity {
             } else {
                 no_material.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
             }
         }
 
@@ -298,9 +303,9 @@ public class GuestMaterial extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            mSwipeRefreshLayout.setRefreshing(true);
             listView.setEnabled(false);
             studyMaterialArray.clear();
+            progressBar.setVisibility(View.VISIBLE);
             super.onPreExecute();
         }
 
@@ -381,6 +386,7 @@ public class GuestMaterial extends AppCompatActivity {
                 } else {
                     no_material.setVisibility(View.VISIBLE);
                     listView.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -432,6 +438,7 @@ public class GuestMaterial extends AppCompatActivity {
         } else {
             no_material.setVisibility(View.GONE);
         }
+        progressBar.setVisibility(View.GONE);
 
         listView.setEnabled(true);
         studyMaterialAdaptor = new StudyMaterialAdaptor(this, R.layout.list_study_material, arrayList);

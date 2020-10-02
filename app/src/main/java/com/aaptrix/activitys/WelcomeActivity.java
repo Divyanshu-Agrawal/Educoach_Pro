@@ -63,7 +63,7 @@ import static cz.msebera.android.httpclient.conn.ssl.SSLConnectionSocketFactory.
 
 public class WelcomeActivity extends Activity {
 
-    String schoolId, roleId, user_token_id, android_id, userId, userType;
+    String schoolId, roleId, user_token_id, android_id, userId, userType, userPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,12 +78,9 @@ public class WelcomeActivity extends Activity {
         schoolId = sp.getString("str_school_id", "");
         userId = sp.getString("userID", "");
         userType = sp.getString("userrType", "");
+        userPhone = sp.getString("userPhone", "");
 
-        if (sp.getString("token", "") != null) {
-            user_token_id = sp.getString("token", "");
-        } else {
-            user_token_id = FirebaseInstanceId.getInstance().getToken();
-        }
+        user_token_id = sp.getString("token", "");
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         GetAllInstituteBuzz b = new GetAllInstituteBuzz(this);
@@ -93,7 +90,7 @@ public class WelcomeActivity extends Activity {
         } else {
             id = roleId;
         }
-        b.execute(id, schoolId, user_token_id, android_id, userId);
+        b.execute(id, schoolId, user_token_id, android_id, userId, userPhone);
 
         if (!userType.equals("Student")) {
             GetAllBatches b1 = new GetAllBatches(this);
@@ -109,7 +106,6 @@ public class WelcomeActivity extends Activity {
             startActivity(i);
             finish();
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-
         }, 3000);
 
     }
@@ -134,6 +130,7 @@ public class WelcomeActivity extends Activity {
             String tokenId = params[2];
             String androidId = params[3];
             String userId = params[4];
+            String phone = params[5];
 
             String android_version = String.valueOf(BuildConfig.VERSION_CODE);
             String data;
@@ -153,7 +150,8 @@ public class WelcomeActivity extends Activity {
                         URLEncoder.encode("tokenId", "UTF-8") + "=" + URLEncoder.encode(tokenId, "UTF-8") + "&" +
                         URLEncoder.encode("androidId", "UTF-8") + "=" + URLEncoder.encode(androidId, "UTF-8") + "&" +
                         URLEncoder.encode("userId", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
-                        URLEncoder.encode("android_build_no", "UTF-8") + "=" + URLEncoder.encode(android_version, "UTF-8");
+                        URLEncoder.encode("android_build_no", "UTF-8") + "=" + URLEncoder.encode(android_version, "UTF-8") + "&" +
+                        URLEncoder.encode("str_user_phone", "UTF-8") + "=" + URLEncoder.encode(phone, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);
@@ -184,7 +182,7 @@ public class WelcomeActivity extends Activity {
         @Override
         protected void onPostExecute(String result) {
             Log.e("result", result);
-            if (!result.equals("{\"result\":null}")) {
+            if (!result.contains("\"result\":null")) {
                 try {
                     JSONObject jsonRootObject = new JSONObject(result);
                     getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().

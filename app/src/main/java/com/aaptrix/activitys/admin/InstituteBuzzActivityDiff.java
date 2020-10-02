@@ -184,6 +184,7 @@ import static com.aaptrix.tools.HttpUrl.ABOUT_SCHOOL_INFO;
 import static com.aaptrix.tools.HttpUrl.ALL_ACTIVITIES;
 import static com.aaptrix.tools.HttpUrl.ALL_INSTITUTE_BUZZ_CATE;
 import static com.aaptrix.tools.HttpUrl.GET_PERMISSION;
+import static com.aaptrix.tools.HttpUrl.LOGOUT;
 import static com.aaptrix.tools.HttpUrl.SWITCH_USERS;
 //import static com.aaptrix.tools.HttpUrl.UPDATE_USER_PRO_IMAGE;
 import static com.aaptrix.tools.HttpUrl.TESTIMONIALS;
@@ -374,10 +375,11 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         if (!userrType.equals("Guest")) {
             RateThisApp.onStart(this);
             RateThisApp.Config config = new RateThisApp.Config(3, 15);
+//            config.setMessage(R.string.message);
             RateThisApp.init(config);
             if (RateThisApp.shouldShowRateDialog()) {
                 new AlertDialog.Builder(this)
-                        .setMessage("Enjoying this app!")
+                        .setMessage(R.string.message)
                         .setPositiveButton("Yes", (dialog, which) -> RateThisApp.showRateDialogIfNeeded(this))
                         .setNegativeButton("No", null)
                         .show();
@@ -398,7 +400,29 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         }
 
         Menu menu = mNavigationView.getMenu();
+        MenuItem attendance = menu.findItem(R.id.attendance);
+        MenuItem stuAtten = menu.findItem(R.id.student_attendance);
+        MenuItem contact = menu.findItem(R.id.contacts);
+        MenuItem myAttendance = menu.findItem(R.id.my_attendance);
+        MenuItem staffLeave = menu.findItem(R.id.staff_leave);
+        MenuItem stuPerformance = menu.findItem(R.id.see_performance);
+        MenuItem addexam = menu.findItem(R.id.add_exam);
         MenuItem enq = menu.findItem(R.id.enquiry);
+        MenuItem chat = menu.findItem(R.id.message);
+        MenuItem live = menu.findItem(R.id.live_stream);
+        MenuItem exam = menu.findItem(R.id.online_exam);
+
+        attendance.setVisible(false);
+        stuAtten.setVisible(false);
+        contact.setVisible(false);
+        myAttendance.setVisible(false);
+        staffLeave.setVisible(false);
+        stuPerformance.setVisible(false);
+        addexam.setVisible(false);
+        enq.setVisible(false);
+        chat.setVisible(false);
+        live.setVisible(false);
+        exam.setVisible(false);
         if (userrType.equals("Admin")) {
             enq.setTitle("Enquiries");
         }
@@ -486,6 +510,34 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                     putString("anonymous_feedback", jsonRootObject.getString("feedback_anonymous_permission")).apply();
             instiBuzzArray.clear();
 
+            if (!userrType.equals("Guest"))
+                try {
+                    ArrayList<String> user = new ArrayList<>();
+                    JSONArray array = jsonRootObject.getJSONArray("UserList");
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject object = array.getJSONObject(i);
+                        user.add(object.getString("tbl_users_id"));
+                    }
+
+                    if (user.size() == 0) {
+                        logout(userPhone);
+                    } else if (user.size() == 1) {
+                        SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, 0).edit();
+                        editor.putString("numberOfUser", "single");
+                        editor.apply();
+                    } else {
+                        SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, 0).edit();
+                        editor.putString("numberOfUser", "multiple");
+                        editor.apply();
+                    }
+
+                    if (!user.contains(userId)) {
+                        logout(userPhone);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             ArrayList<String> name = new ArrayList<>();
             name.add("About Us");
             name.add("Institute Calendar");
@@ -552,8 +604,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
             b1.execute(id, schoolId, user_token_id, android_id, userId);
         }
 
-
-        if (numberOfUser.equals("multiple")) {
+        if (getSharedPreferences(PREFS_NAME, 0).getString("numberOfUser", "").equals("multiple")) {
             prof_logo1.setVisibility(View.VISIBLE);
             if (userImg.equals("0")) {
                 prof_logo1.setImageDrawable(getResources().getDrawable(R.drawable.user_place_hoder));
@@ -581,7 +632,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
             } else {
                 prof_logo1.setImageDrawable(getResources().getDrawable(R.drawable.user_place_hoder));
             }
-        } else if (numberOfUser.equals("single")) {
+        } else {
             prof_logo1.setVisibility(View.GONE);
             logo_layout.setVisibility(View.GONE);
         }
@@ -680,6 +731,90 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         header_name.setTextColor(Color.parseColor(selTextColor1));
         mNavigationView.setItemTextColor(ColorStateList.valueOf(Color.parseColor(selTextColor1)));
         tv_today_day_date.setTextColor(Color.parseColor(selTextColor1));
+    }
+
+    private void logout(String mobileno) {
+        Toast.makeText(this, "Your session has expired. Please login again.", Toast.LENGTH_SHORT).show();
+        File directory = this.getFilesDir();
+        File file = new File(directory, "instituteBuzz");
+        file.delete();
+        file = new File(directory, "batches");
+        file.delete();
+        getSharedPreferences(PREF_COLOR, 0).edit().clear().apply();
+        getSharedPreferences(PREF_ROLE, 0).edit().clear().apply();
+        getSharedPreferences(PREFS_NAME, 0).edit().clear().apply();
+        getSharedPreferences("date", 0).edit().clear().apply();
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("logged", "notlogged");
+        editor.putString("userID", "0");
+        editor.putString("userLoginId", " ");
+        editor.putString("userName", "Guest");
+        editor.putString("userPhone", " ");
+        editor.putString("userEmailId", " ");
+        editor.putString("userDob", " ");
+        editor.putString("userGender", "Guest");
+        editor.putString("userPhoneStatus", "1");
+        editor.putString("userrType", "Guest");
+        editor.putString("userSchoolId", SCHOOL_ID);
+        editor.putString("numberOfUser", "single");
+        editor.putString("userPassword", null);
+        editor.putString("userSection", " ");
+        editor.putString("userRollNumber", " ");
+        editor.putString("userTeacherName", " ");
+        editor.putString("userSchoolLogo", " ");
+        editor.putString("userSchoolLogo1", " ");
+        editor.putString("userSchoolLogo3", " ");
+        editor.putString("imageUrl", "https://dashboard.educoachapp.com//uploads/institute/institute_");
+
+        //
+        editor.putString("userSchoolName", SCHOOL_NAME);
+        editor.putString("str_school_id", SCHOOL_ID);
+        editor.putString("str_role_id", "7");
+        editor.apply();
+
+        //color set
+        SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
+        SharedPreferences.Editor editorColor = settingsColor.edit();
+
+        editorColor.putString("tool", getResources().getString(R.string.tool));
+        editorColor.putString("drawer", getResources().getString(R.string.drawer));
+        editorColor.putString("status", getResources().getString(R.string.status));
+        editorColor.putString("text1", getResources().getString(R.string.text1));
+        editorColor.putString("text2", getResources().getString(R.string.text2));
+        editorColor.apply();
+
+
+        Intent i = new Intent(this, InstituteBuzzActivityDiff.class);
+        startActivity(i);
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        new Thread(() -> {
+            try {
+                SSLContext sslContext = SSLContexts.custom().useTLS().build();
+                SSLConnectionSocketFactory f = new SSLConnectionSocketFactory(
+                        sslContext,
+                        new String[]{"TLSv1.1", "TLSv1.2"},
+                        null,
+                        BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+                HttpClient httpclient = HttpClients.custom().setSSLSocketFactory(f).build();
+                HttpPost httppost = new HttpPost(LOGOUT);
+                // Add your data
+                List<NameValuePair> nameValuePairs = new ArrayList<>(1);
+                nameValuePairs.add(new BasicNameValuePair("mobno", mobileno));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                // Execute HTTP Post Request
+                HttpResponse response = httpclient.execute(httppost);
+                HttpEntity httpEntity = response.getEntity();
+                final String result = EntityUtils.toString(httpEntity);
+
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(() -> Log.e("result", result));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -921,8 +1056,7 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
             if (pos < activitiesArray.size()) {
                 String title = StringEscapeUtils.unescapeHtml(activitiesArray.get(pos - 1).getActiviTitle());
                 detail.setText("\" " + title + " \"");
-            }
-            else {
+            } else {
                 String title = StringEscapeUtils.unescapeHtml(activitiesArray.get(0).getActiviTitle());
                 detail.setText("\" " + title + " \"");
             }
@@ -1258,7 +1392,8 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
                         URLEncoder.encode("tokenId", "UTF-8") + "=" + URLEncoder.encode(tokenId, "UTF-8") + "&" +
                         URLEncoder.encode("androidId", "UTF-8") + "=" + URLEncoder.encode(androidId, "UTF-8") + "&" +
                         URLEncoder.encode("userId", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
-                        URLEncoder.encode("android_build_no", "UTF-8") + "=" + URLEncoder.encode(android_version, "UTF-8");
+                        URLEncoder.encode("android_build_no", "UTF-8") + "=" + URLEncoder.encode(android_version, "UTF-8") + "&" +
+                        URLEncoder.encode("str_user_phone", "UTF-8") + "=" + URLEncoder.encode(userPhone, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);
@@ -1289,7 +1424,35 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         @Override
         protected void onPostExecute(String result) {
             loader.setVisibility(View.GONE);
-            if (!result.equals("{\"result\":null}")) {
+            if (!userrType.equals("Guest"))
+                try {
+                    ArrayList<String> user = new ArrayList<>();
+                    JSONArray array = new JSONObject(result).getJSONArray("UserList");
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject object = array.getJSONObject(i);
+                        user.add(object.getString("tbl_users_id"));
+                    }
+
+                    if (user.size() == 0) {
+                        logout(userPhone);
+                    } else if (user.size() == 1) {
+                        SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, 0).edit();
+                        editor.putString("numberOfUser", "single");
+                        editor.apply();
+                    } else {
+                        SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, 0).edit();
+                        editor.putString("numberOfUser", "multiple");
+                        editor.apply();
+                    }
+
+                    if (!user.contains(userId)) {
+                        logout(userPhone);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            if (!result.contains("\"result\":null")) {
                 try {
                     JSONObject jsonRootObject = new JSONObject(result);
                     getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().
@@ -2248,18 +2411,6 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         MenuItem chat = menu.findItem(R.id.message);
         MenuItem live = menu.findItem(R.id.live_stream);
         MenuItem exam = menu.findItem(R.id.online_exam);
-
-        attendance.setVisible(false);
-        stuAtten.setVisible(false);
-        contact.setVisible(false);
-        myAttendance.setVisible(false);
-        staffLeave.setVisible(false);
-        stuPerformance.setVisible(false);
-        addexam.setVisible(false);
-        enq.setVisible(false);
-        chat.setVisible(false);
-        live.setVisible(false);
-        exam.setVisible(false);
 
         for (int i = 0; i < arrayList.size(); i++) {
             PermissionData data = arrayList.get(i);

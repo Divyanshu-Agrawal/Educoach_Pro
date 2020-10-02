@@ -32,12 +32,10 @@
                 android:id="@+id/iv_achive_img"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/siz5"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/picture"
-                android:background="@drawable/img_desgin"
-                android:padding="@dimen/siz7"/>
+                android:background="@drawable/img_desgin"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

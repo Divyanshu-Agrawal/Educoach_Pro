@@ -135,10 +135,12 @@ public class SubjectiveQuesPaper extends AppCompatActivity {
             submit.setVisibility(View.GONE);
         }
 
-        String url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/subjectiveExam/" + strPdf;
+        String url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/subjectiveExam/exam_" + examId + "/" + strPdf;
         watermark.setText(rollNo);
         watermark.bringToFront();
         setTimer();
+
+        Log.e("pdf url", url);
 
         new Thread(() -> {
             try {
@@ -198,7 +200,7 @@ public class SubjectiveQuesPaper extends AppCompatActivity {
                                 .setNegativeButton("Cancel", null)
                                 .show();
                     } else {
-                        Toast.makeText(this, "File not in supported format, you can only select pdf or image file", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "File not in supported format, you can only select pdf file", Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -298,6 +300,11 @@ public class SubjectiveQuesPaper extends AppCompatActivity {
             String userId = params[2];
             String username = params[3];
             String enroll = params[4];
+
+            Log.e("exam id", examId);
+            Log.e("user", userId);
+            Log.e("name", username);
+            Log.e("enroll", enroll);
 
             try {
                 SSLContext sslContext = SSLContexts.custom().useTLS().build();

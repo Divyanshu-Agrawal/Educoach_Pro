@@ -117,7 +117,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_170sdp"
+                    android:layout_height="@dimen/_150sdp"
                     android:layout_margin="2dp"
                     android:weightSum="2">
 
@@ -134,8 +134,8 @@
 
                             <de.hdodenhof.circleimageview.CircleImageView
                                 android:id="@+id/iv_user_img"
-                                android:layout_width="170dp"
-                                android:layout_height="170dp"
+                                android:layout_width="150dp"
+                                android:layout_height="150dp"
                                 android:layout_centerHorizontal="true"
                                 android:layout_centerVertical="true"
                                 android:layout_marginTop="@dimen/siz10"
@@ -202,64 +202,6 @@
                                 android:text="Student Name : "
                                 android:textColor="@color/text_gray"
                                 android:textSize="16sp" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="5dp"
-                            android:weightSum="2">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tvCLASS"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Batch"
-                                    android:textColor="@color/orange"
-                                    android:textSize="@dimen/siz12" />
-
-                                <TextView
-                                    android:id="@+id/tv_std_class"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="5A"
-                                    android:textColor="@color/text_gray"
-                                    android:textSize="16sp" />
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:visibility="gone">
-
-                                <TextView
-                                    android:id="@+id/tvROLLNO"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Roll Number"
-                                    android:textColor="@color/orange"
-                                    android:textSize="@dimen/siz12" />
-
-
-                                <TextView
-                                    android:id="@+id/tv_std_rollnumber"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="10"
-                                    android:textColor="@color/text_gray"
-                                    android:textSize="16sp" />
-
-                            </LinearLayout>
 
                         </LinearLayout>
 

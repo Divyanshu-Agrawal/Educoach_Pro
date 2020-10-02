@@ -63,7 +63,7 @@ public class UserListAdaptor extends ArrayAdapter<DataBeanStudent> {
 			cardView.setCardBackgroundColor(Color.TRANSPARENT);
 			CircleImageView iv_user_image = v.findViewById(R.id.prof_logo1);
 			tv_user_name.setText(dbItemsDist.getUserName());
-			tv_school_name.setText(dbItemsDist.getUserSchoolName());
+			tv_school_name.setText(dbItemsDist.getUserSection());
 			SharedPreferences settings = v.getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 			SharedPreferences settingsColor = context.getSharedPreferences(PREF_COLOR, 0);
 

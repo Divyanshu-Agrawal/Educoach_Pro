@@ -173,6 +173,12 @@ public class GetHelp extends AppCompatActivity {
             String device = android.os.Build.DEVICE;
             String model = android.os.Build.MODEL;
             String product = android.os.Build.PRODUCT;
+            String show_admin;
+            if (getSharedPreferences(PREFS_NAME, 0).getString("userID", "").equals("0")) {
+                show_admin = "0";
+            } else {
+                show_admin = "1";
+            }
 
             try {
                 SSLContext sslContext = SSLContexts.custom().useTLS().build();
@@ -191,6 +197,7 @@ public class GetHelp extends AppCompatActivity {
                 entityBuilder.addTextBody("message", "[Help] : " + userMsg);
                 entityBuilder.addTextBody("institute_nm", SCHOOL_NAME);
                 entityBuilder.addTextBody("app_nm", appNm);
+                entityBuilder.addTextBody("show_to_admin", show_admin);
                 entityBuilder.addTextBody("app_info", "Version : " + BuildConfig.VERSION_NAME +
                         " Android : " + sdk + " Product : " + product + " Device : " + device + " Model : " + model + " Package : " + getPackageName());
                 HttpEntity entity = entityBuilder.build();

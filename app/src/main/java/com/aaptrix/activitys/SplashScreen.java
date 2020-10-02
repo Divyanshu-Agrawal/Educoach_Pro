@@ -96,8 +96,9 @@ public class SplashScreen extends Activity {
     TextView mainTxt, version;
     String currentVersion, schoolId, roleId, user_token_id, android_id, userId, userType, priority, userSection, userPhone;
     public static String HTTP_HOST = "https://dashboard.educoachapp.com/android_services/";
+//    public static String HTTP_HOST = "https://stage.educoachapp.com/android_services/";
     public static String SENDER_ID = BuildConfig.SENDER_ID;
-	public static final String SCHOOL_ID = BuildConfig.SCHOOL_ID;
+    public static final String SCHOOL_ID = BuildConfig.SCHOOL_ID;
     public static final String SCHOOL_NAME = BuildConfig.SCHOOL_NAME;
     public static final String TNC = BuildConfig.TNC;
     CountDownTimer mTimer;
@@ -142,11 +143,10 @@ public class SplashScreen extends Activity {
         roleId = settings.getString("str_role_id", "");
         schoolId = settings.getString("str_school_id", "0");
         userId = settings.getString("userID", "");
-        userType = settings.getString("userrType", "");
+        userType = settings.getString("userrType", "Guest");
         userSection = settings.getString("userSection", "");
         userPhone = settings.getString("userPhone", "");
- 
-        settings.getString("token", "");
+
         user_token_id = settings.getString("token", "");
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -158,7 +158,7 @@ public class SplashScreen extends Activity {
             } else {
                 id = roleId;
             }
-            b.execute(id, schoolId, user_token_id, android_id, userId);
+            b.execute(id, schoolId, user_token_id, android_id, userId, userPhone);
             if (!userType.equals("Student")) {
                 GetAllBatches b1 = new GetAllBatches(this);
                 b1.execute(schoolId);
@@ -493,6 +493,7 @@ public class SplashScreen extends Activity {
             String tokenId = params[2];
             String androidId = params[3];
             String userId = params[4];
+            String phone = params[5];
             String android_version = String.valueOf(BuildConfig.VERSION_CODE);
             String data;
 
@@ -511,7 +512,8 @@ public class SplashScreen extends Activity {
                         URLEncoder.encode("tokenId", "UTF-8") + "=" + URLEncoder.encode(tokenId, "UTF-8") + "&" +
                         URLEncoder.encode("androidId", "UTF-8") + "=" + URLEncoder.encode(androidId, "UTF-8") + "&" +
                         URLEncoder.encode("userId", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
-                        URLEncoder.encode("android_build_no", "UTF-8") + "=" + URLEncoder.encode(android_version, "UTF-8");
+                        URLEncoder.encode("android_build_no", "UTF-8") + "=" + URLEncoder.encode(android_version, "UTF-8") + "&" +
+                        URLEncoder.encode("str_user_phone", "UTF-8") + "=" + URLEncoder.encode(phone, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);
@@ -541,7 +543,35 @@ public class SplashScreen extends Activity {
 
         @Override
         protected void onPostExecute(String result) {
-            if (result != null && !result.equals("{\"result\":null}")) {
+            if (!userType.equals("Guest"))
+                try {
+                    ArrayList<String> user = new ArrayList<>();
+                    JSONArray array = new JSONObject(result).getJSONArray("UserList");
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject object = array.getJSONObject(i);
+                        user.add(object.getString("tbl_users_id"));
+                    }
+
+                    if (user.size() == 0) {
+                        logout(userPhone);
+                    } else if (user.size() == 1) {
+                        SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, 0).edit();
+                        editor.putString("numberOfUser", "single");
+                        editor.apply();
+                    } else {
+                        SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, 0).edit();
+                        editor.putString("numberOfUser", "multiple");
+                        editor.apply();
+                    }
+
+                    if (!user.contains(userId)) {
+                        logout(userPhone);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            if (result != null && !result.contains("\"result\":null")) {
                 try {
                     JSONObject jsonRootObject = new JSONObject(result);
                     cacheJson(jsonRootObject, "instituteBuzz");

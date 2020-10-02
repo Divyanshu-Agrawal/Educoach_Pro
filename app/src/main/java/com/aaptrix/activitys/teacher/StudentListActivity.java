@@ -80,7 +80,6 @@ public class StudentListActivity extends AppCompatActivity {
 	TextView tool_title, tv_logout_text;
 	ImageView logoutImg;
 	String userLoginId, userName, userImg, userrType, userPassword, userSchoolLogo;
-	String userSchoolId;
 	private SwipeRefreshLayout mSwipeRefreshLayout;
 	//
 	ListView studentList;
@@ -421,7 +420,8 @@ public class StudentListActivity extends AppCompatActivity {
 						URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(schoolId, "UTF-8") + "&" +
 						URLEncoder.encode("section_name", "UTF-8") + "=" + URLEncoder.encode(stdSection, "UTF-8") + "&" +
 						URLEncoder.encode("current_date", "UTF-8") + "=" + URLEncoder.encode(formattedDate1, "UTF-8") + "&" +
-						URLEncoder.encode("subjectNm", "UTF-8") + "=" + URLEncoder.encode(subject, "UTF-8");
+						URLEncoder.encode("subjectNm", "UTF-8") + "=" + URLEncoder.encode(subject, "UTF-8") + "&" +
+						URLEncoder.encode("attandance_type", "UTF-8") + "=" + URLEncoder.encode("offline_attandance", "UTF-8");
 				outputStream.write(data.getBytes());
 				
 				bufferedWriter.write(data);

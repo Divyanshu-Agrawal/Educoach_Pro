@@ -22,6 +22,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission
         android:name="android.permission.INTERNET"
         android:required="false" />
@@ -34,6 +35,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission
         android:name="android.permission.ACCESS_FINE_LOCATION"
         android:required="false" />
@@ -57,7 +59,6 @@
         android:icon="${appIcon}"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:requestLegacyExternalStorage="true"
         android:roundIcon="${appIconRound}"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
@@ -65,7 +66,13 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="android:icon, android:theme">
-        <activity android:name=".activitys.student.SubjectExamView"></activity>
+        <activity android:name=".activitys.student.StudyVideo"></activity>
+        <activity android:name=".activitys.student.OfflineMaterialView" />
+        <activity android:name=".activitys.student.OfflineMaterial" />
+        <activity android:name=".activitys.student.OfflineVideosPlay" />
+        <activity android:name=".activitys.student.OfflineSubjects" />
+        <activity android:name=".activitys.student.OfflineVideos" />
+        <activity android:name=".activitys.student.SubjectExamView" />
         <activity
             android:name=".activitys.student.VideoByTag"
             android:configChanges="orientation|screenSize|layoutDirection"

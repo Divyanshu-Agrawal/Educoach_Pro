@@ -266,11 +266,7 @@ public class StudentAttendanceListAdaptor extends ArrayAdapter<DataBeanStudent> 
 
 	@Override
 	public int getViewTypeCount() {
-		if (getCount() < 1) {
-			return 1;
-		} else {
-			return getCount();
-		}
+		return Math.max(getCount(), 1);
 	}
 
 	@Override

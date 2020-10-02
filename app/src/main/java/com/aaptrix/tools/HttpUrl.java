@@ -134,4 +134,7 @@ public class HttpUrl implements Serializable {
     public static final String STUDENT_VIDEO = HTTP_HOST + "study_video_material/all_school_studyVideos_limit10.php?tokenvalue=" + tokenvalue;
     public static final String VIDEO_TOTAL_TIME = HTTP_HOST + "study_video_material/add_study_video_total_time.php";
     public static final String VIDEO_SEEN_TIME = HTTP_HOST + "study_video_material/add_study_video_seen_time.php";
+    public static final String OFFLINE_VIDEOS = HTTP_HOST + "downloadable_videos/all_school_downloadableVideos.php";
+    public static final String LIVE_ATTENDANCE = HTTP_HOST + "live_streaming/students_list_live_streaming_attandance.php";
+    public static final String SUBMIT_LIVE_ATTENDANCE = HTTP_HOST + "live_streaming/submit_live_streaming_attendance.php";
 }

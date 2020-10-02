@@ -305,6 +305,10 @@ public class AddNewVideo extends AppCompatActivity {
                 Toast.makeText(this, "Please Select Batch", Toast.LENGTH_SHORT).show();
             } else if (selsubject.equals("Select Subject")) {
                 Toast.makeText(this, "Please Select Subject", Toast.LENGTH_SHORT).show();
+            } else if (strStart.equals("0000-00-00")) {
+                Toast.makeText(this, "Please select start date", Toast.LENGTH_SHORT).show();
+            } else if (strstartTime.equals("00:00:00")) {
+                Toast.makeText(this, "Please select start time", Toast.LENGTH_SHORT).show();
             } else {
                 layout.setVisibility(View.VISIBLE);
                 layout.bringToFront();
@@ -423,6 +427,14 @@ public class AddNewVideo extends AppCompatActivity {
                     strCourse = course_id[i];
                     GetAllBatches getAllBatches = new GetAllBatches(AddNewVideo.this);
                     getAllBatches.execute(course_id[i]);
+                } else {
+                    studentArray.clear();
+                    if (batchListAdaptor != null)
+                        batchListAdaptor.notifyDataSetChanged();
+                    subject_array.clear();
+                    ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(AddNewVideo.this, R.layout.spinner_list_item1, subject_array);
+                    dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
+                    subject_spinner.setAdapter(dataAdapter1);
                 }
             }
 

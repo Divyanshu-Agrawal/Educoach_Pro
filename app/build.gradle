@@ -31,6 +31,10 @@ android {
                 variant.outputs.each { output ->
                     output.outputFileName = "Giri Tutorials " + versionName + ".apk"
                 }
+            } else if (variant.productFlavors[0].name == "demo_test_institute") {
+                variant.outputs.each { output ->
+                    output.outputFileName = "Test Institute Stage " + versionName + ".apk"
+                }
             }
         }
     }
@@ -92,8 +96,24 @@ android {
                     appIcon: "@mipmap/ic_launcher",
                     appIconRound: "@mipmap/ic_launcher_round"
             ]
-            versionCode 12
-            versionName "v2.0.3"
+            versionCode 15
+            versionName "v4.0.0"
+            signingConfig signingConfigs.demo
+        }
+
+        demo_test_institute {
+            dimension "default"
+            applicationId "com.aaptrix.dashtest"
+            buildConfigField "String", "SCHOOL_ID", "\"31\""
+            buildConfigField "String", "SCHOOL_NAME", "\"Test Institute\""
+            buildConfigField "String", "SENDER_ID", "\"EDCACH\""
+            buildConfigField "String", "TNC", "\"https://dashboard.educoachapp.com/policies/terms.html\""
+            manifestPlaceholders = [
+                    appIcon: "@mipmap/ic_launcher",
+                    appIconRound: "@mipmap/ic_launcher_round"
+            ]
+            versionCode 1
+            versionName "v1.0.0"
             signingConfig signingConfigs.demo
         }
 
@@ -108,8 +128,8 @@ android {
                     appIcon: "@mipmap/ic_launcher",
                     appIconRound: "@mipmap/ic_launcher_round"
             ]
-            versionCode 40
-            versionName "v3.0.3"
+            versionCode 43
+            versionName "v4.0.0"
             signingConfig signingConfigs.npc
         }
 
@@ -124,8 +144,8 @@ android {
                     appIcon: "@mipmap/ic_launcher",
                     appIconRound: "@mipmap/ic_launcher_round"
             ]
-            versionCode 9
-            versionName "v2.0.2"
+            versionCode 12
+            versionName "v4.0.0"
             signingConfig signingConfigs.excel
         }
 
@@ -140,8 +160,8 @@ android {
                     appIcon: "@mipmap/ic_launcher",
                     appIconRound: "@mipmap/ic_launcher_round"
             ]
-            versionCode 14
-            versionName "v2.0.1"
+            versionCode 17
+            versionName "v2.0.4"
             signingConfig signingConfigs.scoremax
         }
 
@@ -156,8 +176,8 @@ android {
                     appIcon: "@mipmap/ic_launcher",
                     appIconRound: "@mipmap/ic_launcher_round"
             ]
-            versionCode 9
-            versionName "v2.0.1"
+            versionCode 12
+            versionName "v2.0.4"
             signingConfig signingConfigs.giri
         }
 
@@ -172,8 +192,8 @@ android {
                     appIcon: "@mipmap/ic_launcher",
                     appIconRound: "@mipmap/ic_launcher_round"
             ]
-            versionCode 1
-            versionName "1.0.0"
+            versionCode 4
+            versionName "v1.0.3"
             signingConfig signingConfigs.badala
         }
     }
@@ -205,7 +225,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:17.5.0'
     implementation 'com.google.firebase:firebase-messaging:20.2.4'
     implementation 'com.google.firebase:firebase-iid:20.2.4'
-    implementation 'com.google.firebase:firebase-auth:19.3.2'
+    implementation 'com.google.firebase:firebase-auth:19.4.0'
     implementation 'com.google.firebase:firebase-database:19.4.0'
     implementation 'com.google.firebase:firebase-storage:19.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
@@ -227,13 +247,13 @@ dependencies {
     implementation 'com.intuit.sdp:sdp-android:1.0.5'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'com.google.android.material:material:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
     implementation files('libs/GenAsync.1.2.jar')
     implementation 'com.firebaseui:firebase-ui-database:2.3.0'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.github.bumptech.glide:glide:4.10.0'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.1'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.github.prolificinteractive:material-calendarview:1.6.0'

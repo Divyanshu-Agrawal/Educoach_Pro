@@ -69,6 +69,7 @@ public class SubjectiveExamResult extends AppCompatActivity {
     CardView quesLayout, ansLayout, userAnsLayout, correctAnsLayout;
     WebView quesPreview, ansPreview, userAnsPreview, correctAnsPreview;
     ImageView viewQues, viewAns, viewUserAns, viewCorrectAns, downloadQues, downloadAns, downloadUserAns, downloadCorrectAns;
+    TextView quesTitle, ansTitle, userAnsTitle, correctAnsTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,10 @@ public class SubjectiveExamResult extends AppCompatActivity {
         marks = findViewById(R.id.marks);
         layout = findViewById(R.id.layout);
         noAnswer = findViewById(R.id.no_answer);
+        quesTitle = findViewById(R.id.ques_title);
+        ansTitle = findViewById(R.id.ans_title);
+        userAnsTitle = findViewById(R.id.user_ans_title);
+        correctAnsTitle = findViewById(R.id.correct_ans_title);
 
         quesLayout = findViewById(R.id.ques_paper_layout);
         ansLayout = findViewById(R.id.ans_layout);
@@ -109,7 +114,7 @@ public class SubjectiveExamResult extends AppCompatActivity {
         downloadUserAns = findViewById(R.id.download_user_ans);
 
         tool_title.setText(getIntent().getStringExtra("examName"));
-        registerReceiver(onDownloadComplete,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         id = getIntent().getStringExtra("id");
 
@@ -155,6 +160,10 @@ public class SubjectiveExamResult extends AppCompatActivity {
             String userId = params[2];
             String data;
 
+            Log.e("exam", exam_id);
+            Log.e("user", userId);
+            Log.e("sch", school_id);
+
             try {
 
                 URL url = new URL(SUBJECTIVE_RESULT);
@@ -198,6 +207,7 @@ public class SubjectiveExamResult extends AppCompatActivity {
         @SuppressLint("SetTextI18n")
         @Override
         protected void onPostExecute(String result) {
+            Log.e("res", result);
             if (!result.contains("{\"UserResult\":null}")) {
                 try {
                     JSONObject jsonObject = new JSONObject(result);
@@ -233,31 +243,32 @@ public class SubjectiveExamResult extends AppCompatActivity {
             quesLayout.setVisibility(View.GONE);
         else {
             quesLayout.setVisibility(View.VISIBLE);
-            quesPreview.loadUrl("https://docs.google.com/viewerng/viewer?url=" + url + strpdf);
+            quesPreview.setVisibility(View.VISIBLE);
+            quesPreview.loadUrl("https://docs.google.com/viewerng/viewer?url=" + url + strpdf.replace(" ", "%20"));
         }
 
-        Log.e("ans", strAnsPdf);
         if (strAnsPdf.equals("0"))
             ansLayout.setVisibility(View.GONE);
         else {
             ansLayout.setVisibility(View.VISIBLE);
+            ansPreview.setVisibility(View.VISIBLE);
             ansPreview.loadUrl("https://docs.google.com/viewerng/viewer?url=" + url + strAnsPdf);
         }
 
-        Log.e("user", strUserAnsPdf);
         if (strUserAnsPdf.equals("0"))
             userAnsLayout.setVisibility(View.GONE);
         else {
             userAnsLayout.setVisibility(View.VISIBLE);
-            userAnsPreview.loadUrl("https://docs.google.com/viewerng/viewer?url=" + url + strUserAnsPdf);
+            userAnsPreview.setVisibility(View.VISIBLE);
+            userAnsPreview.loadUrl("https://docs.google.com/viewerng/viewer?url=" + url + "answerSheet/" + strUserAnsPdf);
         }
 
-        Log.e("correct", strCorrectPdf);
         if (strCorrectPdf.equals("0"))
             correctAnsLayout.setVisibility(View.GONE);
         else {
             correctAnsLayout.setVisibility(View.VISIBLE);
-            correctAnsPreview.loadUrl("https://docs.google.com/viewerng/viewer?url=" + url + strCorrectPdf);
+            correctAnsPreview.setVisibility(View.VISIBLE);
+            correctAnsPreview.loadUrl("https://docs.google.com/viewerng/viewer?url=" + url + "checkedAnswerSheet/" + strCorrectPdf);
         }
 
         if (strDownloadAns.equals("0"))
@@ -280,7 +291,7 @@ public class SubjectiveExamResult extends AppCompatActivity {
 
         viewUserAns.setOnClickListener(v -> {
             Intent intent = new Intent(this, SubjectExamView.class);
-            intent.putExtra("url", url + strUserAnsPdf);
+            intent.putExtra("url", url + "answerSheet/" + strUserAnsPdf);
             intent.putExtra("download", "1");
             intent.putExtra("type", "Uploaded Answer Sheet");
             startActivity(intent);
@@ -296,54 +307,42 @@ public class SubjectiveExamResult extends AppCompatActivity {
 
         viewCorrectAns.setOnClickListener(v -> {
             Intent intent = new Intent(this, SubjectExamView.class);
-            intent.putExtra("url", url + strCorrectPdf);
+            intent.putExtra("url", url + "checkedAnswerSheet/" + strCorrectPdf);
             intent.putExtra("download", "1");
             intent.putExtra("type", "Checked Answer Sheet");
             startActivity(intent);
         });
 
-        quesPreview.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                Intent intent = new Intent(this, SubjectExamView.class);
-                intent.putExtra("url", url + strpdf);
-                intent.putExtra("download", strDownloadQues);
-                intent.putExtra("type", "Question Paper");
-                startActivity(intent);
-            }
-            return false;
+        quesTitle.setOnClickListener((v) -> {
+            Intent intent = new Intent(this, SubjectExamView.class);
+            intent.putExtra("url", url + strpdf);
+            intent.putExtra("download", strDownloadQues);
+            intent.putExtra("type", "Question Paper");
+            startActivity(intent);
         });
 
-        userAnsPreview.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                Intent intent = new Intent(this, SubjectExamView.class);
-                intent.putExtra("url", url + strUserAnsPdf);
-                intent.putExtra("download", "1");
-                intent.putExtra("type", "Uploaded Answer Sheet");
-                startActivity(intent);
-            }
-            return false;
+        userAnsTitle.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SubjectExamView.class);
+            intent.putExtra("url", url + "answerSheet/" + strUserAnsPdf);
+            intent.putExtra("download", "1");
+            intent.putExtra("type", "Uploaded Answer Sheet");
+            startActivity(intent);
         });
 
-        ansPreview.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                Intent intent = new Intent(this, SubjectExamView.class);
-                intent.putExtra("url", url + strAnsPdf);
-                intent.putExtra("download", strDownloadAns);
-                intent.putExtra("type", "Answer Sheet");
-                startActivity(intent);
-            }
-            return false;
+        ansTitle.setOnClickListener((v) -> {
+            Intent intent = new Intent(this, SubjectExamView.class);
+            intent.putExtra("url", url + strAnsPdf);
+            intent.putExtra("download", strDownloadAns);
+            intent.putExtra("type", "Answer Sheet");
+            startActivity(intent);
         });
 
-        correctAnsPreview.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                Intent intent = new Intent(this, SubjectExamView.class);
-                intent.putExtra("url", url + strCorrectPdf);
-                intent.putExtra("download", "1");
-                intent.putExtra("type", "Checked Answer Sheet");
-                startActivity(intent);
-            }
-            return false;
+        correctAnsTitle.setOnClickListener((v) -> {
+            Intent intent = new Intent(this, SubjectExamView.class);
+            intent.putExtra("url", url + "checkedAnswerSheet/" + strCorrectPdf);
+            intent.putExtra("download", "1");
+            intent.putExtra("type", "Checked Answer Sheet");
+            startActivity(intent);
         });
 
         downloadQues.setOnClickListener(v -> {
@@ -449,7 +448,7 @@ public class SubjectiveExamResult extends AppCompatActivity {
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setDestinationInExternalPublicDir(path, url);
         request.allowScanningByMediaScanner();
-        DownloadManager downloadManager= (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         assert downloadManager != null;
         downloadID = downloadManager.enqueue(request);
     }

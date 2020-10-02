@@ -15,6 +15,13 @@
         android:id="@+id/fullscr_pdf"
         android:visibility="gone"/>
 
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/progress_bar"
+        android:visibility="gone"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

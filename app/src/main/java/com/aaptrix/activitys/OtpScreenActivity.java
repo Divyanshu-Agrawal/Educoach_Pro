@@ -106,13 +106,11 @@ public class OtpScreenActivity extends Activity {
     private FirebaseAuth mAuth;
     private DatabaseReference storeUserDefaultDataReference;
     private ProgressDialog loadingBar;
-    PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallback;
-
-    CountDownTimer countDownTimer;
-    boolean sendcomp = false;
+    String deviceID;
     private String imageUrl;
     TextView version, troubleOtp;
 
+    @SuppressLint("HardwareIds")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,6 +127,8 @@ public class OtpScreenActivity extends Activity {
         version.setText("Version " + BuildConfig.VERSION_NAME);
         mp = MediaPlayer.create(this, R.raw.button_click);
         mAuth = FirebaseAuth.getInstance();
+
+        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         troubleOtp.setOnClickListener(v -> {
             Intent intent = new Intent(this, TroubleFAQ.class);
@@ -397,6 +397,9 @@ public class OtpScreenActivity extends Activity {
                             dbs.setInstStatus(jsonObject.getString("tbl_school_status"));
                             dbs.setUniqueId(jsonObject.getString("sch_unique_id"));
                             dbs.setRestricted(jsonObject.getString("restricted_access"));
+                            dbs.setStudentDevice(jsonObject.getString("student_device_id"));
+                            dbs.setParentDevice(jsonObject.getString("parent_device_id"));
+                            dbs.setDeviceLock(jsonObject.getString("androidid_lock_permission"));
                             dbs.setUserID(userID);
                             dbs.setUserrType(userrType);
                             dbs.setUserLoginId(userLoginId);
@@ -460,70 +463,82 @@ public class OtpScreenActivity extends Activity {
         if (status.equals("1")) {
             switch (userrType) {
                 case "Student":
-                    if (status.equalsIgnoreCase("1")) {
-                        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                        SharedPreferences.Editor editor = settings.edit();
-                        editor.putString("logged", "logged");
-                        editor.putString("userID", userID);
-                        editor.putString("userLoginId", userLoginId);
-                        editor.putString("userName", userName);
-                        editor.putString("userPhone", userPhone);
-                        editor.putString("userEmailId", userEmailId);
-                        editor.putString("userDob", userDob);
-                        editor.putString("userGender", userGender);
-                        editor.putString("userImg", userImg);
-                        editor.putString("userPhoneStatus", userPhoneStatus);
-                        editor.putString("userrType", userrType);
-                        editor.putString("userPassword", userPassword);
-                        editor.putString("userClass", str_class);
-                        editor.putString("userSection", str_section);
-                        editor.putString("userRollNumber", str_roll_number);
-                        editor.putString("userTeacherName", str_teacher_name);
-                        editor.putString("userSchoolId", userSchoolId);
-                        editor.putString("url", imageUrl + userSchoolId);
-                        editor.putString("userSchoolLogo", userSchoolSchoolLogo);
-                        editor.putString("userSchoolLogo1", userSchoolSchoolLogo1);
-                        editor.putString("userSchoolLogo3", userSchoolSchoolLogo3);
-
-                        editor.putString("parentStatus", studentArray.get(0).getParentStatus());
-                        editor.putString("parentPhone", studentArray.get(0).getParentPhone());
-                        editor.putString("parentPassword", studentArray.get(0).getParentPassword());
-                        editor.putString("unique_id", studentArray.get(0).getUniqueId());
-                        editor.putString("restricted", studentArray.get(0).getRestricted());
-
-                        editor.putString("numberOfUser", "single");
-
-                        //
-                        editor.putString("str_school_id", userSchoolId);
-                        editor.putString("str_role_id", userSchoolRoleId);
-                        editor.putString("userSchoolName", userSchoolName);
-                        editor.putString("userSchoolRoleName", userSchoolRoleName);
-                        editor.commit();
-
-                        //color set
-                        SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
-                        SharedPreferences.Editor editorColor = settingsColor.edit();
-                        editorColor.putString("tool", selToolColor);
-                        editorColor.putString("drawer", selDrawerColor);
-                        editorColor.putString("status", selStatusColor);
-                        editorColor.putString("text1", selTextColor1);
-                        editorColor.putString("text2", selTextColor2);
-                        editorColor.commit();
-                        Intent i = new Intent(OtpScreenActivity.this, WelcomeActivity.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(i);
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                        finish();
-
-
+                    String studentId, parentId;
+                    if (studentArray.get(0).getDeviceLock().equals("0")) {
+                        studentId = "0";
+                        parentId = "0";
                     } else {
-                        Intent i = new Intent(OtpScreenActivity.this, MobileNumberActivity.class);
-                        i.putExtra("userID", this.userID);
-                        i.putExtra("userPhone", userPhone);
-                        startActivity(i);
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                        //Toast.makeText(OtpScreenActivity.this, "Otp verification needed", Toast.LENGTH_SHORT).show();
+                        studentId = studentArray.get(0).getStudentDevice();
+                        parentId = studentArray.get(0).getParentDevice();
+                    }
+                    if (studentId.equals(deviceID) || studentId.equals("0") || parentId.equals(deviceID) || parentId.equals("0") || studentId.equals("") || parentId.equals("")) {
+                        if (status.equalsIgnoreCase("1")) {
+                            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putString("logged", "logged");
+                            editor.putString("userID", userID);
+                            editor.putString("userLoginId", userLoginId);
+                            editor.putString("userName", userName);
+                            editor.putString("userPhone", userPhone);
+                            editor.putString("userEmailId", userEmailId);
+                            editor.putString("userDob", userDob);
+                            editor.putString("userGender", userGender);
+                            editor.putString("userImg", userImg);
+                            editor.putString("userPhoneStatus", userPhoneStatus);
+                            editor.putString("userrType", userrType);
+                            editor.putString("userPassword", userPassword);
+                            editor.putString("userClass", str_class);
+                            editor.putString("userSection", str_section);
+                            editor.putString("userRollNumber", str_roll_number);
+                            editor.putString("userTeacherName", str_teacher_name);
+                            editor.putString("userSchoolId", userSchoolId);
+                            editor.putString("url", imageUrl + userSchoolId);
+                            editor.putString("userSchoolLogo", userSchoolSchoolLogo);
+                            editor.putString("userSchoolLogo1", userSchoolSchoolLogo1);
+                            editor.putString("userSchoolLogo3", userSchoolSchoolLogo3);
 
+                            editor.putString("parentStatus", studentArray.get(0).getParentStatus());
+                            editor.putString("parentPhone", studentArray.get(0).getParentPhone());
+                            editor.putString("parentPassword", studentArray.get(0).getParentPassword());
+                            editor.putString("unique_id", studentArray.get(0).getUniqueId());
+                            editor.putString("restricted", studentArray.get(0).getRestricted());
+
+                            editor.putString("numberOfUser", "single");
+
+                            //
+                            editor.putString("str_school_id", userSchoolId);
+                            editor.putString("str_role_id", userSchoolRoleId);
+                            editor.putString("userSchoolName", userSchoolName);
+                            editor.putString("userSchoolRoleName", userSchoolRoleName);
+                            editor.commit();
+
+                            //color set
+                            SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
+                            SharedPreferences.Editor editorColor = settingsColor.edit();
+                            editorColor.putString("tool", selToolColor);
+                            editorColor.putString("drawer", selDrawerColor);
+                            editorColor.putString("status", selStatusColor);
+                            editorColor.putString("text1", selTextColor1);
+                            editorColor.putString("text2", selTextColor2);
+                            editorColor.commit();
+                            Intent i = new Intent(OtpScreenActivity.this, WelcomeActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(i);
+                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            finish();
+
+
+                        } else {
+                            Intent i = new Intent(OtpScreenActivity.this, MobileNumberActivity.class);
+                            i.putExtra("userID", this.userID);
+                            i.putExtra("userPhone", userPhone);
+                            startActivity(i);
+                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            //Toast.makeText(OtpScreenActivity.this, "Otp verification needed", Toast.LENGTH_SHORT).show();
+
+                        }
+                    } else {
+                        Toast.makeText(this, "Device is not registered for this account", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case "Teacher":
@@ -693,65 +708,78 @@ public class OtpScreenActivity extends Activity {
                 userSchoolName1 = studentArray.get(position).getUserSchoolName();
                 userSchoolRoleName1 = studentArray.get(position).getUserSchoolRoleName();
 
+                String studentId, parentId;
+                if (studentArray.get(position).getDeviceLock().equals("0")) {
+                    studentId = "0";
+                    parentId = "0";
+                } else {
+                    studentId = studentArray.get(position).getStudentDevice();
+                    parentId = studentArray.get(position).getParentDevice();
+                }
+
                 switch (userrType1) {
                     case "Student":
-                        if (status.equalsIgnoreCase("1")) {
-                            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                            SharedPreferences.Editor editor = settings.edit();
-                            editor.putString("logged", "logged");
-                            editor.putString("userID", userID1);
-                            editor.putString("userLoginId", userLoginId1);
-                            editor.putString("userName", userName1);
-                            editor.putString("userPhone", userPhone1);
-                            editor.putString("userEmailId", userEmailId1);
-                            editor.putString("userDob", userDob1);
-                            editor.putString("userGender", userGender1);
-                            editor.putString("userImg", userImg1);
-                            editor.putString("userPhoneStatus", userPhoneStatus1);
-                            editor.putString("userrType", userrType1);
-                            editor.putString("userPassword", userPassword1);
-                            editor.putString("userSection", str_section1);
-                            editor.putString("userRollNumber", str_roll_number1);
-                            editor.putString("userTeacherName", str_teacher_name1);
-                            editor.putString("userSchoolId", userSchoolId1);
-                            editor.putString("url", imageUrl + userSchoolId1);
-                            editor.putString("userSchoolLogo", userSchoolSchoolLogo11);
-                            editor.putString("userSchoolLogo1", userSchoolSchoolLogo12);
-                            editor.putString("userSchoolLogo3", userSchoolSchoolLogo13);
-                            editor.putString("numberOfUser", "multiple");
-                            editor.putString("parentStatus", studentArray.get(position).getParentStatus());
-                            editor.putString("parentPhone", studentArray.get(position).getParentPhone());
-                            editor.putString("parentPassword", studentArray.get(position).getParentPassword());
-                            editor.putString("unique_id", studentArray.get(position).getUniqueId());
-                            editor.putString("restricted", studentArray.get(position).getRestricted());
-                            //
-                            editor.putString("userSchoolName", userSchoolName1);
-                            editor.putString("userSchoolRoleName", userSchoolRoleName1);
-                            editor.putString("str_school_id", userSchoolId1);
-                            editor.putString("str_role_id", userSchoolRoleId1);
-                            editor.commit();
+                        if (studentId.equals(deviceID) || studentId.equals("0") || parentId.equals(deviceID) || parentId.equals("0") || studentId.equals("") || parentId.equals("")) {
+                            if (status.equalsIgnoreCase("1")) {
+                                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                                SharedPreferences.Editor editor = settings.edit();
+                                editor.putString("logged", "logged");
+                                editor.putString("userID", userID1);
+                                editor.putString("userLoginId", userLoginId1);
+                                editor.putString("userName", userName1);
+                                editor.putString("userPhone", userPhone1);
+                                editor.putString("userEmailId", userEmailId1);
+                                editor.putString("userDob", userDob1);
+                                editor.putString("userGender", userGender1);
+                                editor.putString("userImg", userImg1);
+                                editor.putString("userPhoneStatus", userPhoneStatus1);
+                                editor.putString("userrType", userrType1);
+                                editor.putString("userPassword", userPassword1);
+                                editor.putString("userSection", str_section1);
+                                editor.putString("userRollNumber", str_roll_number1);
+                                editor.putString("userTeacherName", str_teacher_name1);
+                                editor.putString("userSchoolId", userSchoolId1);
+                                editor.putString("url", imageUrl + userSchoolId1);
+                                editor.putString("userSchoolLogo", userSchoolSchoolLogo11);
+                                editor.putString("userSchoolLogo1", userSchoolSchoolLogo12);
+                                editor.putString("userSchoolLogo3", userSchoolSchoolLogo13);
+                                editor.putString("numberOfUser", "multiple");
+                                editor.putString("parentStatus", studentArray.get(position).getParentStatus());
+                                editor.putString("parentPhone", studentArray.get(position).getParentPhone());
+                                editor.putString("parentPassword", studentArray.get(position).getParentPassword());
+                                editor.putString("unique_id", studentArray.get(position).getUniqueId());
+                                editor.putString("restricted", studentArray.get(position).getRestricted());
+                                //
+                                editor.putString("userSchoolName", userSchoolName1);
+                                editor.putString("userSchoolRoleName", userSchoolRoleName1);
+                                editor.putString("str_school_id", userSchoolId1);
+                                editor.putString("str_role_id", userSchoolRoleId1);
+                                editor.commit();
 
-                            //color set
-                            SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
-                            SharedPreferences.Editor editorColor = settingsColor.edit();
-                            editorColor.putString("tool", selToolColor1);
-                            editorColor.putString("drawer", selDrawerColor1);
-                            editorColor.putString("status", selStatusColor1);
-                            editorColor.putString("text1", selTextColor11);
-                            editorColor.putString("text2", selTextColor22);
-                            editorColor.commit();
+                                //color set
+                                SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
+                                SharedPreferences.Editor editorColor = settingsColor.edit();
+                                editorColor.putString("tool", selToolColor1);
+                                editorColor.putString("drawer", selDrawerColor1);
+                                editorColor.putString("status", selStatusColor1);
+                                editorColor.putString("text1", selTextColor11);
+                                editorColor.putString("text2", selTextColor22);
+                                editorColor.commit();
 
-                            Intent i1 = new Intent(OtpScreenActivity.this, WelcomeActivity.class);
-                            i1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(i1);
-                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                            finish();
+                                Intent i1 = new Intent(OtpScreenActivity.this, WelcomeActivity.class);
+                                i1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(i1);
+                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                                finish();
+                            } else {
+                                Intent i = new Intent(OtpScreenActivity.this, MobileNumberActivity.class);
+                                i.putExtra("userID", userID1);
+                                i.putExtra("userPhone", userPhone1);
+                                startActivity(i);
+                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            }
                         } else {
-                            Intent i = new Intent(OtpScreenActivity.this, MobileNumberActivity.class);
-                            i.putExtra("userID", userID1);
-                            i.putExtra("userPhone", userPhone1);
-                            startActivity(i);
-                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            Toast.makeText(this, "Device is not registered for this account", Toast.LENGTH_SHORT).show();
                         }
                         break;
                     case "Teacher":
