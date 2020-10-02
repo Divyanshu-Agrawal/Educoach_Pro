@@ -118,6 +118,7 @@ public class AppLogin extends AppCompatActivity {
     AlertDialog dialog;
     TextView tc, ts, pv, version;
     MediaPlayer mp;
+    String deviceID;
     TextView troubleProceed, troubleLogin, troubleRegister;
 
     @SuppressLint("SetTextI18n")
@@ -143,6 +144,8 @@ public class AppLogin extends AppCompatActivity {
         troubleLogin = findViewById(R.id.trouble_login);
         troubleProceed = findViewById(R.id.trouble_proceed);
         troubleRegister = findViewById(R.id.trouble_register);
+
+        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         login.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus)
@@ -270,7 +273,6 @@ public class AppLogin extends AppCompatActivity {
                 handler.post(() -> {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        Log.e("res", result);
                         if (result.contains("\"Users\":null")) {
                             JSONObject parent = jsonObject.getJSONObject("Parent");
                             userRole = "Parent";
@@ -791,6 +793,7 @@ public class AppLogin extends AppCompatActivity {
                         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
                         SharedPreferences.Editor editor = settings.edit();
                         editor.putString("imageUrl", imageUrl);
+                        editor.putString("video_key", jsonRootObject.getString("encryption_key"));
                         editor.apply();
                         SharedPreferences.Editor ed = getSharedPreferences(PREF_ROLE, 0).edit();
                         ed.putString("userRole", jsonRootObject.getString("user_type"));
@@ -848,6 +851,9 @@ public class AppLogin extends AppCompatActivity {
                                 dbs.setParentPassword(jsonObject.getString("tbl_users_parents_password"));
                                 dbs.setInstStatus(jsonObject.getString("tbl_school_status"));
                                 dbs.setUniqueId(jsonObject.getString("sch_unique_id"));
+                                dbs.setStudentDevice(jsonObject.getString("student_device_id"));
+                                dbs.setParentDevice(jsonObject.getString("parent_device_id"));
+                                dbs.setDeviceLock(jsonObject.getString("androidid_lock_permission"));
                                 dbs.setUserrType(userrType);
                                 dbs.setUserLoginId(userLoginId);
                                 dbs.setUserName(userName);
@@ -949,59 +955,71 @@ public class AppLogin extends AppCompatActivity {
 
                 userSchoolName1 = studentArray.get(position).getUserSchoolName();
                 userSchoolRoleName1 = studentArray.get(position).getUserSchoolRoleName();
+                String studentId, parentId;
+                if (studentArray.get(position).getDeviceLock().equals("0")) {
+                    studentId = "0";
+                    parentId = "0";
+                } else {
+                    studentId = studentArray.get(position).getStudentDevice();
+                    parentId = studentArray.get(position).getParentDevice();
+                }
                 alertDialog.dismiss();
                 if ("Student".equals(userrType1)) {
-                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putString("logged", "logged");
-                    editor.putString("userID", userID1);
-                    editor.putString("userLoginId", userLoginId1);
-                    editor.putString("userName", userName1);
-                    editor.putString("userPhone", userPhone1);
-                    editor.putString("userEmailId", userEmailId1);
-                    editor.putString("userDob", userDob1);
-                    editor.putString("userGender", userGender1);
-                    editor.putString("userImg", userImg1);
-                    editor.putString("userPhoneStatus", userPhoneStatus1);
-                    editor.putString("userrType", userrType1);
-                    editor.putString("userPassword", userPassword1);
-                    editor.putString("userSection", str_section1);
-                    editor.putString("userRollNumber", str_roll_number1);
-                    editor.putString("userTeacherName", str_teacher_name1);
-                    editor.putString("userSchoolId", userSchoolId1);
-                    editor.putString("userSchoolLogo", userSchoolSchoolLogo11);
-                    editor.putString("userSchoolLogo1", userSchoolSchoolLogo12);
-                    editor.putString("userSchoolLogo3", userSchoolSchoolLogo13);
-                    editor.putString("numberOfUser", "multiple");
-                    editor.putString("restricted", studentArray.get(position).getRestricted());
-                    editor.putString("parentStatus", studentArray.get(position).getParentStatus());
-                    editor.putString("parentPhone", studentArray.get(position).getParentPhone());
-                    editor.putString("parentPassword", studentArray.get(position).getParentPassword());
-                    editor.putString("unique_id", studentArray.get(position).getUniqueId());
+                    if (studentId.equals(deviceID) || studentId.equals("0") || parentId.equals(deviceID) || parentId.equals("0") || studentId.equals("") || parentId.equals("")) {
+                        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString("logged", "logged");
+                        editor.putString("userID", userID1);
+                        editor.putString("userLoginId", userLoginId1);
+                        editor.putString("userName", userName1);
+                        editor.putString("userPhone", userPhone1);
+                        editor.putString("userEmailId", userEmailId1);
+                        editor.putString("userDob", userDob1);
+                        editor.putString("userGender", userGender1);
+                        editor.putString("userImg", userImg1);
+                        editor.putString("userPhoneStatus", userPhoneStatus1);
+                        editor.putString("userrType", userrType1);
+                        editor.putString("userPassword", userPassword1);
+                        editor.putString("userSection", str_section1);
+                        editor.putString("userRollNumber", str_roll_number1);
+                        editor.putString("userTeacherName", str_teacher_name1);
+                        editor.putString("userSchoolId", userSchoolId1);
+                        editor.putString("userSchoolLogo", userSchoolSchoolLogo11);
+                        editor.putString("userSchoolLogo1", userSchoolSchoolLogo12);
+                        editor.putString("userSchoolLogo3", userSchoolSchoolLogo13);
+                        editor.putString("numberOfUser", "multiple");
+                        editor.putString("restricted", studentArray.get(position).getRestricted());
+                        editor.putString("parentStatus", studentArray.get(position).getParentStatus());
+                        editor.putString("parentPhone", studentArray.get(position).getParentPhone());
+                        editor.putString("parentPassword", studentArray.get(position).getParentPassword());
+                        editor.putString("unique_id", studentArray.get(position).getUniqueId());
 
-                    //
-                    editor.putString("userSchoolName", userSchoolName1);
-                    editor.putString("userSchoolRoleName", userSchoolRoleName1);
-                    editor.putString("str_school_id", userSchoolId1);
-                    editor.putString("url", imageUrl + userSchoolId1);
-                    editor.putString("str_role_id", userSchoolRoleId1);
-                    editor.apply();
+                        //
+                        editor.putString("userSchoolName", userSchoolName1);
+                        editor.putString("userSchoolRoleName", userSchoolRoleName1);
+                        editor.putString("str_school_id", userSchoolId1);
+                        editor.putString("url", imageUrl + userSchoolId1);
+                        editor.putString("str_role_id", userSchoolRoleId1);
+                        editor.apply();
 
-                    //color set
-                    SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
-                    SharedPreferences.Editor editorColor = settingsColor.edit();
-                    editorColor.putString("tool", selToolColor1);
-                    editorColor.putString("drawer", selDrawerColor1);
-                    editorColor.putString("status", selStatusColor1);
-                    editorColor.putString("text1", selTextColor11);
-                    editorColor.putString("text2", selTextColor22);
-                    editorColor.apply();
+                        //color set
+                        SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
+                        SharedPreferences.Editor editorColor = settingsColor.edit();
+                        editorColor.putString("tool", selToolColor1);
+                        editorColor.putString("drawer", selDrawerColor1);
+                        editorColor.putString("status", selStatusColor1);
+                        editorColor.putString("text1", selTextColor11);
+                        editorColor.putString("text2", selTextColor22);
+                        editorColor.apply();
 
-                    Intent i1 = new Intent(AppLogin.this, WelcomeActivity.class);
-                    i1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(i1);
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    finish();
+                        Intent i1 = new Intent(AppLogin.this, WelcomeActivity.class);
+                        i1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(i1);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Device is not registered for this account", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     differentValidLogin1(userID1, studentArray.get(position).getUniqueId(), studentArray.get(position).getRestricted());
                 }
@@ -1037,9 +1055,17 @@ public class AppLogin extends AppCompatActivity {
         } else {
             status = studentArray.get(0).getInstStatus();
         }
+        String studentId, parentId;
+        if (studentArray.get(0).getDeviceLock().equals("0")) {
+            studentId = "0";
+            parentId = "0";
+        } else {
+            studentId = studentArray.get(0).getStudentDevice();
+            parentId = studentArray.get(0).getParentDevice();
+        }
         if (status.equals("1")) {
             if ("Student".equals(userrType)) {
-                {
+                if (studentId.equals(deviceID) || studentId.equals("0") || parentId.equals(deviceID) || parentId.equals("0") || studentId.equals("") || parentId.equals("")) {
                     SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
                     SharedPreferences.Editor editor = settings.edit();
                     editor.putString("logged", "logged");
@@ -1092,6 +1118,8 @@ public class AppLogin extends AppCompatActivity {
                     startActivity(i);
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
+                } else {
+                    Toast.makeText(this, "Device is not registered for this account", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 differentValidLogin(userID, studentArray.get(0).getUniqueId(), studentArray.get(0).getRestricted());
