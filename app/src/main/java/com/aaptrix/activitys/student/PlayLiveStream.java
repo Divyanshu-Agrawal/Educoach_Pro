@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -21,12 +22,14 @@ import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -34,6 +37,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,14 +45,20 @@ import android.widget.Toast;
 import com.aaptrix.R;
 import com.aaptrix.adaptor.CommentsAdapter;
 import com.aaptrix.databeans.CommentsData;
+import com.aaptrix.databeans.DataBeanStudent;
 import com.aaptrix.youtubeview.core.player.YouTubePlayer;
 import com.aaptrix.youtubeview.core.player.listeners.AbstractYouTubePlayerListener;
 import com.aaptrix.youtubeview.core.player.listeners.YouTubePlayerFullScreenListener;
 import com.aaptrix.youtubeview.core.player.views.YouTubePlayerView;
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -62,8 +72,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Random;
 
 import javax.net.ssl.SSLContext;
@@ -78,11 +91,15 @@ import cz.msebera.android.httpclient.entity.mime.HttpMultipartMode;
 import cz.msebera.android.httpclient.entity.mime.MultipartEntityBuilder;
 import cz.msebera.android.httpclient.impl.client.HttpClients;
 import cz.msebera.android.httpclient.util.EntityUtils;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.aaptrix.activitys.SplashScreen.SCHOOL_NAME;
 import static com.aaptrix.tools.HttpUrl.ADD_COMMENTS;
+import static com.aaptrix.tools.HttpUrl.ALL_BATCHS;
 import static com.aaptrix.tools.HttpUrl.GET_COMMENTS;
+import static com.aaptrix.tools.HttpUrl.LIVE_ATTENDANCE;
 import static com.aaptrix.tools.HttpUrl.REMOVE_LIVE;
+import static com.aaptrix.tools.HttpUrl.SUBMIT_LIVE_ATTENDANCE;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
 import static com.aaptrix.tools.SPClass.PREFS_RW;
 import static com.aaptrix.tools.SPClass.PREF_COLOR;
@@ -90,12 +107,12 @@ import static cz.msebera.android.httpclient.conn.ssl.SSLConnectionSocketFactory.
 
 public class PlayLiveStream extends AppCompatActivity {
 
-    String strTitle, url, id, cmntStatus, strDesc;
+    String strTitle, url, id, cmntStatus, strDesc, strSubject;
     TextView title, desc, noComment;
     AppBarLayout appBarLayout;
     String selToolColor, selStatusColor, selTextColor1, userrType, userSchoolId, rollNo, userId;
     TextView tool_title;
-    ImageButton delete, disableComment;
+    ImageButton delete, disableComment, attendance;
     boolean fullscr = false;
     TextView watermark_yt;
     CountDownTimer timer = null;
@@ -109,11 +126,14 @@ public class PlayLiveStream extends AppCompatActivity {
     String strStartTime;
     ArrayList<CommentsData> commentArray = new ArrayList<>();
     ArrayList<String> cmnt_id = new ArrayList<>();
-    long time = 10000;
     CommentsAdapter adapter;
     FrameLayout yt_frame;
     YouTubePlayer ytPlayer;
     RelativeLayout yt_layout;
+    AlertDialog.Builder alert;
+    AlertDialog alertDialog;
+    ArrayList<DataBeanStudent> studentArray = new ArrayList<>(), batchArray = new ArrayList<>();
+    String strBatch;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -140,6 +160,7 @@ public class PlayLiveStream extends AppCompatActivity {
         yt_frame = findViewById(R.id.frame_layout);
         disableComment = findViewById(R.id.disable_comment);
         yt_layout = findViewById(R.id.relative);
+        attendance = findViewById(R.id.attendance);
         watermark_yt.bringToFront();
         notice.bringToFront();
 
@@ -155,6 +176,7 @@ public class PlayLiveStream extends AppCompatActivity {
         cmntStatus = getIntent().getStringExtra("comments");
         strDesc = getIntent().getStringExtra("desc");
         strStartTime = getIntent().getStringExtra("date");
+        strSubject = getIntent().getStringExtra("sub");
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         userrType = settings.getString("userrType", "");
@@ -197,7 +219,6 @@ public class PlayLiveStream extends AppCompatActivity {
             } else {
                 title.setText(Html.fromHtml(strTitle));
             }
-            time = 60000;
             commentTimer();
         } else {
             GetComments comments = new GetComments(this);
@@ -223,8 +244,10 @@ public class PlayLiveStream extends AppCompatActivity {
         if (userrType.equals("Admin")) {
             delete.setVisibility(View.VISIBLE);
             disableComment.setVisibility(View.VISIBLE);
+            attendance.setVisibility(View.VISIBLE);
         } else if (userrType.equals("Teacher")) {
             disableComment.setVisibility(View.GONE);
+            attendance.setVisibility(View.VISIBLE);
             SharedPreferences sp = getSharedPreferences(PREFS_RW, 0);
             if (sp.getString("Study Videos", "").equals("")) {
                 delete.setVisibility(View.VISIBLE);
@@ -232,6 +255,7 @@ public class PlayLiveStream extends AppCompatActivity {
         } else {
             disableComment.setVisibility(View.GONE);
             delete.setVisibility(View.GONE);
+            attendance.setVisibility(View.GONE);
         }
 
         sendComment.setOnClickListener(v -> {
@@ -243,6 +267,13 @@ public class PlayLiveStream extends AppCompatActivity {
                 SendComments sendComments = new SendComments(this);
                 sendComments.execute(id, comments.getText().toString(), userSchoolId, userId, strStartTime);
             }
+        });
+
+        attendance.setOnClickListener(v -> {
+            Gson gson = new GsonBuilder().create();
+            JsonArray myCustomArray = gson.toJsonTree(batchArray).getAsJsonArray();
+            GetAllStudentList getAllStudentList = new GetAllStudentList(this);
+            getAllStudentList.execute(id, userSchoolId, myCustomArray.toString());
         });
 
         delete.setOnClickListener(v -> {
@@ -276,7 +307,7 @@ public class PlayLiveStream extends AppCompatActivity {
 
         watermark_yt.setText(rollNo);
         setTimerYT();
-        String videoKey =videoId(url);
+        String videoKey = videoId(url);
         youTubeView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
@@ -298,15 +329,13 @@ public class PlayLiveStream extends AppCompatActivity {
                         showSystemUi(decorView);
                     }
                 });
-
-
             }
         });
     }
 
     private String videoId(String url) {
         int index = url.indexOf("v=");
-        String id = url.substring(index+2, index+13);
+        String id = url.substring(index + 2, index + 13);
         if (id.equals("ttps://yout")) {
             id = url.split("/")[3];
         }
@@ -343,7 +372,7 @@ public class PlayLiveStream extends AppCompatActivity {
         params.height = (int) getResources().getDimension(R.dimen._200sdp);
         yt_frame.setLayoutParams(params);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.setMargins(0,40,0,0);
+        layoutParams.setMargins(0, 40, 0, 0);
         layoutParams.height = (int) getResources().getDimension(R.dimen._200sdp);
         youTubeView.setLayoutParams(layoutParams);
     }
@@ -421,7 +450,8 @@ public class PlayLiveStream extends AppCompatActivity {
                 data = URLEncoder.encode("tbl_school_id", "UTF-8") + "=" + URLEncoder.encode(schoolId, "UTF-8") + "&" +
                         URLEncoder.encode("video_id", "UTF-8") + "=" + URLEncoder.encode(video_id, "UTF-8") + "&" +
                         URLEncoder.encode("start_time", "UTF-8") + "=" + URLEncoder.encode(startTime, "UTF-8") + "&" +
-                        URLEncoder.encode("userStreamingStatus", "UTF-8") + "=" + URLEncoder.encode(status, "UTF-8");
+                        URLEncoder.encode("userStreamingStatus", "UTF-8") + "=" + URLEncoder.encode(status, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_users_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8");
                 outputStream.write(data.getBytes());
 
                 bufferedWriter.write(data);
@@ -453,6 +483,7 @@ public class PlayLiveStream extends AppCompatActivity {
             try {
                 JSONObject jsonRootObject = new JSONObject(result);
                 strStartTime = jsonRootObject.getString("lastCommentTime");
+                strBatch = jsonRootObject.getString("Batch_list");
                 if (jsonRootObject.getString("streaming_on_off").equals("0")) {
                     new AlertDialog.Builder(ctx)
                             .setMessage("Live streaming has ended for this video.")
@@ -461,7 +492,6 @@ public class PlayLiveStream extends AppCompatActivity {
                             .show();
                 } else if (jsonRootObject.getString("comments_enable_disable").equals("0")) {
                     cmntStatus = "0";
-                    time = 60000;
                     title.setVisibility(View.VISIBLE);
                     desc.setVisibility(View.VISIBLE);
                     disable.setVisibility(View.VISIBLE);
@@ -485,7 +515,6 @@ public class PlayLiveStream extends AppCompatActivity {
                     }
                 } else if (jsonRootObject.getString("comments_enable_disable").equals("1")) {
                     cmntStatus = "1";
-                    time = 10000;
                     title.setVisibility(View.GONE);
                     desc.setVisibility(View.GONE);
                     disable.setVisibility(View.GONE);
@@ -501,9 +530,11 @@ public class PlayLiveStream extends AppCompatActivity {
                         if (!cmnt_id.contains(jsonObject.getString("id"))) {
                             CommentsData data = new CommentsData();
                             data.setComment(jsonObject.getString("comments"));
-                            Log.e("comment", jsonObject.getString("comments"));
                             data.setDate(jsonObject.getString("entry_dt"));
-                            data.setName(jsonObject.getString("tbl_users_name"));
+                            if (jsonObject.getString("tbl_users_id").equals("0"))
+                                data.setName("Admin");
+                            else
+                                data.setName(jsonObject.getString("tbl_users_name"));
                             cmnt_id.add(jsonObject.getString("id"));
                             commentArray.add(data);
                         }
@@ -528,6 +559,11 @@ public class PlayLiveStream extends AppCompatActivity {
         }
         adapter.notifyDataSetChanged();
         commentTimer();
+
+        if (batchArray.size() == 0) {
+            GetAllBatches getAllBatches = new GetAllBatches(this);
+            getAllBatches.execute(userSchoolId);
+        }
     }
 
     private void commentTimer() {
@@ -535,6 +571,86 @@ public class PlayLiveStream extends AppCompatActivity {
             GetComments comments = new GetComments(PlayLiveStream.this);
             comments.execute(userSchoolId, id, strStartTime, "0");
         }, 10000);
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public class GetAllBatches extends AsyncTask<String, String, String> {
+        Context ctx;
+
+        GetAllBatches(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String school_id = params[0];
+            String data;
+
+            try {
+
+                URL url = new URL(ALL_BATCHS);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
+                data = URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_users_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8");
+                outputStream.write(data.getBytes());
+
+                bufferedWriter.write(data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.flush();
+                outputStream.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    response.append(line);
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                return response.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (!result.equals("\"result\":null")) {
+                try {
+                    JSONObject jo = new JSONObject(result);
+                    JSONArray ja = jo.getJSONArray("result");
+                    for (int i = 0; i < ja.length(); i++) {
+                        jo = ja.getJSONObject(i);
+                        if (strBatch.contains(jo.getString("tbl_batch_name"))) {
+                            DataBeanStudent data = new DataBeanStudent();
+                            data.setUserName(jo.getString("tbl_batch_name"));
+                            batchArray.add(data);
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            super.onPostExecute(result);
+        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -724,7 +840,6 @@ public class PlayLiveStream extends AppCompatActivity {
                     Toast.makeText(ctx, "Comments disabled", Toast.LENGTH_SHORT).show();
                     disableComment.setImageResource(R.drawable.comment_off);
                     cmntStatus = "0";
-                    time = 60000;
                     title.setVisibility(View.VISIBLE);
                     desc.setVisibility(View.VISIBLE);
                     disable.setVisibility(View.VISIBLE);
@@ -750,7 +865,6 @@ public class PlayLiveStream extends AppCompatActivity {
                     Toast.makeText(ctx, "Comments enabled", Toast.LENGTH_SHORT).show();
                     disableComment.setImageResource(R.drawable.comment);
                     cmntStatus = "1";
-                    time = 10000;
                     title.setVisibility(View.GONE);
                     desc.setVisibility(View.GONE);
                     disable.setVisibility(View.GONE);
@@ -762,7 +876,6 @@ public class PlayLiveStream extends AppCompatActivity {
                 if (comment.equals("0")) {
                     disableComment.setImageResource(R.drawable.comment);
                     cmntStatus = "1";
-                    time = 10000;
                     title.setVisibility(View.GONE);
                     desc.setVisibility(View.GONE);
                     disable.setVisibility(View.GONE);
@@ -772,7 +885,6 @@ public class PlayLiveStream extends AppCompatActivity {
                 } else if (comment.equals("1")) {
                     disableComment.setImageResource(R.drawable.comment_off);
                     cmntStatus = "0";
-                    time = 60000;
                     title.setVisibility(View.VISIBLE);
                     desc.setVisibility(View.VISIBLE);
                     disable.setVisibility(View.VISIBLE);
@@ -797,6 +909,304 @@ public class PlayLiveStream extends AppCompatActivity {
                 }
                 Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public class GetAllStudentList extends AsyncTask<String, String, String> {
+        Context ctx;
+
+        GetAllStudentList(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //loader.setVisibility(View.VISIBLE);
+            super.onPreExecute();
+            studentArray.clear();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String videoId = params[0];
+            String school_id = params[1];
+            String array = params[2];
+            Log.e("video id", videoId);
+            Log.e("array", array);
+            String data;
+
+            try {
+
+                URL url = new URL(LIVE_ATTENDANCE);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
+                data = URLEncoder.encode("video_id", "UTF-8") + "=" + URLEncoder.encode(videoId, "UTF-8") + "&" +
+                        URLEncoder.encode("tbl_school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
+                        URLEncoder.encode("BatchArray", "UTF-8") + "=" + URLEncoder.encode(array, "UTF-8");
+                outputStream.write(data.getBytes());
+
+                bufferedWriter.write(data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.flush();
+                outputStream.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+
+                    response.append(line);
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                return response.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.e("result", result);
+            if (!result.contains("\"StudentList\":null")) {
+                try {
+                    JSONObject jsonRootObject = new JSONObject(result);
+                    JSONArray jsonArray = jsonRootObject.getJSONArray("StudentList");
+                    JSONArray array = jsonRootObject.getJSONArray("PresentStudentList");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        DataBeanStudent dbs = new DataBeanStudent();
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        dbs.setBatchNm(jsonObject.getString("tbl_stnt_prsnl_data_section"));
+                        dbs.setUserID(jsonObject.getString("tbl_users_id"));
+                        dbs.setUserName(jsonObject.getString("tbl_users_name"));
+                        dbs.setUserImg(jsonObject.getString("tbl_users_img"));
+                        if (array.toString().trim().contains("\"tbl_users_id\":\"" + jsonObject.getString("tbl_users_id") + "\""))
+                            dbs.setUserLoginId("Present");
+                        else
+                            dbs.setUserLoginId("Absent");
+                        studentArray.add(dbs);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (studentArray.size() != 0) {
+                takeAttendance();
+            } else {
+                Toast.makeText(ctx, "No Student", Toast.LENGTH_SHORT).show();
+            }
+            super.onPostExecute(result);
+        }
+    }
+
+    private void takeAttendance() {
+        LayoutInflater factory = LayoutInflater.from(this);
+        @SuppressLint("InflateParams") final View view = factory.inflate(R.layout.user_select_dialog, null);
+        ListView listView = view.findViewById(R.id.user_list);
+        CardView cardView = view.findViewById(R.id.cardview);
+        cardView.setVisibility(View.VISIBLE);
+
+        AttendanceAdapter adapter = new AttendanceAdapter(this, R.layout.user_attendance_list_item1, studentArray);
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        alert = new AlertDialog.Builder(this, R.style.DialogTheme);
+        alert.setTitle("Mark Attendance").setView(view).setNegativeButton("Cancel", null)
+                .setPositiveButton("Submit", (dialog, which) -> {
+                    ArrayList<DataBeanStudent> attendanceArray = new ArrayList<>();
+                    for (int i = 0; i < studentArray.size(); i++) {
+                        DataBeanStudent data = new DataBeanStudent();
+                        data.setUserID(studentArray.get(i).getUserID());
+                        data.setUserLoginId(studentArray.get(i).getUserLoginId());
+                        data.setBatchNm(studentArray.get(i).getBatchNm());
+                        attendanceArray.add(data);
+                    }
+                    Gson gson = new GsonBuilder().create();
+                    JsonArray array = gson.toJsonTree(attendanceArray).getAsJsonArray();
+                    SubmitAttendance submitAttendance = new SubmitAttendance(this);
+                    submitAttendance.execute(userSchoolId, userId, strSubject, array.toString(), strTitle);
+                });
+        alertDialog = alert.create();
+        alertDialog.show();
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public class SubmitAttendance extends AsyncTask<String, String, String> {
+        Context ctx;
+
+        SubmitAttendance(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //loader.setVisibility(View.VISIBLE);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String school_id = params[0];
+            String userId = params[1];
+            String subject = params[2];
+            String array = params[3];
+            String type = params[4];
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            String date = sdf.format(Calendar.getInstance().getTime());
+            String data;
+
+            Log.e("user", userId);
+            Log.e("sub", subject);
+            Log.e("array", array);
+            Log.e("type", type);
+            Log.e("date", date);
+
+            try {
+
+                URL url = new URL(SUBMIT_LIVE_ATTENDANCE);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
+                data = URLEncoder.encode("attendance_array", "UTF-8") + "=" + URLEncoder.encode(array, "UTF-8") + "&" +
+                        URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8") + "&" +
+                        URLEncoder.encode("school_id", "UTF-8") + "=" + URLEncoder.encode(school_id, "UTF-8") + "&" +
+                        URLEncoder.encode("current_date", "UTF-8") + "=" + URLEncoder.encode(date, "UTF-8") + "&" +
+                        URLEncoder.encode("subjectNm", "UTF-8") + "=" + URLEncoder.encode(subject, "UTF-8") + "&" +
+                        URLEncoder.encode("attandance_type", "UTF-8") + "=" + URLEncoder.encode(type, "UTF-8");
+                outputStream.write(data.getBytes());
+
+                bufferedWriter.write(data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.flush();
+                outputStream.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+
+                    response.append(line);
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                return response.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.e("res", result);
+            if (result.contains("Sent successfully")) {
+                Toast.makeText(ctx, "Attendance submitted successfully", Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+            } else {
+                Toast.makeText(ctx, "Server Error", Toast.LENGTH_SHORT).show();
+            }
+            super.onPostExecute(result);
+        }
+    }
+
+    static class AttendanceAdapter extends ArrayAdapter<DataBeanStudent> {
+
+        private ArrayList<DataBeanStudent> objects;
+        private int resource;
+        private Context context;
+
+        public AttendanceAdapter(Context context, int resource, ArrayList<DataBeanStudent> objects) {
+            super(context, resource, objects);
+            this.objects = objects;
+            this.resource = resource;
+            this.context = context;
+        }
+
+
+        @NonNull
+        @SuppressLint({"InflateParams", "UseCompatLoadingForDrawables"})
+        public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
+
+            View v = convertView;
+
+            if (v == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                assert inflater != null;
+                v = inflater.inflate(resource, null);
+            }
+
+            final DataBeanStudent dbItemsDist = objects.get(position);
+
+            if (dbItemsDist != null) {
+
+                TextView clgname = v.findViewById(R.id.clgname);
+                TextView batch = v.findViewById(R.id.batch);
+                CircleImageView userLogo = v.findViewById(R.id.userLogo);
+                RadioButton rb_present = v.findViewById(R.id.rb_present);
+                RadioButton rb_absent = v.findViewById(R.id.rb_absent);
+                RadioButton rb_leave = v.findViewById(R.id.rb_leave);
+
+                SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
+                clgname.setText(dbItemsDist.getUserName());
+                batch.setText(dbItemsDist.getBatchNm());
+                batch.setVisibility(View.VISIBLE);
+
+                if (dbItemsDist.getUserImg().equals("0")) {
+                    userLogo.setImageDrawable(context.getResources().getDrawable(R.drawable.user_place_hoder));
+                } else if (!TextUtils.isEmpty(dbItemsDist.getUserImg())) {
+                    String url = settings.getString("imageUrl", "") + settings.getString("userSchoolId", "") + "/users/students/profile/" + dbItemsDist.getUserImg();
+                    Picasso.with(context).load(url).error(R.drawable.user_place_hoder).placeholder(R.drawable.user_place_hoder).into(userLogo);
+                } else {
+                    userLogo.setImageDrawable(context.getResources().getDrawable(R.drawable.user_place_hoder));
+                }
+
+                switch (objects.get(position).getUserLoginId()) {
+                    case "Present":
+                        rb_present.setChecked(true);
+                        rb_absent.setEnabled(false);
+                        rb_leave.setEnabled(false);
+                        break;
+                    case "Absent":
+                        rb_absent.setChecked(true);
+                        rb_present.setEnabled(false);
+                        rb_leave.setEnabled(false);
+                        break;
+                }
+            }
+            return v;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return 1;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
         }
     }
 }

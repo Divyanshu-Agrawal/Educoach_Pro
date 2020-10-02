@@ -413,8 +413,6 @@ public class LiveStreaming extends AppCompatActivity {
             String schoolId = params[0];
             String sectionName = params[1];
             String userType = params[2];
-
-            Log.e("user", userId);
             String data;
 
             try {
@@ -617,26 +615,6 @@ public class LiveStreaming extends AppCompatActivity {
         listView.setAdapter(videoAdapter);
         videoAdapter.notifyDataSetChanged();
         mSwipeRefreshLayout.setRefreshing(false);
-
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            if (arrayList.get(position).getStream().equals("1")) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                if (isInternetOn()) {
-                    Intent intent = new Intent(this, PlayLiveStream.class);
-                    intent.putExtra("title", arrayList.get(position).getTitle());
-                    intent.putExtra("url", arrayList.get(position).getUrl());
-                    intent.putExtra("id", arrayList.get(position).getId());
-                    intent.putExtra("desc", arrayList.get(position).getDesc());
-                    intent.putExtra("comments", arrayList.get(position).getComments());
-                    intent.putExtra("date", sdf.format(Calendar.getInstance().getTime()));
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(this, "Streaming is ended", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 
