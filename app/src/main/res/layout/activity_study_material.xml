@@ -57,6 +57,15 @@
                     android:layout_alignParentEnd="true"
                     android:background="@android:color/transparent"
                     android:id="@+id/filter"/>
+                <ImageButton
+                    android:layout_width="0dp"
+                    android:layout_weight="1.5"
+                    android:visibility="visible"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/download_icon"
+                    android:layout_alignParentEnd="true"
+                    android:background="@android:color/transparent"
+                    android:id="@+id/offline_material"/>
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

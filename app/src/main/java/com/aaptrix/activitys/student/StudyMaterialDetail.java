@@ -14,6 +14,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,6 +29,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.PowerManager;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,12 +45,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aaptrix.fragments.GetMoreVideos;
 import com.google.android.material.appbar.AppBarLayout;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,6 +68,10 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Objects;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import static com.aaptrix.tools.HttpUrl.REMOVE_STUDY_MATERIAL;
 import static com.aaptrix.tools.SPClass.PREFS_NAME;
@@ -74,11 +86,11 @@ public class StudyMaterialDetail extends AppCompatActivity {
 	ListView listView;
 	TextView title, description;
 	String strTitle, strDesc, strId, strPermission, strTags, strSubject;
-	long downloadID;
 	String[] strUrl;
 	ArrayList<String> url = new ArrayList<>();
 	SharedPreferences sp;
 	HorizontalGridView gridView;
+	ProgressDialog mProgressDialog;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +136,6 @@ public class StudyMaterialDetail extends AppCompatActivity {
 		}
 
 		sp = this.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-		registerReceiver(onDownloadComplete,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 		
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		userrType = settings.getString("userrType", "");
@@ -142,12 +153,18 @@ public class StudyMaterialDetail extends AppCompatActivity {
 		}
 		tool_title.setTextColor(Color.parseColor(selTextColor1));
 		tool_title.setText(strTitle);
+
+		mProgressDialog = new ProgressDialog(this);
+		mProgressDialog.setMessage("Downloading...");
+		mProgressDialog.setIndeterminate(true);
+		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		mProgressDialog.setCancelable(false);
 		
 		for (String aStrUrl : strUrl) {
 			url.add(aStrUrl.replace("[", "").replace("]", "").replace("\"", ""));
 		}
 		
-		StudyDetailAdaptor adaptor = new StudyDetailAdaptor(this, R.layout.study_detail_list, url, strPermission);
+		StudyDetailAdaptor adaptor = new StudyDetailAdaptor(this, R.layout.study_detail_list, url, strPermission, strSubject);
 		listView.setAdapter(adaptor);
 		adaptor.notifyDataSetChanged();
 		
@@ -155,7 +172,8 @@ public class StudyMaterialDetail extends AppCompatActivity {
 			if (strPermission.equals("1")) {
 				if (isInternetOn()) {
 					if (PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED) {
-						downloadFile(url.get(position));
+						DownloadTask downloadTask = new DownloadTask(this);
+						downloadTask.execute(url.get(position));
 					} else {
 						isPermissionGranted();
 					}
@@ -247,7 +265,7 @@ public class StudyMaterialDetail extends AppCompatActivity {
 	
 	@Override
 	public void onRequestPermissionsResult(int requestCode,
-										   @NonNull String permissions[], @NonNull int[] grantResults) {
+										   @NonNull String[] permissions, @NonNull int[] grantResults) {
 		if (requestCode == 1) {
 			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 				Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
@@ -256,36 +274,138 @@ public class StudyMaterialDetail extends AppCompatActivity {
 			}
 		}
 	}
-	
-	private BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-			if (downloadID == id) {
-				Toast.makeText(StudyMaterialDetail.this, "Download Completed", Toast.LENGTH_SHORT).show();
-			}
+
+	@SuppressLint("StaticFieldLeak")
+	private class DownloadTask extends AsyncTask<String, Integer, String> {
+
+		private Context context;
+		private PowerManager.WakeLock mWakeLock;
+
+		public DownloadTask(Context context) {
+			this.context = context;
 		}
-	};
-	
-	private void downloadFile(String url) {
-		String path = Environment.DIRECTORY_DOWNLOADS;
-		String downloadUrl = sp.getString("imageUrl", "") + sp.getString("userSchoolId", "") + "/studyMaterial/" + url;
-		DownloadManager.Request request = new DownloadManager.Request(Uri.parse(downloadUrl))
-				.setTitle(url)
-				.setDescription("Downloading")
-				.setMimeType("application/octet-stream")
-				.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-				.setDestinationInExternalPublicDir(path, url);
-		request.allowScanningByMediaScanner();
-		DownloadManager downloadManager= (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-		assert downloadManager != null;
-		downloadID = downloadManager.enqueue(request);
+
+		@Override
+		protected String doInBackground(String... sUrl) {
+
+			String downloadUrl = sUrl[0];
+			String[] splitUrl = downloadUrl.split("/");
+			String name = splitUrl[splitUrl.length - 1];
+
+			downloadUrl = sp.getString("imageUrl", "") + sp.getString("userSchoolId", "") + "/studyMaterial/" + downloadUrl;
+
+			InputStream input = null;
+			OutputStream output = null;
+			HttpURLConnection connection = null;
+			try {
+				String ext = name.substring(name.lastIndexOf(".") + 1);
+				File outputFile = File.createTempFile(name.replace(ext, "").replace(".", ""), "." + ext, getCacheDir());
+				URL url = new URL(downloadUrl);
+				connection = (HttpURLConnection) url.openConnection();
+				connection.connect();
+
+				if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+					return "Server returned HTTP " + connection.getResponseCode()
+							+ " " + connection.getResponseMessage();
+				}
+
+				int fileLength = connection.getContentLength();
+
+				// download the file
+				input = connection.getInputStream();
+				output = new FileOutputStream(outputFile);
+
+				byte[] data = new byte[4096];
+				long total = 0;
+				int count;
+				while ((count = input.read(data)) != -1) {
+					if (isCancelled()) {
+						input.close();
+						return null;
+					}
+					total += count;
+					if (fileLength > 0)
+						publishProgress((int) (total * 100 / fileLength));
+					output.write(data, 0, count);
+				}
+				fileEncrypt(outputFile.getName(), name);
+			} catch (Exception e) {
+				return e.toString();
+			} finally {
+				try {
+					if (output != null)
+						output.close();
+					if (input != null)
+						input.close();
+				} catch (IOException ignored) {
+
+				}
+
+				if (connection != null)
+					connection.disconnect();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+			mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+					getClass().getName());
+			mWakeLock.acquire();
+			mProgressDialog.show();
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... progress) {
+			super.onProgressUpdate(progress);
+			mProgressDialog.setIndeterminate(false);
+			mProgressDialog.setMax(100);
+			mProgressDialog.setProgress(progress[0]);
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			mWakeLock.release();
+			mProgressDialog.dismiss();
+			if (result != null) {
+				Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();
+				Log.e("error", result);
+			}
+			else
+				Toast.makeText(context,"File downloaded", Toast.LENGTH_SHORT).show();
+		}
+
+		private void fileEncrypt(String fileName, String outputName) throws Exception {
+			String key = context.getSharedPreferences(PREFS_NAME, 0).getString("video_key", "aaptrixtechnopvt");
+
+			File file = new File(context.getCacheDir(), fileName);
+			int size = (int) file.length();
+			byte[] bytes = new byte[size];
+
+			BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+			buf.read(bytes, 0, bytes.length);
+			buf.close();
+
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			byte[] bKey = key.getBytes(StandardCharsets.UTF_8);
+			SecretKeySpec keySpec = new SecretKeySpec(bKey, "AES");
+			IvParameterSpec ivSpec = new IvParameterSpec(bKey);
+			cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+			byte[] decrypted = cipher.doFinal(bytes);
+			File outputFile = new File(context.getExternalFilesDir("Study Material/" + strSubject), outputName);
+
+			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(outputFile));
+			bos.write(decrypted);
+			bos.flush();
+			bos.close();
+		}
 	}
 	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		unregisterReceiver(onDownloadComplete);
 	}
 	
 	@Override
@@ -395,6 +515,9 @@ public class StudyMaterialDetail extends AppCompatActivity {
 		protected void onPostExecute(String result) {
 			Log.e("result", result);
 			if (!result.isEmpty()) {
+				Intent i = new Intent(ctx, StudyMaterial.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).
+						putExtra("sub", "All Subjects");
+				startActivity(i);
 				finish();
 			} else {
 				Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();

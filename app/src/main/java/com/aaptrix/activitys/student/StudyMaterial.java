@@ -6,17 +6,22 @@ import com.aaptrix.adaptor.VideoAdapter;
 import com.aaptrix.databeans.StudyMaterialData;
 import com.aaptrix.R;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -105,7 +110,7 @@ public class StudyMaterial extends AppCompatActivity {
     ImageButton filter;
     private String selSubject = "All Subjects", disable;
     LinearLayout search_layout;
-    ImageButton search, searchBtn;
+    ImageButton search, searchBtn, offline;
     EditText searchBox;
 
     @Override
@@ -131,6 +136,7 @@ public class StudyMaterial extends AppCompatActivity {
         search_layout = findViewById(R.id.search_layout);
         searchBox = findViewById(R.id.search_txt);
         searchBtn = findViewById(R.id.search_btn);
+        offline = findViewById(R.id.offline_material);
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         userId = settings.getString("userID", "");
@@ -145,7 +151,21 @@ public class StudyMaterial extends AppCompatActivity {
 
         if (userrType.equals("Student")) {
             tool_title.setText(selSubject);
+            offline.setVisibility(View.VISIBLE);
+        } else {
+            offline.setVisibility(View.GONE);
         }
+
+        offline.setOnClickListener(v -> {
+            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED &&
+                    PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                isPermissionGranted();
+            } else {
+                Intent intent = new Intent(this, OfflineMaterial.class);
+                intent.putExtra("sub", selSubject);
+                startActivity(intent);
+            }
+        });
 
         ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<>(this, R.layout.spinner_list_item1, new String[]{"All Batches"});
         dataAdapter1.setDropDownViewResource(R.layout.spinner_list_item1);
@@ -252,6 +272,23 @@ public class StudyMaterial extends AppCompatActivity {
         mSwipeRefreshLayout.setColorScheme(R.color.text_gray);
         GradientDrawable bgShape = (GradientDrawable) add_layout.getBackground();
         bgShape.setColor(Color.parseColor(selToolColor));
+    }
+
+    public void isPermissionGranted() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -650,18 +687,6 @@ public class StudyMaterial extends AppCompatActivity {
             hideKeyboard(v);
         });
 
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            Intent intent = new Intent(this, StudyMaterialDetail.class);
-            intent.putExtra("title", arrayList.get(position).getTitle());
-            intent.putExtra("description", arrayList.get(position).getDescription());
-            intent.putExtra("id", arrayList.get(position).getId());
-            intent.putExtra("url", arrayList.get(position).getUrl());
-            intent.putExtra("permission", arrayList.get(position).getPermission());
-            intent.putExtra("tags", arrayList.get(position).getTags());
-            intent.putExtra("subject", arrayList.get(position).getSubject());
-            startActivity(intent);
-        });
-
         SharedPreferences sp = getSharedPreferences(PREFS_RW, 0);
         String json = sp.getString("result", "");
 
@@ -919,7 +944,10 @@ public class StudyMaterial extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if (!result.isEmpty()) {
-                startActivity(new Intent(ctx, StudyMaterial.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).putExtra("sub", "All Subjects"));
+                Intent i = new Intent(ctx, StudyMaterial.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).
+                        putExtra("sub", "All Subjects");
+                startActivity(i);
+                finish();
             } else {
                 Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();
             }

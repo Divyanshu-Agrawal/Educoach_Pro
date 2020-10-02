@@ -2,6 +2,7 @@ package com.aaptrix.adaptor;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import com.aaptrix.activitys.student.StudyMaterialDetail;
 import com.aaptrix.databeans.StudyMaterialData;
 import com.aaptrix.R;
 
@@ -80,17 +82,25 @@ public class StudyMaterialAdaptor extends ArrayAdapter<StudyMaterialData> {
             } else {
                 holder.description.setText("");
             }
+
+            view.setOnClickListener(v -> {
+                Intent intent = new Intent(context, StudyMaterialDetail.class);
+                intent.putExtra("title", objects.get(position).getTitle());
+                intent.putExtra("description", objects.get(position).getDescription());
+                intent.putExtra("id", objects.get(position).getId());
+                intent.putExtra("url", objects.get(position).getUrl());
+                intent.putExtra("permission", objects.get(position).getPermission());
+                intent.putExtra("tags", objects.get(position).getTags());
+                intent.putExtra("subject", objects.get(position).getSubject());
+                context.startActivity(intent);
+            });
         }
         return view;
     }
 
     @Override
     public int getViewTypeCount() {
-        if (getCount() < 1) {
-            return 1;
-        } else {
-            return getCount();
-        }
+        return Math.max(getCount(), 1);
     }
 
     @Override
