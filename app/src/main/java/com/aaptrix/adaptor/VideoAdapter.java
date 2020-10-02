@@ -2,6 +2,7 @@ package com.aaptrix.adaptor;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -13,7 +14,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.aaptrix.activitys.student.PlayLiveStream;
+import com.aaptrix.activitys.student.VideoDetails;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -83,6 +87,58 @@ public class VideoAdapter extends ArrayAdapter<VideosData> {
                     holder.live.bringToFront();
                 }
             }
+
+            view.setOnClickListener(v -> {
+                if (type.equals("video")) {
+                    try {
+                        Calendar calendar = Calendar.getInstance();
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
+                        String start = objects.get(position).getStart();
+                        Date startdate = sdf.parse(start);
+                        sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                        Date date = sdf.parse(start);
+                        Intent intent = new Intent(context, VideoDetails.class);
+                        intent.putExtra("title", objects.get(position).getTitle());
+                        intent.putExtra("url", objects.get(position).getUrl());
+                        intent.putExtra("id", objects.get(position).getId());
+                        intent.putExtra("desc", objects.get(position).getDesc());
+                        intent.putExtra("endDate", objects.get(position).getEnd());
+                        intent.putExtra("tags", objects.get(position).getTags());
+                        intent.putExtra("subject", objects.get(position).getSubject());
+                        intent.putExtra("time", objects.get(position).getTotalTime());
+                        if (!start.equals("0000-00-00 00:00:00")) {
+                            if (calendar.getTime().equals(startdate) || (calendar.getTime().after(startdate))) {
+                                context.startActivity(intent);
+                            } else if (calendar.getTime().before(date)) {
+                                sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm aa", Locale.getDefault());
+                                Toast.makeText(context, "Starts at " + sdf.format(startdate), Toast.LENGTH_SHORT).show();
+                            } else {
+                                sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+                                Toast.makeText(context, "Starts at " + sdf.format(startdate), Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            context.startActivity(intent);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    if (objects.get(position).getStream().equals("1")) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                        Intent intent = new Intent(context, PlayLiveStream.class);
+                        intent.putExtra("title", objects.get(position).getTitle());
+                        intent.putExtra("url", objects.get(position).getUrl());
+                        intent.putExtra("id", objects.get(position).getId());
+                        intent.putExtra("desc", objects.get(position).getDesc());
+                        intent.putExtra("comments", objects.get(position).getComments());
+                        intent.putExtra("sub", objects.get(position).getSubject());
+                        intent.putExtra("date", sdf.format(Calendar.getInstance().getTime()));
+                        context.startActivity(intent);
+                    } else {
+                        Toast.makeText(context, "Streaming is ended", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
             if (type.equals("video")) {
                 try {

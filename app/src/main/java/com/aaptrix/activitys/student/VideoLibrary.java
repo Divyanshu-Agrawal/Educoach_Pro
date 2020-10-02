@@ -4,15 +4,18 @@ import com.aaptrix.activitys.admin.AddNewVideo;
 import com.aaptrix.adaptor.VideoAdapter;
 import com.aaptrix.databeans.VideosData;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -71,6 +74,8 @@ import java.util.Objects;
 import com.aaptrix.R;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import static com.aaptrix.tools.HttpUrl.ALL_BATCHS;
@@ -101,7 +106,7 @@ public class VideoLibrary extends AppCompatActivity {
     EditText searchBox;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     String userId, userSchoolId, userRoleId, userrType, userSection, url, userName, restricted;
-    ImageButton filter, search, searchBtn;
+    ImageButton filter, search, searchBtn, offline;
     private String selSubject = "All Subjects", disable;
     LinearLayout liveVideo;
 
@@ -129,8 +134,20 @@ public class VideoLibrary extends AppCompatActivity {
         search_layout = findViewById(R.id.search_layout);
         searchBox = findViewById(R.id.search_txt);
         searchBtn = findViewById(R.id.search_btn);
+        offline = findViewById(R.id.offline_videos);
 
         selSubject = getIntent().getStringExtra("sub");
+
+        offline.setOnClickListener(v -> {
+            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED &&
+                    PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                isPermissionGranted();
+            } else {
+                Intent intent = new Intent(this, OfflineVideos.class);
+                intent.putExtra("sub", selSubject);
+                startActivity(intent);
+            }
+        });
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
         selToolColor = settingsColor.getString("tool", "");
@@ -198,9 +215,20 @@ public class VideoLibrary extends AppCompatActivity {
                         liveVideo.setVisibility(View.GONE);
                     }
                 }
+                if (object.getString("tbl_insti_buzz_cate_name").equals("Downloadable Videos")) {
+                    if (object.getString("tbl_scl_inst_buzz_detl_status").equals("Active")) {
+                        offline.setVisibility(View.VISIBLE);
+                    } else {
+                        offline.setVisibility(View.GONE);
+                    }
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+        if (selSubject.equals("All Subjects")) {
+            offline.setVisibility(View.GONE);
         }
 
         if (userrType.equals("Student") || userrType.equals("Parent")) {
@@ -282,6 +310,23 @@ public class VideoLibrary extends AppCompatActivity {
                 listView.setEnabled(true);
             }
         });
+    }
+
+    public void isPermissionGranted() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void hideKeyboard(View view) {
@@ -593,7 +638,6 @@ public class VideoLibrary extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Log.e("size 0 ", videosArray.size()+"");
             if (videosArray.size() > 0) {
                 listItems(selSubject, disable);
             } else {
@@ -748,45 +792,6 @@ public class VideoLibrary extends AppCompatActivity {
         listView.setAdapter(videoAdapter);
         videoAdapter.notifyDataSetChanged();
         mSwipeRefreshLayout.setRefreshing(false);
-
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            if (isInternetOn()) {
-                try {
-                    Calendar calendar = Calendar.getInstance();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
-                    String start = arrayList.get(position).getStart();
-                    Date startdate = sdf.parse(start);
-                    sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                    Date date = sdf.parse(start);
-                    Intent intent = new Intent(this, VideoDetails.class);
-                    intent.putExtra("title", arrayList.get(position).getTitle());
-                    intent.putExtra("url", arrayList.get(position).getUrl());
-                    intent.putExtra("id", arrayList.get(position).getId());
-                    intent.putExtra("desc", arrayList.get(position).getDesc());
-                    intent.putExtra("endDate", arrayList.get(position).getEnd());
-                    intent.putExtra("tags", arrayList.get(position).getTags());
-                    intent.putExtra("subject", arrayList.get(position).getSubject());
-                    intent.putExtra("time", arrayList.get(position).getTotalTime());
-                    if (!start.equals("0000-00-00 00:00:00")) {
-                        if (calendar.getTime().equals(startdate) || (calendar.getTime().after(startdate))) {
-                            startActivity(intent);
-                        } else if (calendar.getTime().before(date)) {
-                            sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm aa", Locale.getDefault());
-                            Toast.makeText(this, "Starts at " + sdf.format(startdate), Toast.LENGTH_SHORT).show();
-                        } else {
-                            sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
-                            Toast.makeText(this, "Starts at " + sdf.format(startdate), Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        startActivity(intent);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         SharedPreferences sp = getSharedPreferences(PREFS_RW, 0);
         String json = sp.getString("result", "");

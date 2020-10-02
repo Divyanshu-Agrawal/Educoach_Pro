@@ -232,6 +232,7 @@ public class VideoDetails extends AppCompatActivity {
         userrType = settings.getString("userrType", "");
         userSchoolId = settings.getString("userSchoolId", "");
         userId = settings.getString("userID", "");
+
         if (getResources().getString(R.string.watermark).equals("full")) {
             rollNo = SCHOOL_NAME + "\n" + settings.getString("userName", "") + ", " + settings.getString("userPhone", "");
         } else {
@@ -316,7 +317,7 @@ public class VideoDetails extends AppCompatActivity {
                 @Override
                 public void onVideoDuration(@NotNull YouTubePlayer youTubePlayer, float duration) {
                     super.onVideoDuration(youTubePlayer, duration);
-                    if (strTime == null || strTime.equals("null")) {
+                    if (strTime == null || strTime.equals("null") || strTime.equals("00:00:00")) {
                         int hours = (int) duration / 3600;
                         int minutes = (int) (duration % 3600) / 60;
                         int seconds = (int) duration % 60;
@@ -447,7 +448,7 @@ public class VideoDetails extends AppCompatActivity {
         exoPlayer.setPlayWhenReady(playWhenReady);
         exoPlayer.seekTo(currentWindow, playbackPosition);
         exoPlayer.prepare(mediaSource, false, false);
-        if (strTime == null || strTime.equals("null")) {
+        if (strTime == null || strTime.equals("null") || strTime.equals("00:00:00")) {
             long hours = exoPlayer.getDuration() / (60 * 60 * 1000) % 24;
             long minutes = exoPlayer.getDuration() / (60 * 1000) % 60;
             long seconds = exoPlayer.getDuration() / 1000 % 60;
@@ -532,22 +533,23 @@ public class VideoDetails extends AppCompatActivity {
             timer.cancel();
         }
 
-        if (tracker != null) {
-            float duration = tracker.getCurrentSecond();
-            int hours = (int) duration / 3600;
-            int minutes = (int) (duration % 3600) / 60;
-            int seconds = (int) duration % 60;
-            @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-            AddSeenTime addSeenTime = new AddSeenTime(this);
-            addSeenTime.execute(userSchoolId, id, userId, time);
-        } else if (exoPlayer != null) {
-            long hours = exoPlayer.getCurrentPosition() / (60 * 60 * 1000) % 24;
-            long minutes = exoPlayer.getCurrentPosition() / (60 * 1000) % 60;
-            long seconds = exoPlayer.getCurrentPosition() / 1000 % 60;
-            @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-            AddSeenTime addSeenTime = new AddSeenTime(this);
-            addSeenTime.execute(userSchoolId, id, userId, time);
-        }
+        if (userrType.equals("Student") || userrType.equals("Parent"))
+            if (tracker != null) {
+                float duration = tracker.getCurrentSecond();
+                int hours = (int) duration / 3600;
+                int minutes = (int) (duration % 3600) / 60;
+                int seconds = (int) duration % 60;
+                @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+                AddSeenTime addSeenTime = new AddSeenTime(this);
+                addSeenTime.execute(userSchoolId, id, userId, time);
+            } else if (exoPlayer != null) {
+                long hours = exoPlayer.getCurrentPosition() / (60 * 60 * 1000) % 24;
+                long minutes = exoPlayer.getCurrentPosition() / (60 * 1000) % 60;
+                long seconds = exoPlayer.getCurrentPosition() / 1000 % 60;
+                @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+                AddSeenTime addSeenTime = new AddSeenTime(this);
+                addSeenTime.execute(userSchoolId, id, userId, time);
+            }
 
         ClipboardManager clipService = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipService != null)
@@ -658,22 +660,23 @@ public class VideoDetails extends AppCompatActivity {
             timer.cancel();
         }
 
-        if (tracker != null) {
-            float duration = tracker.getCurrentSecond();
-            int hours = (int) duration / 3600;
-            int minutes = (int) (duration % 3600) / 60;
-            int seconds = (int) duration % 60;
-            @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-            AddSeenTime addSeenTime = new AddSeenTime(this);
-            addSeenTime.execute(userSchoolId, id, userId, time);
-        } else if (exoPlayer != null) {
-            long hours = exoPlayer.getCurrentPosition() / (60 * 60 * 1000) % 24;
-            long minutes = exoPlayer.getCurrentPosition() / (60 * 1000) % 60;
-            long seconds = exoPlayer.getCurrentPosition() / 1000 % 60;
-            @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-            AddSeenTime addSeenTime = new AddSeenTime(this);
-            addSeenTime.execute(userSchoolId, id, userId, time);
-        }
+        if (userrType.equals("Student") || userrType.equals("Parent"))
+            if (tracker != null) {
+                float duration = tracker.getCurrentSecond();
+                int hours = (int) duration / 3600;
+                int minutes = (int) (duration % 3600) / 60;
+                int seconds = (int) duration % 60;
+                @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+                AddSeenTime addSeenTime = new AddSeenTime(this);
+                addSeenTime.execute(userSchoolId, id, userId, time);
+            } else if (exoPlayer != null) {
+                long hours = exoPlayer.getCurrentPosition() / (60 * 60 * 1000) % 24;
+                long minutes = exoPlayer.getCurrentPosition() / (60 * 1000) % 60;
+                long seconds = exoPlayer.getCurrentPosition() / 1000 % 60;
+                @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+                AddSeenTime addSeenTime = new AddSeenTime(this);
+                addSeenTime.execute(userSchoolId, id, userId, time);
+            }
 
         ClipboardManager clipService = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipService != null)
@@ -708,22 +711,23 @@ public class VideoDetails extends AppCompatActivity {
             finish();
         }
 
-        if (tracker != null) {
-            float duration = tracker.getCurrentSecond();
-            int hours = (int) duration / 3600;
-            int minutes = (int) (duration % 3600) / 60;
-            int seconds = (int) duration % 60;
-            @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-            AddSeenTime addSeenTime = new AddSeenTime(this);
-            addSeenTime.execute(userSchoolId, id, userId, time);
-        } else if (exoPlayer != null) {
-            long hours = exoPlayer.getCurrentPosition() / (60 * 60 * 1000) % 24;
-            long minutes = exoPlayer.getCurrentPosition() / (60 * 1000) % 60;
-            long seconds = exoPlayer.getCurrentPosition() / 1000 % 60;
-            @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-            AddSeenTime addSeenTime = new AddSeenTime(this);
-            addSeenTime.execute(userSchoolId, id, userId, time);
-        }
+        if (userrType.equals("Student") || userrType.equals("Parent"))
+            if (tracker != null) {
+                float duration = tracker.getCurrentSecond();
+                int hours = (int) duration / 3600;
+                int minutes = (int) (duration % 3600) / 60;
+                int seconds = (int) duration % 60;
+                @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+                AddSeenTime addSeenTime = new AddSeenTime(this);
+                addSeenTime.execute(userSchoolId, id, userId, time);
+            } else if (exoPlayer != null) {
+                long hours = exoPlayer.getCurrentPosition() / (60 * 60 * 1000) % 24;
+                long minutes = exoPlayer.getCurrentPosition() / (60 * 1000) % 60;
+                long seconds = exoPlayer.getCurrentPosition() / 1000 % 60;
+                @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+                AddSeenTime addSeenTime = new AddSeenTime(this);
+                addSeenTime.execute(userSchoolId, id, userId, time);
+            }
 
         ClipboardManager clipService = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipService != null)
@@ -790,6 +794,10 @@ public class VideoDetails extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if (!result.isEmpty()) {
+                Intent intent = new Intent(ctx, VideoLibrary.class);
+                intent.putExtra("sub", "All Subjects");
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 finish();
             } else {
                 Toast.makeText(ctx, "Some Error", Toast.LENGTH_SHORT).show();
@@ -798,7 +806,7 @@ public class VideoDetails extends AppCompatActivity {
     }
 
     @SuppressLint("StaticFieldLeak")
-    class AddTotalTime extends AsyncTask<String, String, String> {
+    static class AddTotalTime extends AsyncTask<String, String, String> {
         Context ctx;
 
         AddTotalTime(Context ctx) {
@@ -815,11 +823,10 @@ public class VideoDetails extends AppCompatActivity {
             String schId = params[0];
             String videoId = params[1];
             String time = params[2];
-
-            Log.e("sch id", schId);
-            Log.e("video id", videoId);
-            Log.e("time", time);
             String data;
+
+            Log.e("vid", videoId);
+            Log.e("time", time);
 
             try {
                 URL url = new URL(VIDEO_TOTAL_TIME);
@@ -861,12 +868,12 @@ public class VideoDetails extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-
+            Log.e("res", result);
         }
     }
 
     @SuppressLint("StaticFieldLeak")
-    class AddSeenTime extends AsyncTask<String, String, String> {
+    static class AddSeenTime extends AsyncTask<String, String, String> {
         Context ctx;
 
         AddSeenTime(Context ctx) {
@@ -885,6 +892,10 @@ public class VideoDetails extends AppCompatActivity {
             String userId = params[2];
             String time = params[3];
             String data;
+
+            Log.e("vid", videoId);
+            Log.e("time", time);
+            Log.e("user", userId);
 
             try {
                 URL url = new URL(VIDEO_SEEN_TIME);
@@ -927,7 +938,7 @@ public class VideoDetails extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-
+            Log.e("result", String.valueOf(result));
         }
     }
 }

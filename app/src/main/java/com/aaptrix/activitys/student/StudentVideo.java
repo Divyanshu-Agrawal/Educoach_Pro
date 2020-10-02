@@ -4,18 +4,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -36,7 +38,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aaptrix.R;
-import com.aaptrix.adaptor.GalleryDetailAdapter;
 import com.aaptrix.databeans.VideosData;
 import com.google.android.material.appbar.AppBarLayout;
 import com.squareup.picasso.Picasso;
@@ -47,9 +48,15 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -85,7 +92,9 @@ public class StudentVideo extends AppCompatActivity {
     String userId, userSchoolId, userRoleId, userrType, userSection, url, userName, restricted;
     GridView subjectGrid;
     ProgressBar progressBar;
-    LinearLayout mainLayout, viewAll, viewAllLive, viewAllSubject;
+    CardView offlineVideos;
+    LinearLayout viewAll, viewAllLive, viewAllSubject;
+    boolean permission = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,12 +110,18 @@ public class StudentVideo extends AppCompatActivity {
         noVideos = findViewById(R.id.no_videos);
         subjectGrid = findViewById(R.id.subject_grid);
         progressBar = findViewById(R.id.progress);
-        mainLayout = findViewById(R.id.main_layout);
         viewAll = findViewById(R.id.view_all);
         viewAllLive = findViewById(R.id.view_all_live);
         viewAllSubject = findViewById(R.id.view_all_subject);
         liveList = findViewById(R.id.live_list);
+        offlineVideos = findViewById(R.id.offline_videos);
         recyclerView.setEnabled(true);
+
+        offlineVideos.setOnClickListener(view -> {
+            Intent intent = new Intent(this, OfflineSubjects.class);
+            intent.putExtra("type", "video");
+            startActivity(intent);
+        });
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
         selToolColor = settingsColor.getString("tool", "");
@@ -135,9 +150,52 @@ public class StudentVideo extends AppCompatActivity {
         }
         tool_title.setTextColor(Color.parseColor(selTextColor1));
 
-        String section = "[{\"userName\":\"" + userSection + "\"}]";
-        GetSubject subject = new GetSubject(this);
-        subject.execute(userSchoolId, section);
+        SharedPreferences preferences = getSharedPreferences(PREFS_RW, 0);
+        String json = preferences.getString("result", "");
+
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            JSONArray jsonArray = jsonObject.getJSONArray("result");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject object = jsonArray.getJSONObject(i);
+                if (object.getString("tbl_insti_buzz_cate_name").equals("Downloadable Videos")) {
+                    permission = object.getString("tbl_scl_inst_buzz_detl_status").equals("Active");
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            File directory = this.getFilesDir();
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(directory, "subjects")));
+            String res = in.readObject().toString();
+            in.close();
+            JSONObject jsonRootObject = new JSONObject(res);
+            JSONArray jsonArray = jsonRootObject.getJSONArray("SubjectList");
+            subjects = new String[jsonArray.length()];
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                subjects[i] = jsonObject.getString("tbl_batch_subjct_name");
+            }
+            String object = jsonRootObject.getString("DisableSubject");
+            for (String subject : subjects) {
+                if (!object.contains(subject)) {
+                    subject_array.add(subject);
+                }
+            }
+            setSubject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (isInternetOn()) {
+                String section = "[{\"userName\":\"" + userSection + "\"}]";
+                GetSubject subject = new GetSubject(this);
+                subject.execute(userSchoolId, section);
+            } else {
+                Toast.makeText(this, "Please connect to internet to refresh subjects", Toast.LENGTH_SHORT).show();
+                noVideos.setVisibility(View.VISIBLE);
+            }
+        }
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -156,15 +214,37 @@ public class StudentVideo extends AppCompatActivity {
         viewAllLive.setOnClickListener(v -> startActivity(new Intent(this, LiveStreaming.class)));
 
         viewAll.setOnClickListener(v -> {
-            Intent intent = new Intent(this, VideoLibrary.class);
-            intent.putExtra("sub", "All Subjects");
-            startActivity(intent);
+            if (permission) {
+                if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED &&
+                        PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                    isPermissionGranted();
+                } else {
+                    Intent intent = new Intent(this, StudyVideo.class);
+                    intent.putExtra("sub", "All Subjects");
+                    startActivity(intent);
+                }
+            } else {
+                Intent intent = new Intent(this, VideoLibrary.class);
+                intent.putExtra("sub", "All Subjects");
+                startActivity(intent);
+            }
         });
 
         viewAllSubject.setOnClickListener(v -> {
-            Intent intent = new Intent(this, VideoLibrary.class);
-            intent.putExtra("sub", "All Subjects");
-            startActivity(intent);
+            if (permission) {
+                if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED &&
+                        PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                    isPermissionGranted();
+                } else {
+                    Intent intent = new Intent(this, StudyVideo.class);
+                    intent.putExtra("sub", "All Subjects");
+                    startActivity(intent);
+                }
+            } else {
+                Intent intent = new Intent(this, VideoLibrary.class);
+                intent.putExtra("sub", "All Subjects");
+                startActivity(intent);
+            }
         });
     }
 
@@ -313,16 +393,16 @@ public class StudentVideo extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
 
             if (videosArray.size() == 0 && liveArray.size() == 0) {
-                noVideos.setVisibility(View.VISIBLE);
-                mainLayout.setVisibility(View.GONE);
+                viewAllLive.setVisibility(View.GONE);
+                viewAll.setVisibility(View.GONE);
+                liveList.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
             } else if (videosArray.size() > 0 && liveArray.size() > 0) {
                 listItems();
-                viewAll.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.VISIBLE);
-                noVideos.setVisibility(View.GONE);
-                mainLayout.setVisibility(View.VISIBLE);
                 viewAllLive.setVisibility(View.VISIBLE);
+                viewAll.setVisibility(View.VISIBLE);
                 liveList.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.VISIBLE);
             } else {
                 if (videosArray.size() > 0) {
                     listItems();
@@ -384,14 +464,20 @@ public class StudentVideo extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
 
         if (arrayList.size() == 0 && live.size() == 0) {
-            noVideos.setVisibility(View.VISIBLE);
-            mainLayout.setVisibility(View.GONE);
+            viewAllLive.setVisibility(View.GONE);
+            viewAll.setVisibility(View.GONE);
+            liveList.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
         } else if (arrayList.size() > 0 && live.size() > 0) {
-            noVideos.setVisibility(View.GONE);
-            mainLayout.setVisibility(View.VISIBLE);
+            viewAllLive.setVisibility(View.VISIBLE);
+            viewAll.setVisibility(View.VISIBLE);
+            liveList.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
         } else {
-            noVideos.setVisibility(View.GONE);
-            mainLayout.setVisibility(View.VISIBLE);
+            viewAllLive.setVisibility(View.VISIBLE);
+            viewAll.setVisibility(View.VISIBLE);
+            liveList.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
             if (arrayList.size() == 0) {
                 viewAll.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
@@ -487,10 +573,12 @@ public class StudentVideo extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            Log.e("res", result);
             if (!result.equals("{\"SubjectList\":null}")) {
                 try {
                     subject_array.clear();
                     JSONObject jsonRootObject = new JSONObject(result);
+                    cacheJson(jsonRootObject, "subjects");
                     JSONArray jsonArray = jsonRootObject.getJSONArray("SubjectList");
                     subjects = new String[jsonArray.length()];
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -512,17 +600,41 @@ public class StudentVideo extends AppCompatActivity {
         }
     }
 
+    private void cacheJson(final JSONObject jsonObject, String name) {
+        new Thread(() -> {
+            ObjectOutput out;
+            String data = jsonObject.toString();
+            try {
+                File directory = this.getFilesDir();
+                directory.mkdir();
+                out = new ObjectOutputStream(new FileOutputStream(new File(directory, name)));
+                out.writeObject(data);
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     private void setSubject() {
         SubjectAdapter adapter = new SubjectAdapter(this, R.layout.list_subject, subject_array);
         subjectGrid.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
+        if (subject_array.size() == 0)
+            noVideos.setVisibility(View.VISIBLE);
+        else
+            noVideos.setVisibility(View.GONE);
+
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.height = (int) getResources().getDimension(R.dimen._90sdp) * (subject_array.size() / 2);
+        if (subject_array.size() > 1)
+            params.height = (int) getResources().getDimension(R.dimen._90sdp) * (subject_array.size() / 2);
+        else
+            params.height = (int) getResources().getDimension(R.dimen._90sdp) * (subject_array.size());
         subjectGrid.setLayoutParams(params);
     }
 
-    static class SubjectAdapter extends ArrayAdapter<String> {
+    class SubjectAdapter extends ArrayAdapter<String> {
 
         private ArrayList<String> objects;
         private Activity context;
@@ -535,7 +647,7 @@ public class StudentVideo extends AppCompatActivity {
             this.resource = resource;
         }
 
-        private static class ViewHolder {
+        private class ViewHolder {
             TextView subject;
         }
 
@@ -551,9 +663,20 @@ public class StudentVideo extends AppCompatActivity {
             view.setTag(holder);
 
             view.setOnClickListener(v -> {
-                Intent intent = new Intent(context, VideoLibrary.class);
-                intent.putExtra("sub", objects.get(position));
-                context.startActivity(intent);
+                if (permission) {
+                    if (PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED &&
+                            PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                        isPermissionGranted();
+                    } else {
+                        Intent intent = new Intent(context, StudyVideo.class);
+                        intent.putExtra("sub", objects.get(position));
+                        startActivity(intent);
+                    }
+                } else {
+                    Intent intent = new Intent(context, VideoLibrary.class);
+                    intent.putExtra("sub", objects.get(position));
+                    startActivity(intent);
+                }
             });
 
             if (objects != null) {
@@ -570,6 +693,23 @@ public class StudentVideo extends AppCompatActivity {
         @Override
         public int getItemViewType(int position) {
             return position;
+        }
+    }
+
+    public void isPermissionGranted() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -714,6 +854,7 @@ public class StudentVideo extends AppCompatActivity {
                             intent.putExtra("id", objects.get(position).getId());
                             intent.putExtra("desc", objects.get(position).getDesc());
                             intent.putExtra("comments", objects.get(position).getComments());
+                            intent.putExtra("sub", objects.get(position).getSubject());
                             intent.putExtra("date", sdf.format(Calendar.getInstance().getTime()));
                             startActivity(intent);
                         } else {

@@ -90,6 +90,15 @@
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
                     android:src="@drawable/filter_icon" />
+
+                <ImageButton
+                    android:id="@+id/offline_videos"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.5"
+                    android:visibility="gone"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/download_icon" />
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
