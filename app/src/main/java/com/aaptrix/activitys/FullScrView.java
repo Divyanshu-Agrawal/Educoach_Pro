@@ -26,6 +26,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -63,7 +64,7 @@ public class FullScrView extends AppCompatActivity {
     ArrayList<String> material;
     int position;
     SharedPreferences sp;
-    String selToolColor, selStatusColor, strPermission, strSubject;
+    String selToolColor, selStatusColor, strPermission, strSubject, userName;
     AppBarLayout appBarLayout;
     ProgressDialog mProgressDialog;
 
@@ -92,6 +93,7 @@ public class FullScrView extends AppCompatActivity {
         mProgressDialog.setCancelable(false);
 
         sp = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        userName = sp.getString("userName", "");
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
         selToolColor = settingsColor.getString("tool", "");
@@ -212,7 +214,7 @@ public class FullScrView extends AppCompatActivity {
         }
 
         private void fileEncrypt(String fileName, String outputName) throws Exception {
-            String key = context.getSharedPreferences(PREFS_NAME, 0).getString("video_key", "aaptrixtechnopvt");
+            String key = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
             File file = new File(context.getCacheDir(), fileName);
             int size = (int) file.length();
@@ -228,7 +230,7 @@ public class FullScrView extends AppCompatActivity {
             IvParameterSpec ivSpec = new IvParameterSpec(bKey);
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
             byte[] decrypted = cipher.doFinal(bytes);
-            File outputFile = new File(context.getExternalFilesDir("Study Material/" + strSubject), outputName);
+            File outputFile = new File(context.getExternalFilesDir(userName + "/Study Material/" + strSubject), outputName);
 
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(outputFile));
             bos.write(decrypted);

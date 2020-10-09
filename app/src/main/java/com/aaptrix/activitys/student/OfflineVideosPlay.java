@@ -1,6 +1,7 @@
 package com.aaptrix.activitys.student;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -49,7 +50,10 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.Objects;
 import java.util.Random;
 
@@ -65,7 +69,7 @@ public class OfflineVideosPlay extends AppCompatActivity {
 
     String fileName, strSubject;
     AppBarLayout appBarLayout;
-    String selToolColor, selStatusColor, selTextColor1, userrType, userSchoolId, rollNo, userId;
+    String selToolColor, selStatusColor, selTextColor1, userrType, userSchoolId, rollNo, userId, userName;
     TextView tool_title;
     PlayerView player;
     SimpleExoPlayer exoPlayer;
@@ -143,6 +147,7 @@ public class OfflineVideosPlay extends AppCompatActivity {
         userrType = settings.getString("userrType", "");
         userSchoolId = settings.getString("userSchoolId", "");
         userId = settings.getString("userID", "");
+        userName = settings.getString("userName", "");
 
         if (getResources().getString(R.string.watermark).equals("full")) {
             rollNo = SCHOOL_NAME + "\n" + settings.getString("userName", "") + ", " + settings.getString("userPhone", "");
@@ -164,15 +169,38 @@ public class OfflineVideosPlay extends AppCompatActivity {
         tool_title.setText(fileName);
 
         try {
-            fileDecrypt();
+            File directory = this.getFilesDir();
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(directory, "offline_videos")));
+            String json = in.readObject().toString();
+            String hash = computeHash();
+            if (json.contains(hash)) {
+                fileDecrypt();
+            } else {
+                new AlertDialog.Builder(this)
+                        .setMessage("This video can't be played")
+                        .setPositiveButton("Ok", (dialog, which) -> onBackPressed())
+                        .setCancelable(false)
+                        .show();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public String computeHash() throws Exception{
+        File file = new File(getExternalFilesDir(userName + "/Videos/" + strSubject), fileName);
+        byte[] bytes = new byte[(int)file.length()];
+        BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+        buf.read(bytes, 0, bytes.length);
+        buf.close();
+        MessageDigest m = MessageDigest.getInstance("MD5");
+        byte[] digest = m.digest(bytes);
+        return new BigInteger(1, digest).toString(16);
+    }
+
     private void fileDecrypt() throws Exception {
         String key = getSharedPreferences(PREFS_NAME, 0).getString("video_key", "aaptrixtechnopvt");
-        File file = new File(getExternalFilesDir("Videos/" + strSubject), fileName);
+        File file = new File(getExternalFilesDir(userName + "/Videos/" + strSubject), fileName);
         int size = (int) file.length();
         byte[] bytes = new byte[size];
 

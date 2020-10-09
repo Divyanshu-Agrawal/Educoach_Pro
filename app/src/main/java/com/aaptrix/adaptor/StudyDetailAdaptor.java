@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -62,7 +63,7 @@ public class StudyDetailAdaptor extends ArrayAdapter<String> implements Activity
     Context context;
     int resource;
     ArrayList<String> objects;
-    private String permission, strSubject;
+    private String permission, strSubject, userName;
     ProgressDialog mProgressDialog;
     private SharedPreferences sp;
 
@@ -172,6 +173,8 @@ public class StudyDetailAdaptor extends ArrayAdapter<String> implements Activity
             }
 
             sp = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            userName = sp.getString("userName", "");
+
             String url = sp.getString("imageUrl", "") + sp.getString("userSchoolId", "") + "/studyMaterial/" + objects.get(position);
             String fileExt = objects.get(position).substring(objects.get(position).lastIndexOf(".") + 1);
             switch (fileExt) {
@@ -309,7 +312,7 @@ public class StudyDetailAdaptor extends ArrayAdapter<String> implements Activity
         }
 
         private void fileEncrypt(String fileName, String outputName) throws Exception {
-            String key = context.getSharedPreferences(PREFS_NAME, 0).getString("video_key", "aaptrixtechnopvt");
+            String key = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
             File file = new File(context.getCacheDir(), fileName);
             int size = (int) file.length();
@@ -325,7 +328,7 @@ public class StudyDetailAdaptor extends ArrayAdapter<String> implements Activity
             IvParameterSpec ivSpec = new IvParameterSpec(bKey);
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
             byte[] decrypted = cipher.doFinal(bytes);
-            File outputFile = new File(context.getExternalFilesDir("Study Material/" + strSubject), outputName);
+            File outputFile = new File(context.getExternalFilesDir(userName + "/Study Material/" + strSubject), outputName);
 
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(outputFile));
             bos.write(decrypted);

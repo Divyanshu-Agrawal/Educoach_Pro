@@ -116,6 +116,12 @@
                             android:layout_height="@dimen/_200sdp"
                             android:visibility="visible" />
 
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/layout1"
+                            android:background="@color/trans"/>
+
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -201,6 +207,12 @@
                             android:layout_height="@dimen/_200sdp"
                             android:visibility="visible" />
 
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/layout2"
+                            android:background="@color/trans"/>
+
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -221,7 +233,7 @@
                             android:marqueeRepeatLimit="marquee_forever"
                             android:singleLine="true"
                             android:id="@+id/ans_title"
-                            android:text="Answer Sheet"
+                            android:text="Ideal Answer Sheet"
                             android:textColor="@android:color/white"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -285,6 +297,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_200sdp"
                             android:visibility="visible" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/layout3"
+                            android:background="@color/trans"/>
 
                     </RelativeLayout>
 
@@ -370,6 +388,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_200sdp"
                             android:visibility="visible" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/layout4"
+                            android:background="@color/trans"/>
 
                     </RelativeLayout>
 

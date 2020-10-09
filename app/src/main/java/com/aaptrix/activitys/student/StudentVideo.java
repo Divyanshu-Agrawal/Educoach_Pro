@@ -179,6 +179,7 @@ public class StudentVideo extends AppCompatActivity {
                 subjects[i] = jsonObject.getString("tbl_batch_subjct_name");
             }
             String object = jsonRootObject.getString("DisableSubject");
+            Log.e("sub", object);
             for (String subject : subjects) {
                 if (!object.contains(subject)) {
                     subject_array.add(subject);
@@ -214,23 +215,6 @@ public class StudentVideo extends AppCompatActivity {
         viewAllLive.setOnClickListener(v -> startActivity(new Intent(this, LiveStreaming.class)));
 
         viewAll.setOnClickListener(v -> {
-            if (permission) {
-                if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED &&
-                        PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
-                    isPermissionGranted();
-                } else {
-                    Intent intent = new Intent(this, StudyVideo.class);
-                    intent.putExtra("sub", "All Subjects");
-                    startActivity(intent);
-                }
-            } else {
-                Intent intent = new Intent(this, VideoLibrary.class);
-                intent.putExtra("sub", "All Subjects");
-                startActivity(intent);
-            }
-        });
-
-        viewAllSubject.setOnClickListener(v -> {
             if (permission) {
                 if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED &&
                         PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {

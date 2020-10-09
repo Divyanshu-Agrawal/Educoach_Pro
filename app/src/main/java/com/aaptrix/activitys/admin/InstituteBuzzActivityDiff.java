@@ -740,6 +740,10 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         file.delete();
         file = new File(directory, "batches");
         file.delete();
+        file = new File(directory, "offline_videos");
+        file.delete();
+        file = new File(directory, "subject");
+        file.delete();
         getSharedPreferences(PREF_COLOR, 0).edit().clear().apply();
         getSharedPreferences(PREF_ROLE, 0).edit().clear().apply();
         getSharedPreferences(PREFS_NAME, 0).edit().clear().apply();
@@ -1993,6 +1997,19 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
         userListAdaptor = new UserListAdaptor(InstituteBuzzActivityDiff.this, R.layout.user_select_dialog, studentArray, userId);
         user_list.setAdapter(userListAdaptor);
         user_list.setOnItemClickListener((parent, view, position, id) -> {
+            File directory = this.getFilesDir();
+            File file = new File(directory, "instituteBuzz");
+            file.delete();
+            file = new File(directory, "batches");
+            file.delete();
+            file = new File(directory, "subject");
+            file.delete();
+            file = new File(directory, "offline_videos");
+            file.delete();
+            getSharedPreferences(PREF_COLOR, 0).edit().clear().apply();
+            getSharedPreferences(PREF_ROLE, 0).edit().clear().apply();
+            getSharedPreferences(PREFS_NAME, 0).edit().clear().apply();
+            getSharedPreferences("date", 0).edit().clear().apply();
             String status;
             if (getSharedPreferences(PREF_ROLE, 0).getString("userRole", "").equals("Parent")) {
                 status = studentArray.get(position).getParentStatus();
@@ -2129,6 +2146,19 @@ public class InstituteBuzzActivityDiff extends AppCompatActivity implements Navi
     }
 
     private void studentValidLogin(String userID) {
+        File directory = this.getFilesDir();
+        File file = new File(directory, "instituteBuzz");
+        file.delete();
+        file = new File(directory, "batches");
+        file.delete();
+        file = new File(directory, "subject");
+        file.delete();
+        file = new File(directory, "offline_videos");
+        file.delete();
+        getSharedPreferences(PREF_COLOR, 0).edit().clear().apply();
+        getSharedPreferences(PREF_ROLE, 0).edit().clear().apply();
+        getSharedPreferences(PREFS_NAME, 0).edit().clear().apply();
+        getSharedPreferences("date", 0).edit().clear().apply();
         String status;
         if (getSharedPreferences(PREF_ROLE, 0).getString("userRole", "").equals("Parent")) {
             status = studentArray.get(0).getParentStatus();

@@ -4,9 +4,11 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -38,6 +40,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -189,6 +193,7 @@ public class GetMoreVideos extends Fragment {
             videoArray.clear();
             try {
                 JSONObject jsonRootObject = new JSONObject(result);
+                cacheJson(jsonRootObject);
                 if (!result.contains("\"result\":null")) {
                     JSONArray jsonArray = jsonRootObject.getJSONArray("result");
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -196,7 +201,8 @@ public class GetMoreVideos extends Fragment {
                         if (jsonObject.getString("subject_name").equals(strSubject)) {
                             VideosData videosData = new VideosData();
                             videosData.setTitle(jsonObject.getString("tbl_school_downloadablevideo_title"));
-                        videosData.setUrl(jsonObject.getString("tbl_school_downloadablevideo_video"));
+                            videosData.setUrl(jsonObject.getString("tbl_school_downloadablevideo_video"));
+                            videosData.setDesc(jsonObject.getString("tbl_school_downloadablevideo_desc"));
                             videoArray.add(videosData);
                         }
                     }
@@ -209,6 +215,7 @@ public class GetMoreVideos extends Fragment {
                             VideosData videosData = new VideosData();
                             videosData.setTitle(jsonObject.getString("tbl_school_downloadablevideo_title"));
                             videosData.setUrl(jsonObject.getString("tbl_school_downloadablevideo_video"));
+                            videosData.setDesc(jsonObject.getString("tbl_school_downloadablevideo_desc"));
                             videoArray.add(videosData);
                         }
                     }
@@ -225,6 +232,22 @@ public class GetMoreVideos extends Fragment {
             }
             super.onPostExecute(result);
         }
+    }
+
+    private void cacheJson(final JSONObject jsonObject) {
+        new Thread(() -> {
+            ObjectOutput out;
+            String data = jsonObject.toString();
+            try {
+                File directory = context.getFilesDir();
+                directory.mkdir();
+                out = new ObjectOutputStream(new FileOutputStream(new File(directory, "offline_videos")));
+                out.writeObject(data);
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     private void listItems() {
@@ -250,7 +273,7 @@ public class GetMoreVideos extends Fragment {
             String[] splitUrl = downloadUrl.split("/");
             String name = splitUrl[splitUrl.length - 1];
 
-            File outputFile = new File(context.getExternalFilesDir("Videos/" + strSubject), name);
+            File outputFile = new File(context.getExternalFilesDir(userName + "/Videos/" + strSubject), name);
 
             InputStream input = null;
             OutputStream output = null;
@@ -327,9 +350,8 @@ public class GetMoreVideos extends Fragment {
             if (result != null) {
                 Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();
                 Log.e("error", result);
-            }
-            else
-                Toast.makeText(context,"File downloaded", Toast.LENGTH_SHORT).show();
+            } else
+                Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -360,8 +382,18 @@ public class GetMoreVideos extends Fragment {
             title.setText(objects.get(position).getTitle());
 
             view.setOnClickListener(v -> {
-                final DownloadTask downloadTask = new DownloadTask(context);
-                downloadTask.execute(objects.get(position).getUrl());
+                if (objects.get(position).getUrl().contains("educoachapp")) {
+                    DownloadTask downloadTask = new DownloadTask(context);
+                    downloadTask.execute(objects.get(position).getUrl());
+                } else {
+                    File file = context.getExternalFilesDir(userName + "/Videos/" + strSubject);
+                    if (!file.exists()) {
+                        file.mkdir();
+                    }
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(objects.get(position).getUrl()));
+                    startActivity(i);
+                }
             });
 
             return view;

@@ -73,7 +73,6 @@ public class SubjectExamView extends AppCompatActivity {
         permission = getIntent().getStringExtra("download");
 
         tool_title.setText(type);
-        Log.e("url", url);
 
         if (permission.equals("0")) {
             download.setVisibility(View.GONE);

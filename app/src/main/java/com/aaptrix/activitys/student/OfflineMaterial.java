@@ -35,6 +35,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static com.aaptrix.tools.SPClass.PREFS_NAME;
 import static com.aaptrix.tools.SPClass.PREF_COLOR;
 
 public class OfflineMaterial extends AppCompatActivity {
@@ -45,6 +46,7 @@ public class OfflineMaterial extends AppCompatActivity {
     private ArrayList<String> fileArray = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListView listView;
+    String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,9 @@ public class OfflineMaterial extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
 
         strSubject = getIntent().getStringExtra("sub");
+
+        SharedPreferences sp = getSharedPreferences(PREFS_NAME, 0);
+        userName = sp.getString("userName", "");
 
         SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
         selToolColor = settingsColor.getString("tool", "");
@@ -79,7 +84,7 @@ public class OfflineMaterial extends AppCompatActivity {
 
     private void fetchMaterial() {
         fileArray.clear();
-        File[] file = getExternalFilesDir("Study Material/" + strSubject).listFiles();
+        File[] file = getExternalFilesDir(userName + "/Study Material/" + strSubject).listFiles();
 
         if (file != null)
             for (File value : file) {

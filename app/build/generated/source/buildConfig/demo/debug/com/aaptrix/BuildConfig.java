@@ -8,8 +8,8 @@ public final class BuildConfig {
   public static final String APPLICATION_ID = "com.aaptrix.demoinstitute";
   public static final String BUILD_TYPE = "debug";
   public static final String FLAVOR = "demo";
-  public static final int VERSION_CODE = 15;
-  public static final String VERSION_NAME = "v4.0.0";
+  public static final int VERSION_CODE = 16;
+  public static final String VERSION_NAME = "v3.0.1";
   // Fields from product flavor: demo
   public static final String SCHOOL_ID = "30";
   public static final String SCHOOL_NAME = "Demo Institute";

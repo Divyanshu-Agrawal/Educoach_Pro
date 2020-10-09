@@ -30,6 +30,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
+import android.provider.Settings;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -81,7 +82,7 @@ import static com.aaptrix.tools.SPClass.PREF_COLOR;
 public class StudyMaterialDetail extends AppCompatActivity {
 	
 	AppBarLayout appBarLayout;
-	String selToolColor, selStatusColor, selTextColor1, userrType, schoolId;
+	String selToolColor, selStatusColor, selTextColor1, userrType, schoolId, userName;
 	TextView tool_title;
 	ListView listView;
 	TextView title, description;
@@ -140,6 +141,7 @@ public class StudyMaterialDetail extends AppCompatActivity {
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		userrType = settings.getString("userrType", "");
 		schoolId = settings.getString("str_school_id", "");
+		userName = settings.getString("userName", "");
 		
 		SharedPreferences settingsColor = getSharedPreferences(PREF_COLOR, 0);
 		selToolColor = settingsColor.getString("tool", "");
@@ -378,7 +380,7 @@ public class StudyMaterialDetail extends AppCompatActivity {
 		}
 
 		private void fileEncrypt(String fileName, String outputName) throws Exception {
-			String key = context.getSharedPreferences(PREFS_NAME, 0).getString("video_key", "aaptrixtechnopvt");
+			String key = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
 			File file = new File(context.getCacheDir(), fileName);
 			int size = (int) file.length();
@@ -394,7 +396,7 @@ public class StudyMaterialDetail extends AppCompatActivity {
 			IvParameterSpec ivSpec = new IvParameterSpec(bKey);
 			cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
 			byte[] decrypted = cipher.doFinal(bytes);
-			File outputFile = new File(context.getExternalFilesDir("Study Material/" + strSubject), outputName);
+			File outputFile = new File(context.getExternalFilesDir(userName + "/Study Material/" + strSubject), outputName);
 
 			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(outputFile));
 			bos.write(decrypted);

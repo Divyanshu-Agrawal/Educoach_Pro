@@ -55,9 +55,9 @@ public class StudyVideo extends AppCompatActivity {
         tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        tabLayout.addTab(tabLayout.newTab().setText("Study Videos"));
-        tabLayout.addTab(tabLayout.newTab().setText("Available Videos"));
-        tabLayout.addTab(tabLayout.newTab().setText("Get More Videos"));
+        tabLayout.addTab(tabLayout.newTab().setText("Online Videos"));
+        tabLayout.addTab(tabLayout.newTab().setText("Downloaded Videos"));
+        tabLayout.addTab(tabLayout.newTab().setText("Downloadable Videos"));
 
         subject = getIntent().getStringExtra("sub");
         tool_title.setText(subject);
@@ -140,11 +140,11 @@ public class StudyVideo extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             String title;
             if (position == 0) {
-                title = "Study Videos";
+                title = "Online Videos";
             } else if (position == 1){
-                title = "Available Videos";
+                title = "Downloaded Videos";
             } else {
-                title = "Get More Videos";
+                title = "Downloadable Videos";
             }
             return title;
         }

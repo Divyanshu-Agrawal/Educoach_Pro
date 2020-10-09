@@ -825,7 +825,6 @@ public class AppLogin extends AppCompatActivity {
                                     str_teacher_name = jsonObject.getString("tbl_stnt_prsnl_data_cls_teach");
                                 }
 
-
                                 //school details
                                 userSchoolId = jsonObject.getString("tbl_school_id");
                                 userSchoolRoleId = jsonObject.getString("tbl_role_id");
@@ -1025,7 +1024,6 @@ public class AppLogin extends AppCompatActivity {
                 }
 
                 alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-
 
                 //	view.setSelected(true);
                 for (int j = 0; j < parent.getChildCount(); j++)

@@ -75,12 +75,6 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
                 examName.setText(Html.fromHtml(data.getName()));
             }
 
-            if (data.getType().equals("MCQ")) {
-                examDuration.setText("Duration : " + data.getDuration() + " Hours");
-            } else {
-                examDuration.setText("Duration : None");
-            }
-
             sub.setText("Subject : " + data.getSubject());
             type.setText("Exam Type : " + data.getType());
 
@@ -99,7 +93,8 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
 
                 if (userType.equals("Student")) {
                     if (calendar.getTime().before(date) || (calendar.getTime().after(date) && calendar.getTime().before(endDate))) {
-                        cardView.setCardBackgroundColor(Color.GREEN);
+                        if (data.getStatus().equals("0"))
+                            cardView.setCardBackgroundColor(Color.GREEN);
                         view.setOnClickListener(v -> {
                             if (!data.getStatus().equals("1")) {
                                 if (data.getType().equals("MCQ")) {
@@ -186,6 +181,11 @@ public class OnlineExamAdapter extends ArrayAdapter<OnlineExamData> {
                 sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
                 examDate.setText("Starts On : " + strstart + " At : " + sdf.format(time));
                 examTime.setText("Ends On : " + strEnd + " At : " + sdf.format(endTime));
+                if (data.getType().equals("MCQ")) {
+                    examDuration.setText("Duration : " + data.getDuration() + " Hours");
+                } else {
+                    examDuration.setText("Answer accepted till " + strEnd + " " + sdf.format(endTime));
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }

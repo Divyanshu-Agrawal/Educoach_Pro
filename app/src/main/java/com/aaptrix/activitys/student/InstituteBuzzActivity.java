@@ -669,6 +669,8 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         file.delete();
         file = new File(directory, "subject");
         file.delete();
+        file = new File(directory, "offline_videos");
+        file.delete();
         getSharedPreferences(PREF_COLOR, 0).edit().clear().apply();
         getSharedPreferences(PREF_ROLE, 0).edit().clear().apply();
         getSharedPreferences(PREFS_NAME, 0).edit().clear().apply();
@@ -880,7 +882,7 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
 
         @Override
         protected void onPostExecute(String result) {
-            if (!result.contains("{\"OnlineExamList\":null}")) {
+            if (!result.contains("\"OnlineExamList\":null")) {
                 try {
                     JSONObject jsonObject = new JSONObject(result);
                     JSONArray jsonArray = jsonObject.getJSONArray("OnlineExamList");
@@ -938,6 +940,71 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
                                    break;
                                }
                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (!result.contains("\"subjectiveExamList\":null")) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    JSONArray jsonArray = jsonObject.getJSONArray("subjectiveExamList");
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.DATE, 0);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                    SharedPreferences sp = getSharedPreferences("date", 0);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        String start = object.getString("tbl_online_exam_date");
+                        String end = object.getString("tbl_online_exam_end_date");
+                        String startTime = object.getString("tbl_online_exam_start_time");
+                        String endTime = object.getString("tbl_online_exam_end_time");
+                        Date startdate = sdf.parse(start + " " + startTime);
+                        Date enddate = sdf.parse(end + " " + endTime);
+                        if (calendar.getTime().equals(startdate) || calendar.getTime().before(startdate) || (calendar.getTime().after(startdate) && calendar.getTime().before(enddate))) {
+                            if (!object.getString("user_exam_taken_status").equals("1")) {
+                                @SuppressLint("SimpleDateFormat")
+                                String date = new SimpleDateFormat("dd-MM-yyyy").format(Calendar.getInstance().getTime());
+                                if (!sp.getString("date", "").equals(date)) {
+                                    LayoutInflater factory = LayoutInflater.from(ctx);
+                                    @SuppressLint("InflateParams") final View view = factory.inflate(R.layout.online_exam_dialog, null);
+
+                                    TextView time = view.findViewById(R.id.start_time);
+                                    TextView title = view.findViewById(R.id.title);
+                                    title.setText("Subjective Exam Alert");
+
+                                    sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                                    StringBuilder sb = new StringBuilder();
+                                    assert startdate != null;
+                                    sb.append("On ").append(sdf.format(startdate)).append(" at ");
+                                    sdf = new SimpleDateFormat("hh:mm:ss", Locale.getDefault());
+                                    Date sttime = sdf.parse(startTime);
+                                    sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+                                    assert sttime != null;
+                                    sb.append(sdf.format(sttime));
+                                    time.setText(sb.toString());
+
+                                    AlertDialog.Builder alert = new AlertDialog.Builder(ctx, R.style.DialogTheme);
+
+                                    alert.setView(view).setPositiveButton("Show Exam",
+                                            (dialog, whichButton) -> {
+                                                sp.edit().putString("date", date).apply();
+                                                Intent intent = new Intent(InstituteBuzzActivity.this, OnlineExam.class);
+                                                startActivity(intent);
+                                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                                            }).setNegativeButton("Ok",
+                                            (dialog, whichButton) -> sp.edit().putString("date", date).apply());
+                                    AlertDialog alertDialog = alert.create();
+                                    alertDialog.show();
+                                    Button theButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                                    Button theButton1 = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                                    theButton.setTextColor(getResources().getColor(R.color.text_gray));
+                                    theButton1.setTextColor(getResources().getColor(R.color.text_gray));
+                                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                                            .setEnabled(true);
+                                    break;
+                                }
+                            }
                         }
                     }
                 } catch (Exception e) {
@@ -1445,10 +1512,7 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
 
         @Override
         protected void onPostExecute(String result) {
-
-            //Log.d("USERS", result);
             logo_layout.setClickable(true);
-
             {
                 try {
                     SharedPreferences settingsUser = getSharedPreferences(PREFS_USER, 0);
@@ -1576,6 +1640,19 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
         userListAdaptor = new UserListAdaptor(InstituteBuzzActivity.this, R.layout.user_select_dialog, studentArray, userId);
         user_list.setAdapter(userListAdaptor);
         user_list.setOnItemClickListener((parent, view, position, id) -> {
+            File directory = this.getFilesDir();
+            File file = new File(directory, "instituteBuzz");
+            file.delete();
+            file = new File(directory, "batches");
+            file.delete();
+            file = new File(directory, "subject");
+            file.delete();
+            file = new File(directory, "offline_videos");
+            file.delete();
+            getSharedPreferences(PREF_COLOR, 0).edit().clear().apply();
+            getSharedPreferences(PREF_ROLE, 0).edit().clear().apply();
+            getSharedPreferences(PREFS_NAME, 0).edit().clear().apply();
+            getSharedPreferences("date", 0).edit().clear().apply();
             String status;
             if (getSharedPreferences(PREF_ROLE, 0).getString("userRole", "").equals("Parent")) {
                 status = studentArray.get(position).getParentStatus();
@@ -1725,6 +1802,19 @@ public class InstituteBuzzActivity extends AppCompatActivity implements Navigati
     }
 
     private void studentValidLogin(String userID) {
+        File directory = this.getFilesDir();
+        File file = new File(directory, "instituteBuzz");
+        file.delete();
+        file = new File(directory, "batches");
+        file.delete();
+        file = new File(directory, "subject");
+        file.delete();
+        file = new File(directory, "offline_videos");
+        file.delete();
+        getSharedPreferences(PREF_COLOR, 0).edit().clear().apply();
+        getSharedPreferences(PREF_ROLE, 0).edit().clear().apply();
+        getSharedPreferences(PREFS_NAME, 0).edit().clear().apply();
+        getSharedPreferences("date", 0).edit().clear().apply();
         String status;
         if (getSharedPreferences(PREF_ROLE, 0).getString("userRole", "").equals("Parent")) {
             status = studentArray.get(0).getParentStatus();

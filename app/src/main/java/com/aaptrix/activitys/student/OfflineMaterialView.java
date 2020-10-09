@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,7 +47,7 @@ public class OfflineMaterialView extends AppCompatActivity {
 
     AppBarLayout appBarLayout;
     String fileName, strSubject;
-    String selToolColor, selStatusColor, selTextColor1, userrType, userSchoolId, rollNo, userId;
+    String selToolColor, selStatusColor, selTextColor1, userrType, userSchoolId, rollNo, userId, userName;
     TextView tool_title;
     File outPutFile;
     private TextView watermark;
@@ -82,6 +83,7 @@ public class OfflineMaterialView extends AppCompatActivity {
         userrType = settings.getString("userrType", "");
         userSchoolId = settings.getString("userSchoolId", "");
         userId = settings.getString("userID", "");
+        userName = settings.getString("userName", "");
 
         if (getResources().getString(R.string.watermark).equals("full")) {
             rollNo = SCHOOL_NAME + "\n" + settings.getString("userName", "") + ", " + settings.getString("userPhone", "");
@@ -113,8 +115,8 @@ public class OfflineMaterialView extends AppCompatActivity {
     }
 
     private void fileDecrypt() throws Exception {
-        String key = getSharedPreferences(PREFS_NAME, 0).getString("video_key", "aaptrixtechnopvt");
-        File file = new File(getExternalFilesDir("Study Material/" + strSubject), fileName);
+        String key = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        File file = new File(getExternalFilesDir(userName + "/Study Material/" + strSubject), fileName);
         int size = (int) file.length();
         byte[] bytes = new byte[size];
 

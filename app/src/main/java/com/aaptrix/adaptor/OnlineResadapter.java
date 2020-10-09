@@ -63,12 +63,6 @@ public class OnlineResadapter extends ArrayAdapter<OnlineExamData> {
                 examName.setText(Html.fromHtml(data.getName()));
             }
 
-            if (data.getType().equals("MCQ")) {
-                examDuration.setText("Duration : " + data.getDuration() + " Hours");
-            } else {
-                examDuration.setText("Duration : None");
-            }
-
             type.setText("Exam Type : " + data.getType());
 
             if (userType.equals("Admin") || userType.equals("Teacher")) {
@@ -98,6 +92,12 @@ public class OnlineResadapter extends ArrayAdapter<OnlineExamData> {
                 sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
                 examTime.setText("Ended On : " + end + " At " + sdf.format(time));
                 examDate.setText("Started On : " + start + " At " + sdf.format(starttime));
+
+                if (data.getType().equals("MCQ")) {
+                    examDuration.setText("Duration : " + data.getDuration() + " Hours");
+                } else {
+                    examDuration.setText("Answer accepted till " + end + " " + sdf.format(time));
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }

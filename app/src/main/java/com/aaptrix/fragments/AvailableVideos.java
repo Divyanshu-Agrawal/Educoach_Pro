@@ -3,6 +3,7 @@ package com.aaptrix.fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +22,12 @@ import com.aaptrix.activitys.student.OfflineVideosPlay;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.aaptrix.tools.SPClass.PREFS_NAME;
+
 public class AvailableVideos extends Fragment {
 
     private Context context;
-    private String strSubject;
+    private String strSubject, userName;
     private ArrayList<String> fileArray = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListView listView;
@@ -52,6 +55,10 @@ public class AvailableVideos extends Fragment {
         assert getArguments() != null;
         strSubject = getArguments().getString("sub");
         swipeRefreshLayout.setRefreshing(true);
+
+        SharedPreferences sp = context.getSharedPreferences(PREFS_NAME, 0);
+        userName = sp.getString("userName", "");
+
         fetchVideos();
 
         swipeRefreshLayout.setOnRefreshListener(this::fetchVideos);
@@ -61,7 +68,7 @@ public class AvailableVideos extends Fragment {
 
     private void fetchVideos() {
         fileArray.clear();
-        File[] file = context.getExternalFilesDir("Videos/" + strSubject).listFiles();
+        File[] file = context.getExternalFilesDir(userName + "/Videos/" + strSubject).listFiles();
 
         if (file != null)
             for (File value : file) {

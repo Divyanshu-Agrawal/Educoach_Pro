@@ -265,6 +265,10 @@ public class UserProfile extends AppCompatActivity {
         file.delete();
         file = new File(directory, "batches");
         file.delete();
+        file = new File(directory, "subject");
+        file.delete();
+        file = new File(directory, "offline_videos");
+        file.delete();
         getSharedPreferences(PREF_COLOR, 0).edit().clear().apply();
         getSharedPreferences(PREF_ROLE, 0).edit().clear().apply();
         getSharedPreferences(PREFS_NAME, 0).edit().clear().apply();

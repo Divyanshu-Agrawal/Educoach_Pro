@@ -32,6 +32,7 @@ import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,6 +71,7 @@ public class SubjectiveExamResult extends AppCompatActivity {
     WebView quesPreview, ansPreview, userAnsPreview, correctAnsPreview;
     ImageView viewQues, viewAns, viewUserAns, viewCorrectAns, downloadQues, downloadAns, downloadUserAns, downloadCorrectAns;
     TextView quesTitle, ansTitle, userAnsTitle, correctAnsTitle;
+    RelativeLayout layout1, layout2, layout3, layout4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,10 @@ public class SubjectiveExamResult extends AppCompatActivity {
         ansTitle = findViewById(R.id.ans_title);
         userAnsTitle = findViewById(R.id.user_ans_title);
         correctAnsTitle = findViewById(R.id.correct_ans_title);
+        layout1 = findViewById(R.id.layout1);
+        layout2 = findViewById(R.id.layout2);
+        layout3 = findViewById(R.id.layout3);
+        layout4 = findViewById(R.id.layout4);
 
         quesLayout = findViewById(R.id.ques_paper_layout);
         ansLayout = findViewById(R.id.ans_layout);
@@ -301,7 +307,7 @@ public class SubjectiveExamResult extends AppCompatActivity {
             Intent intent = new Intent(this, SubjectExamView.class);
             intent.putExtra("url", url + strAnsPdf);
             intent.putExtra("download", strDownloadAns);
-            intent.putExtra("type", "Answer Sheet");
+            intent.putExtra("type", "Ideal Answer Sheet");
             startActivity(intent);
         });
 
@@ -313,7 +319,7 @@ public class SubjectiveExamResult extends AppCompatActivity {
             startActivity(intent);
         });
 
-        quesTitle.setOnClickListener((v) -> {
+        layout1.setOnClickListener((v) -> {
             Intent intent = new Intent(this, SubjectExamView.class);
             intent.putExtra("url", url + strpdf);
             intent.putExtra("download", strDownloadQues);
@@ -321,7 +327,7 @@ public class SubjectiveExamResult extends AppCompatActivity {
             startActivity(intent);
         });
 
-        userAnsTitle.setOnClickListener(v -> {
+        layout3.setOnClickListener(v -> {
             Intent intent = new Intent(this, SubjectExamView.class);
             intent.putExtra("url", url + "answerSheet/" + strUserAnsPdf);
             intent.putExtra("download", "1");
@@ -329,15 +335,15 @@ public class SubjectiveExamResult extends AppCompatActivity {
             startActivity(intent);
         });
 
-        ansTitle.setOnClickListener((v) -> {
+        layout2.setOnClickListener((v) -> {
             Intent intent = new Intent(this, SubjectExamView.class);
             intent.putExtra("url", url + strAnsPdf);
             intent.putExtra("download", strDownloadAns);
-            intent.putExtra("type", "Answer Sheet");
+            intent.putExtra("type", "Ideal Answer Sheet");
             startActivity(intent);
         });
 
-        correctAnsTitle.setOnClickListener((v) -> {
+        layout4.setOnClickListener((v) -> {
             Intent intent = new Intent(this, SubjectExamView.class);
             intent.putExtra("url", url + "checkedAnswerSheet/" + strCorrectPdf);
             intent.putExtra("download", "1");

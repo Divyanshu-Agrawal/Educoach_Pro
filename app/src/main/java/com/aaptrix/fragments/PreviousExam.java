@@ -186,7 +186,7 @@ public class PreviousExam extends Fragment {
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(Calendar.getInstance().getTimeInMillis());
                     calendar.add(Calendar.DAY_OF_MONTH, -0);
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject object = jsonArray.getJSONObject(i);
                         OnlineExamData data = new OnlineExamData();
@@ -245,7 +245,7 @@ public class PreviousExam extends Fragment {
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(Calendar.getInstance().getTimeInMillis());
                     calendar.add(Calendar.DAY_OF_MONTH, -1);
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                     JSONArray array = jsonObject.getJSONArray("subjectiveExamList");
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject object = array.getJSONObject(i);
