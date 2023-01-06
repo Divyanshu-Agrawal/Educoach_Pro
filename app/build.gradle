@@ -39,50 +39,6 @@ android {
         }
     }
 
-    signingConfigs {
-        demo {
-            storeFile file("demoinstitute.jks")
-            storePassword "eduprodemo"
-            keyAlias "demoinstitute"
-            keyPassword "eduprodemo"
-        }
-
-        npc {
-            storeFile file("npc.jks")
-            storePassword "edupronpc"
-            keyAlias "npc"
-            keyPassword "edupronpc"
-        }
-
-        excel {
-            storeFile file("excel.jks")
-            storePassword "eduproexcel"
-            keyAlias "excel"
-            keyPassword "eduproexcel"
-        }
-
-        scoremax {
-            storeFile file("scoremax.jks")
-            storePassword "eduproscoremax"
-            keyAlias "scoremax"
-            keyPassword "eduproscoremax"
-        }
-
-        giri {
-            storeFile file("giritutorials.jks")
-            storePassword "eduprogiri"
-            keyAlias "giri"
-            keyPassword "eduprogiri"
-        }
-
-        badala {
-            storeFile file("badala.jks")
-            storePassword "eduprobadala"
-            keyAlias "badala"
-            keyPassword "eduprobadala"
-        }
-    }
-
     flavorDimensions "default"
     productFlavors {
         demo {
